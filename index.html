@@ -1,0 +1,2720 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRU Academy - Meet the Coach System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #007AFF;
+            --secondary-color: #8E8E93;
+            --success-color: #34C759;
+            --warning-color: #FF9500;
+            --danger-color: #FF3B30;
+            --bg-color: #F2F2F7;
+            --card-bg: #FFFFFF;
+            --border-color: #C6C6C8;
+            --text-color: #000000;
+            --text-secondary: #8E8E93;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --card-bg: #1C1C1E;
+            --border-color: #38383A;
+            --text-color: #FFFFFF;
+            --text-secondary: #8E8E93;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        /* Header and Navigation */
+        .app-header {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .menu-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 28px;
+        }
+
+        .menu-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .menu-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* Content Areas */
+        .content-section {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Coach Grid */
+        .coach-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .coach-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .coach-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        /* Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--bg-color);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: var(--success-color);
+        }
+
+        .notification.error {
+            background: var(--danger-color);
+        }
+
+        .notification.warning {
+            background: var(--warning-color);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .coach-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="app-header">
+        <div class="nav-container">
+            <div class="logo">PRU Academy</div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="btn btn-primary hidden" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    ล็อกอิน
+                </button>
+                <button class="btn btn-secondary hidden" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    ออกจากระบบ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Main Menu -->
+        <div class="menu-grid" id="mainMenu">
+            <div class="menu-card" data-menu="meet-coach">
+                <div class="menu-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3 class="menu-title">Meet the Coach</h3>
+                <p class="menu-desc">พบกับโค้ชทั้ง 5 ภูมิภาค และบันทึกข้อมูลลูกค้าเพื่อให้โค้ชช่วยวิเคราะห์</p>
+            </div>
+
+            <div class="menu-card" data-menu="search">
+                <div class="menu-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3 class="menu-title">ค้นหา</h3>
+                <p class="menu-desc">ค้นหาข้อมูลลูกค้าและคอมเมนต์ของโค้ชด้วยชื่อหรือรหัสลูกค้า</p>
+            </div>
+
+            <div class="menu-card" data-menu="qa-board">
+                <div class="menu-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="menu-title">Q&A Board</h3>
+                <p class="menu-desc">ตั้งคำถาม ฟีดแบ็ก และขอคำแนะนำจากโค้ชและผู้ใช้ท่านอื่น</p>
+            </div>
+
+            <div class="menu-card" data-menu="registration">
+                <div class="menu-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3 class="menu-title">ลงทะเบียน</h3>
+                <p class="menu-desc">ลงทะเบียนเข้าร่วมกิจกรรมและการอบรมต่างๆ</p>
+            </div>
+
+            <!-- เมนูสำหรับโค้ชและมาสเตอร์ -->
+            <div class="menu-card hidden" data-menu="dashboard" id="dashboardMenu">
+                <div class="menu-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3 class="menu-title">แดชบอร์ด</h3>
+                <p class="menu-desc">ดูสถิติและรายงานภาพรวมการทำงาน</p>
+            </div>
+
+            <div class="menu-card hidden" data-menu="management" id="managementMenu">
+                <div class="menu-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3 class="menu-title">การจัดการ</h3>
+                <p class="menu-desc">จัดการบัญชีผู้ใช้และระบบ (มาสเตอร์เท่านั้น)</p>
+            </div>
+
+            <div class="menu-card hidden" data-menu="profile" id="profileMenu">
+                <div class="menu-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3 class="menu-title">โปรไฟล์</h3>
+                <p class="menu-desc">จัดการข้อมูลส่วนตัวและตั้งค่าระบบ</p>
+            </div>
+
+            <div class="menu-card hidden" data-menu="customer-management" id="customerManagementMenu">
+                <div class="menu-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="menu-title">จัดการลูกค้า</h3>
+                <p class="menu-desc">ดูและจัดการข้อมูลลูกค้าทั้งหมด</p>
+            </div>
+        </div>
+
+        <!-- Meet the Coach Content -->
+        <div class="content-section" id="meetCoachContent">
+            <button class="btn btn-secondary mb-20" id="backFromMeetCoach">
+                <i class="fas fa-arrow-left"></i>
+                กลับสู่เมนูหลัก
+            </button>
+            <h2>Meet the Coach</h2>
+            <p class="menu-desc mb-20">พบกับโค้ชผู้เชี่ยวชาญทั้ง 5 ภูมิภาค และบันทึกข้อมูลลูกค้าสำหรับการวิเคราะห์</p>
+
+            <!-- Coach Information -->
+            <h3 class="mb-20">โค้ชผู้เชี่ยวชาญประจำภูมิภาค</h3>
+            <div class="coach-grid" id="coachList">
+                <!-- Coaches will be loaded here -->
+            </div>
+
+            <!-- Customer Form -->
+            <div class="chart-container mt-20">
+                <h3 class="mb-20">บันทึกข้อมูลลูกค้า</h3>
+                <form id="customerForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">รหัสพนักงาน *</label>
+                            <input type="text" class="form-control" id="employeeId" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ชื่อ *</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">นามสกุล *</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">สาขา *</label>
+                            <input type="text" class="form-control" id="branch" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">โซน *</label>
+                            <input type="text" class="form-control" id="zone" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ภาค *</label>
+                            <select class="form-control" id="region" required>
+                                <option value="">เลือกภาค</option>
+                                <option value="RH1">RH1</option>
+                                <option value="RH2">RH2</option>
+                                <option value="RH3">RH3</option>
+                                <option value="RH4">RH4</option>
+                                <option value="RH5">RH5</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h4 class="mb-20">ข้อมูลลูกค้า</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">เพศ</label>
+                            <select class="form-control" id="customerGender">
+                                <option value="">เลือกเพศ</option>
+                                <option value="male">ชาย</option>
+                                <option value="female">หญิง</option>
+                                <option value="other">อื่นๆ</option>
+                            </select>
+                            <label style="margin-top: 8px;">
+                                <input type="checkbox" id="genderUnknown"> ไม่ทราบข้อมูล
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">สถานภาพ</label>
+                            <select class="form-control" id="customerStatus">
+                                <option value="">เลือกสถานภาพ</option>
+                                <option value="single">โสด</option>
+                                <option value="married">สมรส</option>
+                                <option value="divorced">หย่า</option>
+                                <option value="widowed">หม้าย</option>
+                            </select>
+                            <label style="margin-top: 8px;">
+                                <input type="checkbox" id="statusUnknown"> ไม่ทราบข้อมูล
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">มีบุตรหรือไม่</label>
+                            <select class="form-control" id="hasChildren">
+                                <option value="">เลือก</option>
+                                <option value="yes">มี</option>
+                                <option value="no">ไม่มี</option>
+                            </select>
+                            <label style="margin-top: 8px;">
+                                <input type="checkbox" id="childrenUnknown"> ไม่ทราบข้อมูล
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">จำนวนบุตร</label>
+                            <input type="number" class="form-control" id="childrenCount" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">อาชีพ</label>
+                            <select class="form-control" id="customerOccupation">
+                                <option value="">เลือกอาชีพ</option>
+                                <option value="government">ข้าราชการ</option>
+                                <option value="employee">พนักงานบริษัท</option>
+                                <option value="business">ธุรกิจส่วนตัว</option>
+                                <option value="freelance">ฟรีแลนซ์</option>
+                                <option value="other">อื่นๆ</option>
+                            </select>
+                            <label style="margin-top: 8px;">
+                                <input type="checkbox" id="occupationUnknown"> ไม่ทราบข้อมูล
+                            </label>
+                        </div>
+                    </div>
+
+                    <h4 class="mb-20">ผลิตภัณฑ์โฮลดิ้ง</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">เงินฝาก</label>
+                            <select class="form-control" id="hasDeposit">
+                                <option value="">เลือก</option>
+                                <option value="yes">มี</option>
+                                <option value="no">ไม่มี</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">กองทุน</label>
+                            <select class="form-control" id="hasFund">
+                                <option value="">เลือก</option>
+                                <option value="yes">มี</option>
+                                <option value="no">ไม่มี</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ประกัน</label>
+                            <select class="form-control" id="hasInsurance">
+                                <option value="">เลือก</option>
+                                <option value="yes">มี</option>
+                                <option value="no">ไม่มี</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">รายละเอียดเพิ่มเติม</label>
+                        <textarea class="form-control" id="customerDetails" rows="4" placeholder="กรอกรายละเอียดเพิ่มเติมเกี่ยวกับลูกค้า..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        บันทึกข้อมูลลูกค้า
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Content -->
+        <div class="content-section" id="searchContent">
+            <button class="btn btn-secondary mb-20" id="backFromSearch">
+                <i class="fas fa-arrow-left"></i>
+                กลับสู่เมนูหลัก
+            </button>
+            <h2>ค้นหาข้อมูลลูกค้า</h2>
+            <p class="menu-desc mb-20">ค้นหาข้อมูลลูกค้าและคอมเมนต์ของโค้ชด้วยชื่อหรือรหัสลูกค้า</p>
+
+            <div class="chart-container">
+                <div class="form-group">
+                    <label class="form-label">ค้นหาด้วยชื่อลูกค้า หรือ รหัสลูกค้า</label>
+                    <input type="text" class="form-control" id="searchInput" placeholder="กรอกชื่อลูกค้าหรือรหัสลูกค้า">
+                </div>
+                <button class="btn btn-primary" id="searchButton">
+                    <i class="fas fa-search"></i>
+                    ค้นหา
+                </button>
+            </div>
+
+            <div id="searchResults" class="chart-container hidden">
+                <h3>ผลการค้นหา</h3>
+                <div id="resultsContainer"></div>
+            </div>
+        </div>
+
+        <!-- Q&A Board Content -->
+        <div class="content-section" id="qaBoardContent">
+            <button class="btn btn-secondary mb-20" id="backFromQABoard">
+                <i class="fas fa-arrow-left"></i>
+                กลับสู่เมนูหลัก
+            </button>
+            <h2>Q&A Board</h2>
+            <p class="menu-desc mb-20">ตั้งคำถาม ฟีดแบ็ก และขอคำแนะนำจากโค้ชและผู้ใช้ท่านอื่น</p>
+
+            <!-- ฟอร์มตั้งคำถามสำหรับผู้ใช้ทั่วไป -->
+            <div class="chart-container">
+                <h3 class="mb-20">ตั้งคำถามหรือ Feedback</h3>
+                <form id="questionForm">
+                    <div class="form-group">
+                        <label class="form-label">ประเภท *</label>
+                        <select class="form-control" id="questionType" required>
+                            <option value="question">คำถาม</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="suggestion">ข้อเสนอแนะ</option>
+                            <option value="other">อื่นๆ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">หัวข้อ *</label>
+                        <input type="text" class="form-control" id="questionTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">รายละเอียด *</label>
+                        <textarea class="form-control" id="questionDetail" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">ส่งคำถาม</button>
+                </form>
+            </div>
+
+            <!-- แสดงคำถามและคำตอบ -->
+            <div class="chart-container">
+                <h3 class="mb-20">คำถามและคำตอบล่าสุด</h3>
+                <div id="questionsList"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content (สำหรับโค้ชและมาสเตอร์) -->
+        <div class="content-section" id="dashboardContent">
+            <button class="btn btn-secondary mb-20" id="backFromDashboard">
+                <i class="fas fa-arrow-left"></i>
+                กลับสู่เมนูหลัก
+            </button>
+            <h2>แดชบอร์ด</h2>
+            <p class="menu-desc mb-20">ภาพรวมการทำงานและสถิติ</p>
+
+            <!-- สถิติอย่างย่อ -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalCustomers">0</div>
+                    <div class="stat-label">ลูกค้าทั้งหมด</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="pendingCustomers">0</div>
+                    <div class="stat-label">รอดำเนินการ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completedCustomers">0</div>
+                    <div class="stat-label">ดำเนินการเสร็จ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalQuestions">0</div>
+                    <div class="stat-label">คำถามทั้งหมด</div>
+                </div>
+            </div>
+
+            <!-- กราฟ -->
+            <div class="chart-container">
+                <h3>จำนวนลูกค้าแบ่งตามภูมิภาค</h3>
+                <canvas id="regionChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3>สัดส่วนตำแหน่งงานของลูกค้า</h3>
+                <canvas id="occupationChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3>สถานะลูกค้า</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3>การกระจายตัวของลูกค้าตามภูมิภาค</h3>
+                <canvas id="regionDistributionChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3>สัดส่วนตำแหน่งงานแบ่งตามภูมิภาค</h3>
+                <canvas id="occupationByRegionChart"></canvas>
+            </div>
+
+            <!-- ฟิลเตอร์สำหรับมาสเตอร์ -->
+            <div class="chart-container hidden" id="masterFilter">
+                <h3>เลือกภูมิภาค</h3>
+                <select class="form-control" id="regionFilter">
+                    <option value="all">ทั้งหมด</option>
+                    <option value="RH1">RH1</option>
+                    <option value="RH2">RH2</option>
+                    <option value="RH3">RH3</option>
+                    <option value="RH4">RH4</option>
+                    <option value="RH5">RH5</option>
+                </select>
+            </div>
+
+            <!-- ปุ่ม Export -->
+            <div class="chart-container">
+                <h3>Export ข้อมูล</h3>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-success" id="exportExcelBtn">
+                        <i class="fas fa-file-excel"></i> Export Excel
+                    </button>
+                    <button class="btn btn-danger" id="exportPDFBtn">
+                        <i class="fas fa-file-pdf"></i> Export PDF
+                    </button>
+                    <button class="btn btn-warning" id="backupDataBtn">
+                        <i class="fas fa-download"></i> Backup Data
+                    </button>
+                    <button class="btn btn-primary" id="restoreDataBtn">
+                        <i class="fas fa-upload"></i> Restore Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Content (สำหรับมาสเตอร์) -->
+        <div class="content-section" id="managementContent">
+            <button class="btn btn-secondary mb-20" id="backFromManagement">
+                <i class="fas fa-arrow-left"></i>
+                กลับสู่เมนูหลัก
+            </button>
+            <h2>การจัดการระบบ</h2>
+            <p class="menu-desc mb-20">จัดการบัญชีผู้ใช้และข้อมูลระบบ (สำหรับมาสเตอร์เท่านั้น)</p>
+
+            <div class="chart-container">
+                <h3>จัดการบัญชีผู้ใช้</h3>
+                <button class="btn btn-primary mb-20" id="addUserBtn">
+                    <i class="fas fa-user-plus"></i>
+                    เพิ่มผู้ใช้
+                </button>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ชื่อผู้ใช้</th>
+                            <th>บทบาท</th>
+                            <th>ภูมิภาค</th>
+                            <th>การจัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <!-- ข้อมูลผู้ใช้ -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ระบบอนุมัติโพสต์ -->
+            <div class="chart-container">
+                <h3>ระบบอนุมัติโพสต์</h3>
+                <div id="approvalList"></div>
+            </div>
+
+            <!-- ระบบ Backup/Restore -->
+            <div class="chart-container">
+                <h3>ระบบ Backup และ Restore</h3>
+                <div class="form-group">
+                    <label class="form-label">Backup ข้อมูลทั้งหมด</label>
+                    <button class="btn btn-success" id="backupAllDataBtn" style="width: 100%;">
+                        <i class="fas fa-download"></i> ดาวน์โหลด Backup ไฟล์
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Restore ข้อมูลจากไฟล์</label>
+                    <input type="file" class="form-control" id="restoreFileInput" accept=".json">
+                    <button class="btn btn-warning mt-10" id="restoreAllDataBtn" style="width: 100%;">
+                        <i class="fas fa-upload"></i> Restore ข้อมูล
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="content-section" id="profileContent">
+            <button class="btn btn-secondary mb-20" id="backFromProfile">
+                <i class="fas fa-arrow-left"></i>
+                กลับสู่เมนูหลัก
+            </button>
+            <h2>จัดการโปรไฟล์</h2>
+            <p class="menu-desc mb-20">จัดการข้อมูลส่วนตัวและตั้งค่าระบบ</p>
+
+            <div class="chart-container">
+                <h3 class="mb-20">ข้อมูลส่วนตัว</h3>
+                <form id="profileForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">ชื่อ *</label>
+                            <input type="text" class="form-control" id="profileFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">นามสกุล *</label>
+                            <input type="text" class="form-control" id="profileLastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">อีเมล *</label>
+                            <input type="email" class="form-control" id="profileEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">อีเมลบริษัท</label>
+                            <input type="email" class="form-control" id="profileCompanyEmail">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ภูมิภาค</label>
+                            <select class="form-control" id="profileRegion">
+                                <option value="RH1">RH1</option>
+                                <option value="RH2">RH2</option>
+                                <option value="RH3">RH3</option>
+                                <option value="RH4">RH4</option>
+                                <option value="RH5">RH5</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">รหัสผ่านใหม่ (เว้นว่างไว้หากไม่ต้องการเปลี่ยน)</label>
+                        <input type="password" class="form-control" id="profileNewPassword" placeholder="รหัสผ่านใหม่">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ยืนยันรหัสผ่านใหม่</label>
+                        <input type="password" class="form-control" id="profileConfirmPassword" placeholder="ยืนยันรหัสผ่านใหม่">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        บันทึกการเปลี่ยนแปลง
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Customer Management Content -->
+        <div class="content-section" id="customerManagementContent">
+            <button class="btn btn-secondary mb-20" id="backFromCustomerManagement">
+                <i class="fas fa-arrow-left"></i>
+                กลับสู่เมนูหลัก
+            </button>
+            <h2>จัดการข้อมูลลูกค้า</h2>
+            <p class="menu-desc mb-20">ดูและจัดการข้อมูลลูกค้าทั้งหมด</p>
+
+            <!-- ฟิลเตอร์ -->
+            <div class="filter-section">
+                <h3 class="mb-20">ฟิลเตอร์ข้อมูล</h3>
+                <div class="filter-grid">
+                    <div class="form-group">
+                        <label class="form-label">ภูมิภาค</label>
+                        <select class="form-control" id="customerRegionFilter">
+                            <option value="all">ทั้งหมด</option>
+                            <option value="RH1">RH1</option>
+                            <option value="RH2">RH2</option>
+                            <option value="RH3">RH3</option>
+                            <option value="RH4">RH4</option>
+                            <option value="RH5">RH5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">สถานะ</label>
+                        <select class="form-control" id="customerStatusFilter">
+                            <option value="all">ทั้งหมด</option>
+                            <option value="pending">รอดำเนินการ</option>
+                            <option value="completed">ดำเนินการเสร็จ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">มีคอมเมนต์โค้ช</label>
+                        <select class="form-control" id="hasCoachCommentFilter">
+                            <option value="all">ทั้งหมด</option>
+                            <option value="yes">มี</option>
+                            <option value="no">ไม่มี</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="applyCustomerFilters" style="width: 100%;">
+                            <i class="fas fa-filter"></i> ใช้ฟิลเตอร์
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ตารางลูกค้า -->
+            <div class="chart-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0;">รายการลูกค้า</h3>
+                    <button class="btn btn-danger" id="exportCustomerPDFBtn">
+                        <i class="fas fa-file-pdf"></i> Export PDF
+                    </button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>รหัสลูกค้า</th>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>รหัสพนักงาน</th>
+                            <th>ภูมิภาค</th>
+                            <th>สถานะ</th>
+                            <th>การจัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTableBody">
+                        <!-- ข้อมูลลูกค้า -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Registration Content -->
+        <div class="content-section" id="registrationContent">
+            <button class="btn btn-secondary mb-20" id="backFromRegistration">
+                <i class="fas fa-arrow-left"></i>
+                กลับสู่เมนูหลัก
+            </button>
+            <h2>ลงทะเบียน</h2>
+            <p class="menu-desc mb-20">ลงทะเบียนเข้าร่วมกิจกรรมและการอบรมต่างๆ</p>
+
+            <div class="chart-container">
+                <h3 class="mb-20">แบบฟอร์มลงทะเบียน</h3>
+                <form id="registrationForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">ชื่อ *</label>
+                            <input type="text" class="form-control" id="regFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">นามสกุล *</label>
+                            <input type="text" class="form-control" id="regLastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">รหัสพนักงาน *</label>
+                            <input type="text" class="form-control" id="regEmployeeId" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ตำแหน่ง *</label>
+                            <input type="text" class="form-control" id="regPosition" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">สาขา *</label>
+                            <input type="text" class="form-control" id="regBranch" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">เขต</label>
+                            <input type="text" class="form-control" id="regZone">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ภาค *</label>
+                            <select class="form-control" id="regRegion" required>
+                                <option value="RH1">RH1</option>
+                                <option value="RH2">RH2</option>
+                                <option value="RH3">RH3</option>
+                                <option value="RH4">RH4</option>
+                                <option value="RH5">RH5</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        ลงทะเบียน
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal hidden" id="loginModal">
+        <div class="modal-content">
+            <h3 class="mb-20">เข้าสู่ระบบ</h3>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">ชื่อผู้ใช้</label>
+                    <input type="text" class="form-control" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">รหัสผ่าน</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+                    <button type="button" class="btn btn-secondary" id="cancelLogin">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Modal สำหรับค้นหา -->
+    <div class="modal hidden" id="searchPasswordModal">
+        <div class="modal-content">
+            <h3 class="mb-20">ยืนยันตัวตน</h3>
+            <p class="menu-desc mb-20">กรุณากรอกรหัสพนักงานเพื่อดูข้อมูลลูกค้า</p>
+            <div class="form-group">
+                <input type="password" class="form-control" id="searchPassword" placeholder="รหัสพนักงาน">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" id="confirmSearch">ยืนยัน</button>
+                <button class="btn btn-secondary" id="cancelSearch">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- สำหรับโค้ช/มาสเตอร์: Modal ตอบคำถาม -->
+    <div class="modal hidden" id="answerModal">
+        <div class="modal-content">
+            <h3 class="mb-20">ตอบคำถาม</h3>
+            <div id="questionDetails" class="mb-20"></div>
+            <div class="form-group">
+                <label class="form-label">คำตอบ *</label>
+                <textarea class="form-control" id="answerText" rows="4" required></textarea>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" id="submitAnswer">ตอบคำถาม</button>
+                <button class="btn btn-secondary" id="cancelAnswer">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal เพิ่มผู้ใช้ -->
+    <div class="modal hidden" id="addUserModal">
+        <div class="modal-content">
+            <h3 class="mb-20">เพิ่มผู้ใช้ใหม่</h3>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label class="form-label">ชื่อ *</label>
+                    <input type="text" class="form-control" id="newFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">นามสกุล *</label>
+                    <input type="text" class="form-control" id="newLastName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">บทบาท *</label>
+                    <select class="form-control" id="newRole" required>
+                        <option value="Coach">โค้ช</option>
+                        <option value="Master">มาสเตอร์</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ภูมิภาค *</label>
+                    <select class="form-control" id="newRegion" required>
+                        <option value="RH1">RH1</option>
+                        <option value="RH2">RH2</option>
+                        <option value="RH3">RH3</option>
+                        <option value="RH4">RH4</option>
+                        <option value="RH5">RH5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">อีเมล *</label>
+                    <input type="email" class="form-control" id="newEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ชื่อผู้ใช้ *</label>
+                    <input type="text" class="form-control" id="newUsername" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">รหัสผ่าน *</label>
+                    <input type="password" class="form-control" id="newPassword" required>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary">บันทึก</button>
+                    <button type="button" class="btn btn-secondary" id="cancelAddUser">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal แก้ไขผู้ใช้ -->
+    <div class="modal hidden" id="editUserModal">
+        <div class="modal-content">
+            <h3 class="mb-20">แก้ไขผู้ใช้</h3>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label class="form-label">ชื่อ *</label>
+                    <input type="text" class="form-control" id="editFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">นามสกุล *</label>
+                    <input type="text" class="form-control" id="editLastName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">บทบาท *</label>
+                    <select class="form-control" id="editRole" required>
+                        <option value="Coach">โค้ช</option>
+                        <option value="Master">มาสเตอร์</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ภูมิภาค *</label>
+                    <select class="form-control" id="editRegion" required>
+                        <option value="RH1">RH1</option>
+                        <option value="RH2">RH2</option>
+                        <option value="RH3">RH3</option>
+                        <option value="RH4">RH4</option>
+                        <option value="RH5">RH5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">อีเมล *</label>
+                    <input type="email" class="form-control" id="editEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ชื่อผู้ใช้ *</label>
+                    <input type="text" class="form-control" id="editUsername" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">รหัสผ่าน (เว้นว่างไว้หากไม่ต้องการเปลี่ยน)</label>
+                    <input type="password" class="form-control" id="editPassword" placeholder="รหัสผ่านใหม่">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary">บันทึกการเปลี่ยนแปลง</button>
+                    <button type="button" class="btn btn-secondary" id="cancelEditUser">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal แก้ไขลูกค้า -->
+    <div class="modal hidden" id="editCustomerModal">
+        <div class="modal-content">
+            <h3 class="mb-20">แก้ไขข้อมูลลูกค้า</h3>
+            <form id="editCustomerForm">
+                <input type="hidden" id="editCustomerId">
+                <div class="form-group">
+                    <label class="form-label">สถานะ *</label>
+                    <select class="form-control" id="editCustomerStatus" required>
+                        <option value="pending">รอดำเนินการ</option>
+                        <option value="completed">ดำเนินการเสร็จ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">คอมเมนต์โค้ช</label>
+                    <textarea class="form-control" id="editCoachComment" rows="4" placeholder="เพิ่มคอมเมนต์สำหรับลูกค้ารายนี้..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary">บันทึกการเปลี่ยนแปลง</button>
+                    <button type="button" class="btn btn-secondary" id="cancelEditCustomer">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ข้อมูลระบบ
+        const coaches = [
+            {
+                id: 'coach_1',
+                firstName: 'ญานภัทร',
+                lastName: 'จารุวงศ์ไพบูลย์',
+                role: 'Master / Coach',
+                region: 'RH5',
+                email: 'yannapat.prudential@gmail.com',
+                companyEmail: 'yannapat.jaruwongpaiboon@prudential.co.th',
+                username: 'ttb_yj',
+                password: 'Hellowelcome'
+            },
+            {
+                id: 'coach_2',
+                firstName: 'อรรถพันธ์',
+                lastName: 'สุวรรณประดิษฐ์',
+                role: 'Coach',
+                region: 'RH4',
+                email: 'arthaphs@gmail.com',
+                companyEmail: 'arthaphan.suwanpraditt@prudential.co.th',
+                username: 'ttb_as',
+                password: 'Hellowelcome'
+            },
+            {
+                id: 'coach_3',
+                firstName: 'ณัฐกนิษฐ์',
+                lastName: 'จริยะดิลก',
+                role: 'Coach',
+                region: 'RH1',
+                email: 'natkanitjariyadilok@gmail.com',
+                companyEmail: 'natkanit.jariyadilok@prudential.co.th',
+                username: 'ttb_nj',
+                password: 'Hellowelcome'
+            },
+            {
+                id: 'coach_4',
+                firstName: 'พชร',
+                lastName: 'ภัทรตริรักษ์',
+                role: 'Coach',
+                region: 'RH2',
+                email: 'greatkaloo@gmail.com',
+                companyEmail: 'pachara.phattaratrirakul@prudential.co.th',
+                username: 'ttb_pp',
+                password: 'Hellowelcome'
+            },
+            {
+                id: 'coach_5',
+                firstName: 'ธนยศ',
+                lastName: 'เทียมเศวษ',
+                role: 'Coach',
+                region: 'RH4',
+                email: 'thanayot.calendar@gmail.com',
+                companyEmail: 'thanayot.thiamsawat@prudential.co.th',
+                username: 'ttb_tt',
+                password: 'Hellowelcome'
+            },
+            {
+                id: 'coach_6',
+                firstName: 'วัฒนพันธ์',
+                lastName: 'ชัยพูล',
+                role: 'Coach',
+                region: 'RH3',
+                email: 'wattanapan.ch@gmail.com',
+                companyEmail: 'wattanapan.chaipool@prudential.co.th',
+                username: 'ttb_wc',
+                password: 'Hellowelcome'
+            }
+        ];
+
+        let customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+        let trainingData = JSON.parse(localStorage.getItem('trainingData')) || [];
+        let questions = JSON.parse(localStorage.getItem('questions')) || [];
+
+        // Theme System
+        const themeSystem = {
+            currentTheme: localStorage.getItem('theme') || 'light',
+            
+            init: function() {
+                this.applyTheme(this.currentTheme);
+                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+            },
+            
+            applyTheme: function(theme) {
+                document.body.setAttribute('data-theme', theme);
+                const icon = document.querySelector('#themeToggle i');
+                if (theme === 'light') {
+                    icon.className = 'fas fa-moon';
+                } else {
+                    icon.className = 'fas fa-sun';
+                }
+                localStorage.setItem('theme', theme);
+            },
+            
+            toggleTheme: function() {
+                this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+                this.applyTheme(this.currentTheme);
+            }
+        };
+
+        // Notification System
+        const notificationSystem = {
+            show: function(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span>${message}</span>
+                        <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; cursor: pointer; margin-left: 10px;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 5000);
+            }
+        };
+
+        // Security System - Simple encryption
+        const securitySystem = {
+            encrypt: function(text) {
+                return btoa(text);
+            },
+            
+            decrypt: function(encryptedText) {
+                return atob(encryptedText);
+            },
+            
+            hashPassword: function(password) {
+                // Simple hash for demonstration - in production use proper hashing
+                return this.encrypt(password);
+            },
+            
+            verifyPassword: function(password, hashedPassword) {
+                return this.encrypt(password) === hashedPassword;
+            }
+        };
+
+        // Navigation System
+        const navigationSystem = {
+            init: function() {
+                // เมนูการ์ดคลิก
+                document.querySelectorAll('.menu-card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const menu = this.getAttribute('data-menu');
+                        navigationSystem.showContent(menu);
+                    });
+                });
+                
+                // ปุ่มกลับ
+                document.getElementById('backFromMeetCoach').addEventListener('click', () => this.showMainMenu());
+                document.getElementById('backFromSearch').addEventListener('click', () => this.showMainMenu());
+                document.getElementById('backFromQABoard').addEventListener('click', () => this.showMainMenu());
+                document.getElementById('backFromDashboard').addEventListener('click', () => this.showMainMenu());
+                document.getElementById('backFromManagement').addEventListener('click', () => this.showMainMenu());
+                document.getElementById('backFromRegistration').addEventListener('click', () => this.showMainMenu());
+                document.getElementById('backFromProfile').addEventListener('click', () => this.showMainMenu());
+                document.getElementById('backFromCustomerManagement').addEventListener('click', () => this.showMainMenu());
+                
+                // ปุ่มล็อกอิน
+                document.getElementById('loginBtn').addEventListener('click', () => this.showLoginModal());
+                document.getElementById('cancelLogin').addEventListener('click', () => this.hideLoginModal());
+                document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
+                
+                document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
+                
+                // เริ่มต้นระบบย่อย
+                searchSystem.init();
+                qaBoardSystem.init();
+                registrationSystem.init();
+                profileSystem.init();
+                customerManagementSystem.init();
+                backupSystem.init();
+                
+                this.updateAuthUI();
+            },
+            
+            showMainMenu: function() {
+                document.querySelectorAll('.content-section').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById('mainMenu').style.display = 'grid';
+            },
+            
+            showContent: function(menu) {
+                document.getElementById('mainMenu').style.display = 'none';
+                document.querySelectorAll('.content-section').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(menu + 'Content').classList.add('active');
+                
+                // โหลดข้อมูลเมื่อแสดง content
+                if (menu === 'meet-coach') {
+                    meetCoachSystem.loadCoaches();
+                } else if (menu === 'dashboard' && currentUser) {
+                    dashboardSystem.init();
+                } else if (menu === 'management' && currentUser && currentUser.role.includes('Master')) {
+                    managementSystem.init();
+                } else if (menu === 'profile' && currentUser) {
+                    profileSystem.loadProfile();
+                } else if (menu === 'customer-management' && currentUser) {
+                    customerManagementSystem.loadCustomers();
+                }
+                
+                this.updateAuthUI();
+            },
+            
+            showLoginModal: function() {
+                document.getElementById('loginModal').classList.remove('hidden');
+            },
+            
+            hideLoginModal: function() {
+                document.getElementById('loginModal').classList.add('hidden');
+            },
+            
+            handleLogin: function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                const user = coaches.find(coach => 
+                    coach.username === username && securitySystem.verifyPassword(password, coach.password)
+                );
+                
+                if (user) {
+                    currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    this.hideLoginModal();
+                    this.updateAuthUI();
+                    notificationSystem.show('ล็อกอินสำเร็จ! ยินดีต้อนรับ ' + user.firstName, 'success');
+                    
+                    // Push notification
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification('PRU Academy', {
+                            body: `ยินดีต้อนรับ ${user.firstName}! คุณได้ล็อกอินเข้าสู่ระบบเรียบร้อยแล้ว`,
+                            icon: '/favicon.ico'
+                        });
+                    }
+                } else {
+                    notificationSystem.show('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
+                }
+            },
+            
+            logout: function() {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                this.updateAuthUI();
+                notificationSystem.show('ออกจากระบบสำเร็จ', 'success');
+            },
+            
+            updateAuthUI: function() {
+                if (currentUser) {
+                    document.getElementById('loginBtn').classList.add('hidden');
+                    document.getElementById('logoutBtn').classList.remove('hidden');
+                    document.getElementById('dashboardMenu').classList.remove('hidden');
+                    document.getElementById('profileMenu').classList.remove('hidden');
+                    document.getElementById('customerManagementMenu').classList.remove('hidden');
+                    
+                    if (currentUser.role.includes('Master')) {
+                        document.getElementById('managementMenu').classList.remove('hidden');
+                        document.getElementById('masterFilter').classList.remove('hidden');
+                    } else {
+                        document.getElementById('managementMenu').classList.add('hidden');
+                        document.getElementById('masterFilter').classList.add('hidden');
+                    }
+                } else {
+                    document.getElementById('loginBtn').classList.remove('hidden');
+                    document.getElementById('logoutBtn').classList.add('hidden');
+                    document.getElementById('dashboardMenu').classList.add('hidden');
+                    document.getElementById('managementMenu').classList.add('hidden');
+                    document.getElementById('profileMenu').classList.add('hidden');
+                    document.getElementById('customerManagementMenu').classList.add('hidden');
+                }
+            }
+        };
+
+        // Meet Coach System
+        const meetCoachSystem = {
+            init: function() {
+                document.getElementById('customerForm').addEventListener('submit', (e) => this.saveCustomer(e));
+                this.loadCoaches();
+            },
+            
+            loadCoaches: function() {
+                const container = document.getElementById('coachList');
+                container.innerHTML = '';
+                
+                coaches.forEach(coach => {
+                    const coachCard = document.createElement('div');
+                    coachCard.className = 'coach-card';
+                    coachCard.innerHTML = `
+                        <div class="coach-avatar">${coach.firstName.charAt(0)}</div>
+                        <h4>${coach.firstName} ${coach.lastName}</h4>
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">${coach.role}</p>
+                        <p style="margin-bottom: 5px;"><strong>ภูมิภาค:</strong> ${coach.region}</p>
+                        <p style="margin-bottom: 5px;"><strong>อีเมล:</strong> ${coach.email}</p>
+                        <p style="margin-bottom: 15px;"><strong>บริษัท:</strong> ${coach.companyEmail}</p>
+                        <div style="padding: 10px; background: var(--bg-color); border-radius: 8px; font-size: 14px;">
+                            <strong>ความเชี่ยวชาญ:</strong> การวิเคราะห์ความต้องการทางการเงิน, การวางแผนประกันชีวิต
+                        </div>
+                    `;
+                    container.appendChild(coachCard);
+                });
+            },
+            
+            saveCustomer: function(e) {
+                e.preventDefault();
+                
+                const customerId = 'CUST_' + Date.now();
+                const region = document.getElementById('region').value;
+                
+                // หาโค้ชประจำภูมิภาค
+                const regionalCoach = coaches.find(coach => coach.region === region);
+                
+                const customerData = {
+                    id: customerId,
+                    employeeId: document.getElementById('employeeId').value,
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    branch: document.getElementById('branch').value,
+                    zone: document.getElementById('zone').value,
+                    region: region,
+                    timestamp: new Date().toISOString(),
+                    customerInfo: {
+                        gender: document.getElementById('customerGender').value,
+                        status: document.getElementById('customerStatus').value,
+                        hasChildren: document.getElementById('hasChildren').value,
+                        childrenCount: document.getElementById('childrenCount').value,
+                        occupation: document.getElementById('customerOccupation').value,
+                        products: {
+                            deposit: document.getElementById('hasDeposit').value,
+                            fund: document.getElementById('hasFund').value,
+                            insurance: document.getElementById('hasInsurance').value
+                        },
+                        details: document.getElementById('customerDetails').value
+                    },
+                    assignedCoach: regionalCoach ? {
+                        id: regionalCoach.id,
+                        name: regionalCoach.firstName + ' ' + regionalCoach.lastName,
+                        region: regionalCoach.region
+                    } : null,
+                    status: 'pending'
+                };
+                
+                customers.push(customerData);
+                localStorage.setItem('customers', JSON.stringify(customers));
+                
+                // อัพเดทแดชบอร์ดถ้ากำลังเปิดอยู่
+                if (document.getElementById('dashboardContent').classList.contains('active')) {
+                    dashboardSystem.loadStats();
+                    dashboardSystem.loadCharts();
+                }
+                
+                notificationSystem.show(`บันทึกข้อมูลลูกค้าสำเร็จ! รหัสลูกค้า: ${customerId}`, 'success');
+                document.getElementById('customerForm').reset();
+            }
+        };
+
+        // Search System
+        const searchSystem = {
+            currentSearchTerm: '',
+            
+            init: function() {
+                document.getElementById('searchButton').addEventListener('click', () => this.initiateSearch());
+                document.getElementById('confirmSearch').addEventListener('click', () => this.performSearch());
+                document.getElementById('cancelSearch').addEventListener('click', () => this.cancelSearch());
+            },
+            
+            initiateSearch: function() {
+                const searchTerm = document.getElementById('searchInput').value.trim();
+                
+                if (!searchTerm) {
+                    notificationSystem.show('กรุณากรอกคำค้นหา', 'warning');
+                    return;
+                }
+                
+                this.currentSearchTerm = searchTerm;
+                document.getElementById('searchPasswordModal').classList.remove('hidden');
+            },
+            
+            performSearch: function() {
+                const password = document.getElementById('searchPassword').value;
+                
+                if (!password) {
+                    notificationSystem.show('กรุณากรอกรหัสพนักงาน', 'warning');
+                    return;
+                }
+                
+                // ค้นหาข้อมูลลูกค้าที่มี employeeId ตรงกับ password
+                const customerData = customers.filter(customer => 
+                    customer.employeeId === password && 
+                    (customer.firstName.includes(this.currentSearchTerm) || 
+                     customer.lastName.includes(this.currentSearchTerm) ||
+                     customer.id.includes(this.currentSearchTerm))
+                );
+                
+                if (customerData.length === 0) {
+                    notificationSystem.show('ไม่พบข้อมูลลูกค้าที่ค้นหา หรือรหัสพนักงานไม่ถูกต้อง', 'error');
+                    document.getElementById('searchPassword').value = '';
+                    return;
+                }
+                
+                this.displaySearchResults(customerData);
+                document.getElementById('searchPasswordModal').classList.add('hidden');
+                document.getElementById('searchPassword').value = '';
+                document.getElementById('searchResults').classList.remove('hidden');
+            },
+            
+            cancelSearch: function() {
+                document.getElementById('searchPasswordModal').classList.add('hidden');
+                document.getElementById('searchPassword').value = '';
+            },
+            
+            displaySearchResults: function(customers) {
+                const container = document.getElementById('resultsContainer');
+                let html = '';
+                
+                customers.forEach(customer => {
+                    html += `
+                        <div class="customer-result" style="border: 1px solid var(--border-color); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                            <h4>${customer.firstName} ${customer.lastName} (${customer.id})</h4>
+                            <p><strong>รหัสพนักงาน:</strong> ${customer.employeeId}</p>
+                            <p><strong>สาขา:</strong> ${customer.branch} | <strong>โซน:</strong> ${customer.zone} | <strong>ภาค:</strong> ${customer.region}</p>
+                            <p><strong>สถานะ:</strong> ${customer.status === 'completed' ? 'ดำเนินการเสร็จ' : 'รอดำเนินการ'}</p>
+                            ${customer.coachComment ? `<p><strong>คอมเมนต์โค้ช:</strong> ${customer.coachComment}</p>` : ''}
+                            <p><strong>วันที่บันทึก:</strong> ${new Date(customer.timestamp).toLocaleString('th-TH')}</p>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            }
+        };
+
+        // Q&A Board System
+        const qaBoardSystem = {
+            questions: JSON.parse(localStorage.getItem('questions')) || [],
+            
+            init: function() {
+                document.getElementById('questionForm').addEventListener('submit', (e) => this.submitQuestion(e));
+                document.getElementById('submitAnswer').addEventListener('click', () => this.submitAnswer());
+                document.getElementById('cancelAnswer').addEventListener('click', () => this.hideAnswerModal());
+                
+                this.loadQuestions();
+            },
+            
+            submitQuestion: function(e) {
+                e.preventDefault();
+                
+                const question = {
+                    id: 'Q_' + Date.now(),
+                    type: document.getElementById('questionType').value,
+                    title: document.getElementById('questionTitle').value,
+                    detail: document.getElementById('questionDetail').value,
+                    author: 'ผู้ใช้ทั่วไป',
+                    timestamp: new Date().toISOString(),
+                    status: currentUser && (currentUser.role.includes('Coach') || currentUser.role.includes('Master')) ? 'approved' : 'pending',
+                    answers: []
+                };
+                
+                this.questions.push(question);
+                localStorage.setItem('questions', JSON.stringify(this.questions));
+                
+                if (currentUser) {
+                    notificationSystem.show('ส่งคำถามสำเร็จ!', 'success');
+                } else {
+                    notificationSystem.show('ส่งคำถามสำเร็จ! คำถามของคุณกำลังรอการอนุมัติ', 'success');
+                }
+                
+                document.getElementById('questionForm').reset();
+                this.loadQuestions();
+            },
+            
+            loadQuestions: function() {
+                const container = document.getElementById('questionsList');
+                const approvedQuestions = this.questions.filter(q => 
+                    q.status === 'approved' || (currentUser && (currentUser.role.includes('Coach') || currentUser.role.includes('Master')))
+                );
+                
+                if (approvedQuestions.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">ยังไม่มีคำถาม</p>';
+                    return;
+                }
+                
+                let html = '';
+                approvedQuestions.forEach(question => {
+                    html += `
+                        <div class="question-item" style="border: 1px solid var(--border-color); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <h4>${question.title}</h4>
+                                <span style="background: var(--secondary-color); color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px;">
+                                    ${this.getQuestionTypeText(question.type)}
+                                </span>
+                            </div>
+                            <p style="margin: 10px 0;">${question.detail}</p>
+                            <div style="color: var(--text-secondary); font-size: 14px;">
+                                โดย ${question.author} • ${new Date(question.timestamp).toLocaleString('th-TH')}
+                            </div>
+                            
+                            ${question.answers.length > 0 ? `
+                                <div style="margin-top: 15px; padding: 10px; background: var(--bg-color); border-radius: 8px;">
+                                    <strong>คำตอบจากโค้ช:</strong>
+                                    ${question.answers.map(answer => `
+                                        <p style="margin: 5px 0;">${answer.text}</p>
+                                        <div style="color: var(--text-secondary); font-size: 12px;">
+                                            โดย ${answer.coachName} • ${new Date(answer.timestamp).toLocaleString('th-TH')}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : currentUser && (currentUser.role.includes('Coach') || currentUser.role.includes('Master')) ? `
+                                <button class="btn btn-primary" onclick="qaBoardSystem.showAnswerModal('${question.id}')" style="margin-top: 10px;">
+                                    <i class="fas fa-reply"></i> ตอบคำถาม
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            },
+            
+            showAnswerModal: function(questionId) {
+                const question = this.questions.find(q => q.id === questionId);
+                if (!question) return;
+                
+                document.getElementById('questionDetails').innerHTML = `
+                    <strong>คำถาม:</strong> ${question.title}
+                    <p>${question.detail}</p>
+                `;
+                document.getElementById('answerText').value = '';
+                document.getElementById('answerModal').classList.remove('hidden');
+                document.getElementById('answerModal').dataset.questionId = questionId;
+            },
+            
+            hideAnswerModal: function() {
+                document.getElementById('answerModal').classList.add('hidden');
+            },
+            
+            submitAnswer: function() {
+                const questionId = document.getElementById('answerModal').dataset.questionId;
+                const answerText = document.getElementById('answerText').value;
+                
+                if (!answerText.trim()) {
+                    notificationSystem.show('กรุณากรอกคำตอบ', 'warning');
+                    return;
+                }
+                
+                const questionIndex = this.questions.findIndex(q => q.id === questionId);
+                if (questionIndex === -1) return;
+                
+                const answer = {
+                    text: answerText,
+                    coachName: currentUser.firstName + ' ' + currentUser.lastName,
+                    timestamp: new Date().toISOString()
+                };
+                
+                if (!this.questions[questionIndex].answers) {
+                    this.questions[questionIndex].answers = [];
+                }
+                
+                this.questions[questionIndex].answers.push(answer);
+                localStorage.setItem('questions', JSON.stringify(this.questions));
+                
+                notificationSystem.show('ตอบคำถามสำเร็จ!', 'success');
+                this.hideAnswerModal();
+                this.loadQuestions();
+            },
+            
+            getQuestionTypeText: function(type) {
+                const types = {
+                    'question': 'คำถาม',
+                    'feedback': 'Feedback',
+                    'suggestion': 'ข้อเสนอแนะ',
+                    'other': 'อื่นๆ'
+                };
+                return types[type] || type;
+            }
+        };
+
+        // Dashboard System
+        const dashboardSystem = {
+            regionChart: null,
+            occupationChart: null, 
+            statusChart: null,
+            regionDistributionChart: null,
+            occupationByRegionChart: null,
+            
+            init: function() {
+                document.getElementById('regionFilter').addEventListener('change', () => this.loadCharts());
+                document.getElementById('exportExcelBtn').addEventListener('click', () => exportSystem.exportToExcel());
+                document.getElementById('exportPDFBtn').addEventListener('click', () => exportSystem.exportDashboardPDF());
+                document.getElementById('backupDataBtn').addEventListener('click', () => backupSystem.createBackup());
+                document.getElementById('restoreDataBtn').addEventListener('click', () => backupSystem.showRestoreModal());
+                
+                this.loadStats();
+                this.loadCharts();
+            },
+            
+            destroyCharts: function() {
+                const charts = [this.regionChart, this.occupationChart, this.statusChart, this.regionDistributionChart, this.occupationByRegionChart];
+                charts.forEach(chart => {
+                    if (chart) {
+                        chart.destroy();
+                    }
+                });
+            },
+            
+            loadStats: function() {
+                const userCustomers = currentUser && currentUser.role.includes('Master') 
+                    ? customers 
+                    : customers.filter(c => c.assignedCoach && c.assignedCoach.id === currentUser?.id);
+                
+                document.getElementById('totalCustomers').textContent = userCustomers.length;
+                document.getElementById('pendingCustomers').textContent = userCustomers.filter(c => c.status === 'pending').length;
+                document.getElementById('completedCustomers').textContent = userCustomers.filter(c => c.status === 'completed').length;
+                document.getElementById('totalQuestions').textContent = qaBoardSystem.questions.length;
+            },
+            
+            loadCharts: function() {
+                this.destroyCharts();
+                
+                const regionFilter = document.getElementById('regionFilter').value;
+                const filteredCustomers = regionFilter === 'all' 
+                    ? customers 
+                    : customers.filter(c => c.region === regionFilter);
+                
+                this.createRegionChart(filteredCustomers);
+                this.createOccupationChart(filteredCustomers);
+                this.createStatusChart(filteredCustomers);
+                this.createRegionDistributionChart(filteredCustomers);
+                this.createOccupationByRegionChart(filteredCustomers);
+            },
+            
+            createRegionChart: function(customers) {
+                const ctx = document.getElementById('regionChart').getContext('2d');
+                
+                const regions = ['RH1', 'RH2', 'RH3', 'RH4', 'RH5'];
+                const data = regions.map(region => 
+                    customers.filter(c => c.region === region).length
+                );
+                
+                this.regionChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: regions,
+                        datasets: [{
+                            label: 'จำนวนลูกค้า',
+                            data: data,
+                            backgroundColor: [
+                                '#007AFF', '#34C759', '#FF9500', '#FF3B30', '#AF52DE'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'จำนวนลูกค้าแบ่งตามภูมิภาค'
+                            }
+                        }
+                    }
+                });
+            },
+            
+            createOccupationChart: function(customers) {
+                const ctx = document.getElementById('occupationChart').getContext('2d');
+                
+                const occupationMapping = {
+                    'government': 'ข้าราชการ',
+                    'employee': 'พนักงานบริษัท', 
+                    'business': 'ธุรกิจส่วนตัว',
+                    'freelance': 'ฟรีแลนซ์',
+                    'other': 'อื่นๆ'
+                };
+                
+                const occupations = ['ข้าราชการ', 'พนักงานบริษัท', 'ธุรกิจส่วนตัว', 'ฟรีแลนซ์', 'อื่นๆ'];
+                
+                const data = occupations.map(label => {
+                    const occupationKey = Object.keys(occupationMapping).find(
+                        key => occupationMapping[key] === label
+                    );
+                    return customers.filter(c => c.customerInfo.occupation === occupationKey).length;
+                });
+                
+                this.occupationChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: occupations,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: [
+                                '#007AFF', '#34C759', '#FF9500', '#FF3B30', '#AF52DE'
+                            ]
+                        }]
+                    }
+                });
+            },
+            
+            createStatusChart: function(customers) {
+                const ctx = document.getElementById('statusChart').getContext('2d');
+                
+                const statuses = ['รอดำเนินการ', 'ดำเนินการเสร็จ'];
+                const data = [
+                    customers.filter(c => c.status === 'pending').length,
+                    customers.filter(c => c.status === 'completed').length
+                ];
+                
+                this.statusChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: statuses,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: ['#FF9500', '#34C759']
+                        }]
+                    }
+                });
+            },
+            
+            createRegionDistributionChart: function(customers) {
+                const ctx = document.getElementById('regionDistributionChart').getContext('2d');
+                
+                const regions = ['RH1', 'RH2', 'RH3', 'RH4', 'RH5'];
+                const data = regions.map(region => 
+                    customers.filter(c => c.region === region).length
+                );
+                
+                this.regionDistributionChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: regions,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: [
+                                '#007AFF', '#34C759', '#FF9500', '#FF3B30', '#AF52DE'
+                            ]
+                        }]
+                    }
+                });
+            },
+            
+            createOccupationByRegionChart: function(customers) {
+                const ctx = document.getElementById('occupationByRegionChart').getContext('2d');
+                
+                const regions = ['RH1', 'RH2', 'RH3', 'RH4', 'RH5'];
+                const occupations = ['ข้าราชการ', 'พนักงานบริษัท', 'ธุรกิจส่วนตัว', 'ฟรีแลนซ์', 'อื่นๆ'];
+                const occupationMapping = {
+                    'government': 'ข้าราชการ',
+                    'employee': 'พนักงานบริษัท', 
+                    'business': 'ธุรกิจส่วนตัว',
+                    'freelance': 'ฟรีแลนซ์',
+                    'other': 'อื่นๆ'
+                };
+                
+                const datasets = occupations.map((occupation, index) => {
+                    const occupationKey = Object.keys(occupationMapping).find(
+                        key => occupationMapping[key] === occupation
+                    );
+                    
+                    const data = regions.map(region => 
+                        customers.filter(c => c.region === region && c.customerInfo.occupation === occupationKey).length
+                    );
+                    
+                    const colors = ['#007AFF', '#34C759', '#FF9500', '#FF3B30', '#AF52DE'];
+                    
+                    return {
+                        label: occupation,
+                        data: data,
+                        backgroundColor: colors[index % colors.length],
+                        borderColor: colors[index % colors.length],
+                        borderWidth: 1
+                    };
+                });
+                
+                this.occupationByRegionChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: regions,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                stacked: false,
+                            },
+                            y: {
+                                stacked: false,
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        };
+
+        // Management System
+        const managementSystem = {
+            init: function() {
+                document.getElementById('addUserBtn').addEventListener('click', () => this.showAddUserModal());
+                document.getElementById('cancelAddUser').addEventListener('click', () => this.hideAddUserModal());
+                document.getElementById('addUserForm').addEventListener('submit', (e) => this.addUser(e));
+                document.getElementById('cancelEditUser').addEventListener('click', () => this.hideEditUserModal());
+                document.getElementById('editUserForm').addEventListener('submit', (e) => this.updateUser(e));
+                
+                this.loadUsers();
+                this.loadApprovalList();
+            },
+            
+            loadUsers: function() {
+                const tbody = document.getElementById('userTableBody');
+                tbody.innerHTML = '';
+                
+                coaches.forEach(coach => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${coach.username}</td>
+                        <td>${coach.role}</td>
+                        <td>${coach.region}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="managementSystem.showEditUserModal('${coach.id}')">
+                                <i class="fas fa-edit"></i> แก้ไข
+                            </button>
+                            <button class="btn btn-danger" onclick="managementSystem.deleteUser('${coach.id}')" style="background: var(--danger-color);">
+                                <i class="fas fa-trash"></i> ลบ
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            },
+            
+            showAddUserModal: function() {
+                document.getElementById('addUserModal').classList.remove('hidden');
+            },
+            
+            hideAddUserModal: function() {
+                document.getElementById('addUserModal').classList.add('hidden');
+                document.getElementById('addUserForm').reset();
+            },
+            
+            showEditUserModal: function(userId) {
+                const user = coaches.find(u => u.id === userId);
+                if (!user) return;
+                
+                document.getElementById('editUserId').value = user.id;
+                document.getElementById('editFirstName').value = user.firstName;
+                document.getElementById('editLastName').value = user.lastName;
+                document.getElementById('editRole').value = user.role;
+                document.getElementById('editRegion').value = user.region;
+                document.getElementById('editEmail').value = user.email;
+                document.getElementById('editUsername').value = user.username;
+                document.getElementById('editPassword').value = '';
+                
+                document.getElementById('editUserModal').classList.remove('hidden');
+            },
+            
+            hideEditUserModal: function() {
+                document.getElementById('editUserModal').classList.add('hidden');
+                document.getElementById('editUserForm').reset();
+            },
+            
+            addUser: function(e) {
+                e.preventDefault();
+                
+                const newUser = {
+                    id: 'coach_' + Date.now(),
+                    firstName: document.getElementById('newFirstName').value,
+                    lastName: document.getElementById('newLastName').value,
+                    role: document.getElementById('newRole').value,
+                    region: document.getElementById('newRegion').value,
+                    email: document.getElementById('newEmail').value,
+                    username: document.getElementById('newUsername').value,
+                    password: securitySystem.hashPassword(document.getElementById('newPassword').value)
+                };
+                
+                coaches.push(newUser);
+                localStorage.setItem('coaches', JSON.stringify(coaches));
+                
+                notificationSystem.show('เพิ่มผู้ใช้สำเร็จ!', 'success');
+                this.hideAddUserModal();
+                this.loadUsers();
+            },
+            
+            updateUser: function(e) {
+                e.preventDefault();
+                
+                const userId = document.getElementById('editUserId').value;
+                const userIndex = coaches.findIndex(u => u.id === userId);
+                
+                if (userIndex === -1) return;
+                
+                const updatedUser = {
+                    ...coaches[userIndex],
+                    firstName: document.getElementById('editFirstName').value,
+                    lastName: document.getElementById('editLastName').value,
+                    role: document.getElementById('editRole').value,
+                    region: document.getElementById('editRegion').value,
+                    email: document.getElementById('editEmail').value,
+                    username: document.getElementById('editUsername').value
+                };
+                
+                const newPassword = document.getElementById('editPassword').value;
+                if (newPassword) {
+                    updatedUser.password = securitySystem.hashPassword(newPassword);
+                }
+                
+                coaches[userIndex] = updatedUser;
+                localStorage.setItem('coaches', JSON.stringify(coaches));
+                
+                notificationSystem.show('อัพเดทข้อมูลผู้ใช้สำเร็จ!', 'success');
+                this.hideEditUserModal();
+                this.loadUsers();
+            },
+            
+            deleteUser: function(userId) {
+                if (userId === currentUser.id) {
+                    notificationSystem.show('ไม่สามารถลบบัญชีของตัวเองได้', 'error');
+                    return;
+                }
+                
+                if (confirm('คุณแน่ใจว่าต้องการลบผู้ใช้นี้?')) {
+                    const userIndex = coaches.findIndex(u => u.id === userId);
+                    if (userIndex !== -1) {
+                        coaches.splice(userIndex, 1);
+                        localStorage.setItem('coaches', JSON.stringify(coaches));
+                        this.loadUsers();
+                        notificationSystem.show('ลบผู้ใช้สำเร็จ!', 'success');
+                    }
+                }
+            },
+            
+            loadApprovalList: function() {
+                const container = document.getElementById('approvalList');
+                const pendingQuestions = qaBoardSystem.questions.filter(q => q.status === 'pending');
+                
+                if (pendingQuestions.length === 0) {
+                    container.innerHTML = '<p>ไม่มีโพสต์ที่รอการอนุมัติ</p>';
+                    return;
+                }
+                
+                let html = '';
+                pendingQuestions.forEach(question => {
+                    html += `
+                        <div class="pending-item" style="border: 1px solid var(--border-color); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                            <h4>${question.title}</h4>
+                            <p>${question.detail}</p>
+                            <div style="color: var(--text-secondary); font-size: 14px;">
+                                โดย ${question.author} • ${new Date(question.timestamp).toLocaleString('th-TH')}
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <button class="btn btn-success" onclick="managementSystem.approvePost('${question.id}')">
+                                    <i class="fas fa-check"></i> อนุมัติ
+                                </button>
+                                <button class="btn btn-danger" onclick="managementSystem.rejectPost('${question.id}')" style="background: var(--danger-color);">
+                                    <i class="fas fa-times"></i> ปฏิเสธ
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            },
+            
+            approvePost: function(questionId) {
+                const questionIndex = qaBoardSystem.questions.findIndex(q => q.id === questionId);
+                if (questionIndex !== -1) {
+                    qaBoardSystem.questions[questionIndex].status = 'approved';
+                    localStorage.setItem('questions', JSON.stringify(qaBoardSystem.questions));
+                    this.loadApprovalList();
+                    notificationSystem.show('อนุมัติโพสต์สำเร็จ!', 'success');
+                }
+            },
+            
+            rejectPost: function(questionId) {
+                if (confirm('คุณแน่ใจว่าต้องการปฏิเสธโพสต์นี้?')) {
+                    const questionIndex = qaBoardSystem.questions.findIndex(q => q.id === questionId);
+                    if (questionIndex !== -1) {
+                        qaBoardSystem.questions.splice(questionIndex, 1);
+                        localStorage.setItem('questions', JSON.stringify(qaBoardSystem.questions));
+                        this.loadApprovalList();
+                        notificationSystem.show('ปฏิเสธโพสต์สำเร็จ!', 'success');
+                    }
+                }
+            }
+        };
+
+        // Profile System
+        const profileSystem = {
+            init: function() {
+                document.getElementById('profileForm').addEventListener('submit', (e) => this.updateProfile(e));
+            },
+            
+            loadProfile: function() {
+                if (!currentUser) return;
+                
+                document.getElementById('profileFirstName').value = currentUser.firstName;
+                document.getElementById('profileLastName').value = currentUser.lastName;
+                document.getElementById('profileEmail').value = currentUser.email;
+                document.getElementById('profileCompanyEmail').value = currentUser.companyEmail || '';
+                document.getElementById('profileRegion').value = currentUser.region;
+                document.getElementById('profileNewPassword').value = '';
+                document.getElementById('profileConfirmPassword').value = '';
+            },
+            
+            updateProfile: function(e) {
+                e.preventDefault();
+                
+                const newPassword = document.getElementById('profileNewPassword').value;
+                const confirmPassword = document.getElementById('profileConfirmPassword').value;
+                
+                if (newPassword && newPassword !== confirmPassword) {
+                    notificationSystem.show('รหัสผ่านไม่ตรงกัน', 'error');
+                    return;
+                }
+                
+                const userIndex = coaches.findIndex(u => u.id === currentUser.id);
+                if (userIndex === -1) return;
+                
+                const updatedUser = {
+                    ...coaches[userIndex],
+                    firstName: document.getElementById('profileFirstName').value,
+                    lastName: document.getElementById('profileLastName').value,
+                    email: document.getElementById('profileEmail').value,
+                    companyEmail: document.getElementById('profileCompanyEmail').value,
+                    region: document.getElementById('profileRegion').value
+                };
+                
+                if (newPassword) {
+                    updatedUser.password = securitySystem.hashPassword(newPassword);
+                }
+                
+                coaches[userIndex] = updatedUser;
+                localStorage.setItem('coaches', JSON.stringify(coaches));
+                
+                currentUser = updatedUser;
+                localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                
+                notificationSystem.show('อัพเดทโปรไฟล์สำเร็จ!', 'success');
+                this.loadProfile();
+            }
+        };
+
+        // Customer Management System
+        const customerManagementSystem = {
+            currentFilters: {
+                region: 'all',
+                status: 'all',
+                hasCoachComment: 'all'
+            },
+            
+            init: function() {
+                document.getElementById('applyCustomerFilters').addEventListener('click', () => this.applyFilters());
+                document.getElementById('exportCustomerPDFBtn').addEventListener('click', () => exportSystem.exportCustomerPDF());
+                document.getElementById('cancelEditCustomer').addEventListener('click', () => this.hideEditCustomerModal());
+                document.getElementById('editCustomerForm').addEventListener('submit', (e) => this.updateCustomer(e));
+            },
+            
+            loadCustomers: function() {
+                const filteredCustomers = this.getFilteredCustomers();
+                this.displayCustomers(filteredCustomers);
+            },
+            
+            getFilteredCustomers: function() {
+                let filtered = customers;
+                
+                if (this.currentFilters.region !== 'all') {
+                    filtered = filtered.filter(c => c.region === this.currentFilters.region);
+                }
+                
+                if (this.currentFilters.status !== 'all') {
+                    filtered = filtered.filter(c => c.status === this.currentFilters.status);
+                }
+                
+                if (this.currentFilters.hasCoachComment !== 'all') {
+                    if (this.currentFilters.hasCoachComment === 'yes') {
+                        filtered = filtered.filter(c => c.coachComment);
+                    } else {
+                        filtered = filtered.filter(c => !c.coachComment);
+                    }
+                }
+                
+                return filtered;
+            },
+            
+            applyFilters: function() {
+                this.currentFilters = {
+                    region: document.getElementById('customerRegionFilter').value,
+                    status: document.getElementById('customerStatusFilter').value,
+                    hasCoachComment: document.getElementById('hasCoachCommentFilter').value
+                };
+                
+                this.loadCustomers();
+            },
+            
+            displayCustomers: function(customers) {
+                const tbody = document.getElementById('customerTableBody');
+                tbody.innerHTML = '';
+                
+                customers.forEach(customer => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${customer.id}</td>
+                        <td>${customer.firstName} ${customer.lastName}</td>
+                        <td>${customer.employeeId}</td>
+                        <td>${customer.region}</td>
+                        <td>
+                            <span class="status-badge ${customer.status === 'completed' ? 'status-approved' : 'status-pending'}" style="padding: 4px 8px; border-radius: 12px; font-size: 12px;">
+                                ${customer.status === 'completed' ? 'ดำเนินการเสร็จ' : 'รอดำเนินการ'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="customerManagementSystem.showEditCustomerModal('${customer.id}')">
+                                <i class="fas fa-edit"></i> แก้ไข
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            },
+            
+            showEditCustomerModal: function(customerId) {
+                const customer = customers.find(c => c.id === customerId);
+                if (!customer) return;
+                
+                document.getElementById('editCustomerId').value = customer.id;
+                document.getElementById('editCustomerStatus').value = customer.status;
+                document.getElementById('editCoachComment').value = customer.coachComment || '';
+                
+                document.getElementById('editCustomerModal').classList.remove('hidden');
+            },
+            
+            hideEditCustomerModal: function() {
+                document.getElementById('editCustomerModal').classList.add('hidden');
+                document.getElementById('editCustomerForm').reset();
+            },
+            
+            updateCustomer: function(e) {
+                e.preventDefault();
+                
+                const customerId = document.getElementById('editCustomerId').value;
+                const customerIndex = customers.findIndex(c => c.id === customerId);
+                
+                if (customerIndex === -1) return;
+                
+                customers[customerIndex] = {
+                    ...customers[customerIndex],
+                    status: document.getElementById('editCustomerStatus').value,
+                    coachComment: document.getElementById('editCoachComment').value
+                };
+                
+                localStorage.setItem('customers', JSON.stringify(customers));
+                
+                notificationSystem.show('อัพเดทข้อมูลลูกค้าสำเร็จ!', 'success');
+                this.hideEditCustomerModal();
+                this.loadCustomers();
+                
+                // อัพเดทแดชบอร์ดถ้ากำลังเปิดอยู่
+                if (document.getElementById('dashboardContent').classList.contains('active')) {
+                    dashboardSystem.loadStats();
+                    dashboardSystem.loadCharts();
+                }
+            }
+        };
+
+        // Registration System
+        const registrationSystem = {
+            init: function() {
+                document.getElementById('registrationForm').addEventListener('submit', (e) => this.registerTraining(e));
+            },
+            
+            registerTraining: function(e) {
+                e.preventDefault();
+                
+                const trainingRecord = {
+                    id: 'training_' + Date.now(),
+                    firstName: document.getElementById('regFirstName').value,
+                    lastName: document.getElementById('regLastName').value,
+                    employeeId: document.getElementById('regEmployeeId').value,
+                    position: document.getElementById('regPosition').value,
+                    branch: document.getElementById('regBranch').value,
+                    zone: document.getElementById('regZone').value,
+                    region: document.getElementById('regRegion').value,
+                    registeredAt: new Date().toISOString()
+                };
+                
+                trainingData.push(trainingRecord);
+                localStorage.setItem('trainingData', JSON.stringify(trainingData));
+                
+                notificationSystem.show('ลงทะเบียนสำเร็จ!', 'success');
+                document.getElementById('registrationForm').reset();
+            }
+        };
+
+        // Export System
+        const exportSystem = {
+            exportToExcel: function() {
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "รหัสลูกค้า,ชื่อ,นามสกุล,รหัสพนักงาน,สาขา,โซน,ภาค,สถานะ,วันที่บันทึก\n";
+                
+                customers.forEach(customer => {
+                    csvContent += `${customer.id},${customer.firstName},${customer.lastName},${customer.employeeId},${customer.branch},${customer.zone},${customer.region},${customer.status},${customer.timestamp}\n`;
+                });
+                
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "customer_data.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                notificationSystem.show('Export ข้อมูลเป็น Excel สำเร็จ!', 'success');
+            },
+            
+            exportDashboardPDF: function() {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>รายงานแดชบอร์ด - PRU Academy</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                h1 { color: #333; border-bottom: 2px solid #007AFF; padding-bottom: 10px; }
+                                .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+                                .stat-card { background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #dee2e6; }
+                                .stat-value { font-size: 24px; font-weight: bold; color: #007AFF; }
+                                .stat-label { color: #6c757d; font-size: 14px; }
+                                table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                                th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+                                th { background-color: #007AFF; color: white; }
+                                .section { margin: 30px 0; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>รายงานแดชบอร์ด PRU Academy</h1>
+                            <div class="section">
+                                <h2>สถิติภาพรวม</h2>
+                                <div class="stats">
+                                    <div class="stat-card">
+                                        <div class="stat-value">${customers.length}</div>
+                                        <div class="stat-label">ลูกค้าทั้งหมด</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">${customers.filter(c => c.status === 'pending').length}</div>
+                                        <div class="stat-label">รอดำเนินการ</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">${customers.filter(c => c.status === 'completed').length}</div>
+                                        <div class="stat-label">ดำเนินการเสร็จ</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">${questions.length}</div>
+                                        <div class="stat-label">คำถามทั้งหมด</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <h2>รายการลูกค้าทั้งหมด</h2>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>รหัสลูกค้า</th>
+                                            <th>ชื่อ-นามสกุล</th>
+                                            <th>รหัสพนักงาน</th>
+                                            <th>สาขา</th>
+                                            <th>สถานะ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${customers.map(customer => `
+                                            <tr>
+                                                <td>${customer.id}</td>
+                                                <td>${customer.firstName} ${customer.lastName}</td>
+                                                <td>${customer.employeeId}</td>
+                                                <td>${customer.branch}</td>
+                                                <td>${customer.status === 'completed' ? 'ดำเนินการเสร็จ' : 'รอดำเนินการ'}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="section">
+                                <p style="text-align: center; color: #6c757d; margin-top: 30px;">
+                                    สร้างเมื่อ: ${new Date().toLocaleString('th-TH')}
+                                </p>
+                            </div>
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            },
+            
+            exportCustomerPDF: function() {
+                const filteredCustomers = customerManagementSystem.getFilteredCustomers();
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>รายงานลูกค้า - PRU Academy</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                h1 { color: #333; border-bottom: 2px solid #007AFF; padding-bottom: 10px; }
+                                table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                                th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+                                th { background-color: #007AFF; color: white; }
+                                .customer-details { margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 5px; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>รายงานข้อมูลลูกค้า</h1>
+                            <p><strong>จำนวนลูกค้า:</strong> ${filteredCustomers.length} รายการ</p>
+                            <p><strong>วันที่สร้างรายงาน:</strong> ${new Date().toLocaleString('th-TH')}</p>
+                            
+                            ${filteredCustomers.map(customer => `
+                                <div class="customer-details">
+                                    <h3>${customer.firstName} ${customer.lastName} (${customer.id})</h3>
+                                    <p><strong>รหัสพนักงาน:</strong> ${customer.employeeId}</p>
+                                    <p><strong>สาขา:</strong> ${customer.branch} | <strong>โซน:</strong> ${customer.zone} | <strong>ภาค:</strong> ${customer.region}</p>
+                                    <p><strong>สถานะ:</strong> ${customer.status === 'completed' ? 'ดำเนินการเสร็จ' : 'รอดำเนินการ'}</p>
+                                    ${customer.coachComment ? `<p><strong>คอมเมนต์โค้ช:</strong> ${customer.coachComment}</p>` : ''}
+                                    <p><strong>วันที่บันทึก:</strong> ${new Date(customer.timestamp).toLocaleString('th-TH')}</p>
+                                </div>
+                            `).join('')}
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            }
+        };
+
+        // Backup System
+        const backupSystem = {
+            init: function() {
+                document.getElementById('backupAllDataBtn').addEventListener('click', () => this.createBackup());
+                document.getElementById('restoreAllDataBtn').addEventListener('click', () => this.restoreData());
+                
+                // Request notification permission
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission();
+                }
+            },
+            
+            createBackup: function() {
+                const backupData = {
+                    customers: customers,
+                    coaches: coaches,
+                    questions: questions,
+                    trainingData: trainingData,
+                    backupDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                const dataStr = JSON.stringify(backupData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `pru_academy_backup_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                notificationSystem.show('สร้าง Backup ข้อมูลสำเร็จ!', 'success');
+            },
+            
+            restoreData: function() {
+                const fileInput = document.getElementById('restoreFileInput');
+                const file = fileInput.files[0];
+                
+                if (!file) {
+                    notificationSystem.show('กรุณาเลือกไฟล์ backup', 'warning');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const backupData = JSON.parse(e.target.result);
+                        
+                        // Validate backup file structure
+                        if (!backupData.customers || !backupData.coaches || !backupData.questions) {
+                            throw new Error('ไฟล์ backup ไม่ถูกต้อง');
+                        }
+                        
+                        if (confirm('คุณแน่ใจว่าต้องการ restore ข้อมูล? ข้อมูลปัจจุบันจะถูกแทนที่ทั้งหมด!')) {
+                            customers = backupData.customers;
+                            coaches = backupData.coaches;
+                            questions = backupData.questions;
+                            trainingData = backupData.trainingData || [];
+                            
+                            localStorage.setItem('customers', JSON.stringify(customers));
+                            localStorage.setItem('coaches', JSON.stringify(coaches));
+                            localStorage.setItem('questions', JSON.stringify(questions));
+                            localStorage.setItem('trainingData', JSON.stringify(trainingData));
+                            
+                            notificationSystem.show('Restore ข้อมูลสำเร็จ!', 'success');
+                            
+                            // Reload current page if needed
+                            if (document.getElementById('dashboardContent').classList.contains('active')) {
+                                dashboardSystem.loadStats();
+                                dashboardSystem.loadCharts();
+                            }
+                            
+                            fileInput.value = '';
+                        }
+                    } catch (error) {
+                        notificationSystem.show('ไฟล์ backup ไม่ถูกต้อง: ' + error.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        };
+
+        // Initialize System
+        document.addEventListener('DOMContentLoaded', function() {
+            themeSystem.init();
+            navigationSystem.init();
+            meetCoachSystem.init();
+            
+            // Encrypt passwords on first load
+            coaches.forEach(coach => {
+                if (!coach.password.startsWith('V')) { // Simple check if already encrypted
+                    coach.password = securitySystem.hashPassword(coach.password);
+                }
+            });
+            localStorage.setItem('coaches', JSON.stringify(coaches));
+            
+            // โหลดข้อมูลเริ่มต้น
+            if (customers.length === 0) {
+                customers = [
+                    {
+                        id: 'CUST_001',
+                        employeeId: 'EMP001',
+                        firstName: 'สมชาย',
+                        lastName: 'ใจดี',
+                        branch: 'สาขากรุงเทพ',
+                        zone: 'กลาง',
+                        region: 'RH1',
+                        timestamp: new Date().toISOString(),
+                        customerInfo: {
+                            gender: 'male',
+                            status: 'married',
+                            hasChildren: 'yes',
+                            childrenCount: 2,
+                            occupation: 'government',
+                            products: {
+                                deposit: 'yes',
+                                fund: 'no',
+                                insurance: 'yes'
+                            },
+                            details: 'ลูกค้ามีความสนใจในผลิตภัณฑ์ประกันชีวิตแบบบำนาญ'
+                        },
+                        assignedCoach: {
+                            id: 'coach_3',
+                            name: 'ณัฐกนิษฐ์ จริยะดิลก',
+                            region: 'RH1'
+                        },
+                        status: 'completed',
+                        coachComment: 'ลูกค้ามีศักยภาพสูง ควรเสนอผลิตภัณฑ์บำนาญพร้อมการลงทุน'
+                    }
+                ];
+                localStorage.setItem('customers', JSON.stringify(customers));
+            }
+        });
+    </script>
+</body>
+</html>
