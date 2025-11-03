@@ -1356,794 +1356,1114 @@
             );
         };
 
-<!-- นี่คือส่วนต่อเนื่องจากโค้ดด้านบน -->
+        // LoadingPage Component
+        const LoadingPage = ({ onNavigate }) => {
+            useEffect(() => {
+                // จำลองการโหลด
+                setTimeout(() => {
+                    onNavigate('general-user');
+                }, 2000);
+            }, [onNavigate]);
 
-<script type="text/babel">
-    // ... (โค้ดส่วนต้นเหมือนด้านบน) ...
-// เพิ่ม LoadingPage component
-const LoadingPage = ({ onNavigate }) => {
-    useEffect(() => {
-        // จำลองการโหลด
-        setTimeout(() => {
-            onNavigate('general-user');
-        }, 2000);
-    }, [onNavigate]);
-
-    return (
-        <div className="loading-page">
-            <div className="glass-container" style={{padding: '2rem', textAlign: 'center'}}>
-                <div className="loading-spinner" style={{width: '40px', height: '40px', margin: '0 auto 1rem'}}></div>
-                <h2>ระบบบริหารกิจกรรมฝึกอบรมและโค้ชชิ่ง</h2>
-                <p>กำลังโหลด...</p>
-            </div>
-        </div>
-    );
-};
-
-// เพิ่ม GeneralUserDashboard component
-const GeneralUserDashboard = ({ onLogout }) => {
-    const [activeMenu, setActiveMenu] = useState('register');
-
-    return (
-        <div className="dashboard">
-            <Navigation 
-                userType="general"
-                activeMenu={activeMenu}
-                onMenuSelect={setActiveMenu}
-                onLogout={onLogout}
-            />
-            
-            {activeMenu === 'register' && <RegisterForm />}
-            {activeMenu === 'coach' && <CoachForm />}
-            {activeMenu === 'library' && <div>Idea Library - กำลังพัฒนา</div>}
-        </div>
-    );
-};
-
-// เพิ่ม IdeaLibrary component เบื้องต้น
-const IdeaLibrary = () => {
-    return (
-        <div className="form-container">
-            <h2 className="form-title">Idea Library</h2>
-            <div className="form-section">
-                <p>ระบบ Idea Library กำลังอยู่ในขั้นตอนการพัฒนา</p>
-            </div>
-        </div>
-    );
-};
-    // Password Change Component
-    const PasswordChangeModal = ({ trainerId, onClose }) => {
-        const [currentPassword, setCurrentPassword] = useState('');
-        const [newPassword, setNewPassword] = useState('');
-        const [confirmPassword, setConfirmPassword] = useState('');
-
-        const handleSubmit = () => {
-            if (newPassword !== confirmPassword) {
-                alert('รหัสผ่านใหม่ไม่ตรงกัน');
-                return;
-            }
-            
-            DataService.requestPasswordChange(trainerId, newPassword);
-            alert('ส่งคำขอกำหนดรหัสผ่านใหม่แล้ว รอการอนุมัติจาก Admin');
-            onClose();
-        };
-
-        return (
-            <div className="modal-overlay">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h3 className="modal-title">เปลี่ยนรหัสผ่าน</h3>
-                        <button className="modal-close" onClick={onClose}>×</button>
-                    </div>
-                    
-                    <div className="form-group">
-                        <label className="form-label">รหัสผ่านปัจจุบัน</label>
-                        <input
-                            type="password"
-                            className="form-input"
-                            value={currentPassword}
-                            onChange={(e) => setCurrentPassword(e.target.value)}
-                        />
-                    </div>
-                    
-                    <div className="form-group">
-                        <label className="form-label">รหัสผ่านใหม่</label>
-                        <input
-                            type="password"
-                            className="form-input"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                        />
-                    </div>
-                    
-                    <div className="form-group">
-                        <label className="form-label">ยืนยันรหัสผ่านใหม่</label>
-                        <input
-                            type="password"
-                            className="form-input"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
-                    </div>
-                    
-                    <div style={{display: 'flex', gap: '1rem'}}>
-                        <button className="btn btn-primary" onClick={handleSubmit}>
-                            ส่งคำขอ
-                        </button>
-                        <button className="btn btn-secondary" onClick={onClose}>
-                            ยกเลิก
-                        </button>
-                    </div>
-                    
-                    <div style={{marginTop: '1rem', fontSize: '0.875rem', color: '#666'}}>
-                        หมายเหตุ: ระบบจะแจ้งไปยัง Admin เพื่ออนุมัติการเปลี่ยนรหัสผ่าน 
-                        หากไม่ได้รับการอนุมัติภายใน 5 นาที ระบบจะอนุมัติโดยอัตโนมัติ
+            return (
+                <div className="loading-page">
+                    <div className="glass-container" style={{padding: '2rem', textAlign: 'center'}}>
+                        <div className="loading-spinner" style={{width: '40px', height: '40px', margin: '0 auto 1rem'}}></div>
+                        <h2>ระบบบริหารกิจกรรมฝึกอบรมและโค้ชชิ่ง</h2>
+                        <p>กำลังโหลด...</p>
                     </div>
                 </div>
-            </div>
-        );
-    };
+            );
+        };
 
-    // Enhanced RegisterForm with Branch/Zone System
-    const RegisterForm = () => {
-        const [formData, setFormData] = useState({
-            name: '',
-            employeeId: '',
-            position: '',
-            branchCode: '',
-            branchName: '',
-            region: '',
-            zone: '',
-            branch: '',
-            course: '',
-            otherCourse: ''
-        });
-        const [isSubmitting, setIsSubmitting] = useState(false);
-        const [zones, setZones] = useState([]);
-        const [branches, setBranches] = useState([]);
+        // GeneralUserDashboard Component
+        const GeneralUserDashboard = ({ onLogout }) => {
+            const [activeMenu, setActiveMenu] = useState('register');
 
-        const handleBranchCodeSearch = () => {
-            if (formData.branchCode && BRANCH_DATA[formData.branchCode]) {
-                const branchInfo = BRANCH_DATA[formData.branchCode];
+            return (
+                <div className="dashboard">
+                    <Navigation 
+                        userType="general"
+                        activeMenu={activeMenu}
+                        onMenuSelect={setActiveMenu}
+                        onLogout={onLogout}
+                    />
+                    
+                    {activeMenu === 'register' && <RegisterForm />}
+                    {activeMenu === 'coach' && <CoachForm />}
+                    {activeMenu === 'library' && <div>Idea Library - กำลังพัฒนา</div>}
+                </div>
+            );
+        };
+
+        // IdeaLibrary Component
+        const IdeaLibrary = () => {
+            return (
+                <div className="form-container">
+                    <h2 className="form-title">Idea Library</h2>
+                    <div className="form-section">
+                        <p>ระบบ Idea Library กำลังอยู่ในขั้นตอนการพัฒนา</p>
+                    </div>
+                </div>
+            );
+        };
+
+        // Password Change Component
+        const PasswordChangeModal = ({ trainerId, onClose }) => {
+            const [currentPassword, setCurrentPassword] = useState('');
+            const [newPassword, setNewPassword] = useState('');
+            const [confirmPassword, setConfirmPassword] = useState('');
+
+            const handleSubmit = () => {
+                if (newPassword !== confirmPassword) {
+                    alert('รหัสผ่านใหม่ไม่ตรงกัน');
+                    return;
+                }
+                
+                DataService.requestPasswordChange(trainerId, newPassword);
+                alert('ส่งคำขอกำหนดรหัสผ่านใหม่แล้ว รอการอนุมัติจาก Admin');
+                onClose();
+            };
+
+            return (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h3 className="modal-title">เปลี่ยนรหัสผ่าน</h3>
+                            <button className="modal-close" onClick={onClose}>×</button>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label className="form-label">รหัสผ่านปัจจุบัน</label>
+                            <input
+                                type="password"
+                                className="form-input"
+                                value={currentPassword}
+                                onChange={(e) => setCurrentPassword(e.target.value)}
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label className="form-label">รหัสผ่านใหม่</label>
+                            <input
+                                type="password"
+                                className="form-input"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label className="form-label">ยืนยันรหัสผ่านใหม่</label>
+                            <input
+                                type="password"
+                                className="form-input"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
+                        </div>
+                        
+                        <div style={{display: 'flex', gap: '1rem'}}>
+                            <button className="btn btn-primary" onClick={handleSubmit}>
+                                ส่งคำขอ
+                            </button>
+                            <button className="btn btn-secondary" onClick={onClose}>
+                                ยกเลิก
+                            </button>
+                        </div>
+                        
+                        <div style={{marginTop: '1rem', fontSize: '0.875rem', color: '#666'}}>
+                            หมายเหตุ: ระบบจะแจ้งไปยัง Admin เพื่ออนุมัติการเปลี่ยนรหัสผ่าน 
+                            หากไม่ได้รับการอนุมัติภายใน 5 นาที ระบบจะอนุมัติโดยอัตโนมัติ
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Enhanced RegisterForm with Branch/Zone System
+        const RegisterForm = () => {
+            const [formData, setFormData] = useState({
+                name: '',
+                employeeId: '',
+                position: '',
+                branchCode: '',
+                branchName: '',
+                region: '',
+                zone: '',
+                branch: '',
+                course: '',
+                otherCourse: ''
+            });
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [zones, setZones] = useState([]);
+            const [branches, setBranches] = useState([]);
+
+            const handleBranchCodeSearch = () => {
+                if (formData.branchCode && BRANCH_DATA[formData.branchCode]) {
+                    const branchInfo = BRANCH_DATA[formData.branchCode];
+                    setFormData({
+                        ...formData,
+                        branchName: branchInfo.name,
+                        region: branchInfo.region,
+                        zone: branchInfo.zone
+                    });
+                } else {
+                    alert('ไม่พบข้อมูลสาขาด้วยรหัสนี้');
+                }
+            };
+
+            const handleRegionChange = (region) => {
                 setFormData({
                     ...formData,
-                    branchName: branchInfo.name,
-                    region: branchInfo.region,
-                    zone: branchInfo.zone
+                    region,
+                    zone: '',
+                    branch: ''
                 });
-            } else {
-                alert('ไม่พบข้อมูลสาขาด้วยรหัสนี้');
-            }
-        };
+                setZones(ZONE_DATA[region] || []);
+                setBranches([]);
+            };
 
-        const handleRegionChange = (region) => {
-            setFormData({
-                ...formData,
-                region,
-                zone: '',
-                branch: ''
-            });
-            setZones(ZONE_DATA[region] || []);
-            setBranches([]);
-        };
+            const handleZoneChange = (zone) => {
+                setFormData({
+                    ...formData,
+                    zone,
+                    branch: ''
+                });
+                setBranches(BRANCHES_BY_ZONE[zone] || []);
+            };
 
-        const handleZoneChange = (zone) => {
-            setFormData({
-                ...formData,
-                zone,
-                branch: ''
-            });
-            setBranches(BRANCHES_BY_ZONE[zone] || []);
-        };
-
-        const handleSubmit = async (e) => {
-            e.preventDefault();
-            setIsSubmitting(true);
-            
-            try {
-                const success = DataService.saveRegistration(formData);
-                if (success) {
-                    alert('ลงทะเบียนสำเร็จ');
-                    setFormData({
-                        name: '', employeeId: '', position: '', branchCode: '',
-                        branchName: '', region: '', zone: '', branch: '',
-                        course: '', otherCourse: ''
-                    });
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setIsSubmitting(true);
+                
+                try {
+                    const success = DataService.saveRegistration(formData);
+                    if (success) {
+                        alert('ลงทะเบียนสำเร็จ');
+                        setFormData({
+                            name: '', employeeId: '', position: '', branchCode: '',
+                            branchName: '', region: '', zone: '', branch: '',
+                            course: '', otherCourse: ''
+                        });
+                    }
+                } catch (error) {
+                    alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                } finally {
+                    setIsSubmitting(false);
                 }
-            } catch (error) {
-                alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-            } finally {
-                setIsSubmitting(false);
-            }
-        };
+            };
 
-        return (
-            <div className="form-container">
-                <h2 className="form-title">ระบบลงทะเบียนอบรม</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-section">
-                        <div className="form-group">
-                            <label className="form-label required">ชื่อ-นามสกุล</label>
-                            <input
-                                type="text"
-                                className="form-input"
-                                value={formData.name}
-                                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label required">รหัสพนักงาน</label>
-                            <input
-                                type="text"
-                                className="form-input"
-                                value={formData.employeeId}
-                                onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label required">ตำแหน่ง</label>
-                            <select
-                                className="form-select"
-                                value={formData.position}
-                                onChange={(e) => setFormData({...formData, position: e.target.value})}
-                                required
-                            >
-                                <option value="">เลือกตำแหน่ง</option>
-                                {POSITIONS.map(pos => (
-                                    <option key={pos} value={pos}>{pos}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label">รหัสสาขา</label>
-                            <div className="input-with-button">
+            return (
+                <div className="form-container">
+                    <h2 className="form-title">ระบบลงทะเบียนอบรม</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-section">
+                            <div className="form-group">
+                                <label className="form-label required">ชื่อ-นามสกุล</label>
                                 <input
                                     type="text"
                                     className="form-input"
-                                    value={formData.branchCode}
-                                    onChange={(e) => setFormData({...formData, branchCode: e.target.value})}
-                                    placeholder="กรอกรหัสสาขา"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                    required
                                 />
-                                <button type="button" className="btn btn-sm btn-secondary" onClick={handleBranchCodeSearch}>
-                                    ค้นหา
-                                </button>
                             </div>
-                        </div>
 
-                        {formData.branchCode && formData.branchName && (
                             <div className="form-group">
-                                <label className="form-label">ข้อมูลสาขา</label>
-                                <div style={{padding: '1rem', background: '#f8f9fa', borderRadius: '8px'}}>
-                                    <div>ชื่อสาขา: {formData.branchName}</div>
-                                    <div>Region: {formData.region}</div>
-                                    <div>Zone: {formData.zone}</div>
+                                <label className="form-label required">รหัสพนักงาน</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={formData.employeeId}
+                                    onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label required">ตำแหน่ง</label>
+                                <select
+                                    className="form-select"
+                                    value={formData.position}
+                                    onChange={(e) => setFormData({...formData, position: e.target.value})}
+                                    required
+                                >
+                                    <option value="">เลือกตำแหน่ง</option>
+                                    {POSITIONS.map(pos => (
+                                        <option key={pos} value={pos}>{pos}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">รหัสสาขา</label>
+                                <div className="input-with-button">
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        value={formData.branchCode}
+                                        onChange={(e) => setFormData({...formData, branchCode: e.target.value})}
+                                        placeholder="กรอกรหัสสาขา"
+                                    />
+                                    <button type="button" className="btn btn-sm btn-secondary" onClick={handleBranchCodeSearch}>
+                                        ค้นหา
+                                    </button>
                                 </div>
                             </div>
-                        )}
 
-                        {!formData.branchCode && (
-                            <>
+                            {formData.branchCode && formData.branchName && (
                                 <div className="form-group">
-                                    <label className="form-label required">Region</label>
+                                    <label className="form-label">ข้อมูลสาขา</label>
+                                    <div style={{padding: '1rem', background: '#f8f9fa', borderRadius: '8px'}}>
+                                        <div>ชื่อสาขา: {formData.branchName}</div>
+                                        <div>Region: {formData.region}</div>
+                                        <div>Zone: {formData.zone}</div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {!formData.branchCode && (
+                                <>
+                                    <div className="form-group">
+                                        <label className="form-label required">Region</label>
+                                        <select
+                                            className="form-select"
+                                            value={formData.region}
+                                            onChange={(e) => handleRegionChange(e.target.value)}
+                                            required
+                                        >
+                                            <option value="">เลือก Region</option>
+                                            {REGIONS.map(region => (
+                                                <option key={region} value={region}>{region}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {formData.region && (
+                                        <div className="form-group">
+                                            <label className="form-label">Zone</label>
+                                            <select
+                                                className="form-select"
+                                                value={formData.zone}
+                                                onChange={(e) => handleZoneChange(e.target.value)}
+                                            >
+                                                <option value="">เลือก Zone</option>
+                                                {zones.map(zone => (
+                                                    <option key={zone} value={zone}>{zone}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    {formData.zone && (
+                                        <div className="form-group">
+                                            <label className="form-label">สาขา</label>
+                                            <select
+                                                className="form-select"
+                                                value={formData.branch}
+                                                onChange={(e) => setFormData({...formData, branch: e.target.value})}
+                                            >
+                                                <option value="">เลือกสาขา</option>
+                                                {branches.map(branch => (
+                                                    <option key={branch} value={branch}>{branch}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            <div className="form-group">
+                                <label className="form-label required">หลักสูตรที่ต้องการลงทะเบียน</label>
+                                <select
+                                    className="form-select"
+                                    value={formData.course}
+                                    onChange={(e) => setFormData({...formData, course: e.target.value})}
+                                    required
+                                >
+                                    <option value="">เลือกหลักสูตร</option>
+                                    {COURSES.map(course => (
+                                        <option key={course} value={course}>{course}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {formData.course === 'อื่น ๆ' && (
+                                <div className="form-group">
+                                    <label className="form-label">ระบุหลักสูตร</label>
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        value={formData.otherCourse}
+                                        onChange={(e) => setFormData({...formData, otherCourse: e.target.value})}
+                                    />
+                                </div>
+                            )}
+
+                            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                                {isSubmitting ? <LoadingSpinner /> : 'Submit'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            );
+        };
+
+        // Enhanced CoachForm with Complete Features
+        const CoachForm = ({ editingData = null, onUpdate = null }) => {
+            const [customerId, setCustomerId] = useState(editingData?.customerId || '');
+            const [isSaved, setIsSaved] = useState(!!editingData);
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [activeSection, setActiveSection] = useState('personal');
+            
+            const [formData, setFormData] = useState(editingData || {
+                employeeName: '', employeeId: '', position: '', branchCode: '', region: '', zone: '',
+                customerName: '', gender: '', age: '', status: '', occupation: '', income: '',
+                financialProducts: [
+                    { type: 'เงินฝาก', key: 'deposit', checked: false, value: '', debt: '' },
+                    { type: 'หุ้นกู้', key: 'bonds', checked: false, value: '', debt: '' },
+                    { type: 'กองทุนรวม', key: 'mutualFunds', checked: false, value: '', debt: '' },
+                    { type: 'บัตรเครดิต', key: 'creditCard', checked: false, value: '', debt: '' },
+                    { type: 'สินเชื่อ', key: 'loan', checked: false, value: '', debt: '' }
+                ],
+                insurance: { has: false, policyCount: '', coverage: '' },
+                otherProducts: [],
+                spouseAge: '', spouseOccupation: '', children: [],
+                hasDependents: false, dependentsCount: '', dependentRelationship: '',
+                businessName: '', businessType: '', registeredCapital: '', annualIncome: '',
+                netProfit: '', tax: '', sharePercentage: '', shareholderEquity: '', additionalInfo: '',
+                coachingType: '', additionalDetails: '',
+                unknownFlags: { income: false, financial: false, family: false, business: false }
+            });
+
+            useEffect(() => {
+                if (!editingData) {
+                    setCustomerId(generateCustomerId());
+                }
+            }, [editingData]);
+
+            const handleSave = async () => {
+                setIsSubmitting(true);
+                
+                // Validate required fields
+                if (!formData.employeeName || !formData.employeeId || !formData.customerName) {
+                    alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน');
+                    setIsSubmitting(false);
+                    return;
+                }
+
+                try {
+                    let success;
+                    if (editingData && onUpdate) {
+                        success = DataService.updateCoaching(customerId, {
+                            ...formData,
+                            updatedBy: 'General User'
+                        });
+                        if (success) {
+                            onUpdate(formData);
+                            setIsSaved(true);
+                            alert('อัปเดตข้อมูลสำเร็จ');
+                        }
+                    } else {
+                        const completeData = {
+                            customerId,
+                            ...formData,
+                            timestamp: formatThaiDateTime(),
+                            lastUpdate: formatThaiDateTime(),
+                            updatedBy: 'General User'
+                        };
+
+                        success = DataService.saveCoaching(completeData);
+                        if (success) {
+                            setIsSaved(true);
+                            alert(`ระบบจะทำการบันทึกข้อมูลของท่าน\nCustomer ID คือ : ${customerId}`);
+                        }
+                    }
+                } catch (error) {
+                    alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                } finally {
+                    setIsSubmitting(false);
+                }
+            };
+
+            const renderLastUpdate = () => (
+                <div className="last-update">
+                    Last update: {formData.lastUpdate || formatThaiDateTime()} | {formData.updatedBy || 'General User'}
+                </div>
+            );
+
+            return (
+                <div className="form-container">
+                    <h2 className="form-title">
+                        {editingData ? 'แก้ไขข้อมูลการโค้ช' : 'ระบบขอคำปรึกษา / Coaching'}
+                    </h2>
+                    
+                    <div className="customer-id-display">
+                        <strong>Customer ID: {customerId}</strong>
+                        {!isSaved && <span className="unsaved-badge">ยังไม่บันทึก</span>}
+                    </div>
+
+                    {/* ข้อมูลพนักงาน */}
+                    <div className="form-section">
+                        <h3>📋 ข้อมูลพนักงาน</h3>
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label className="form-label required">ชื่อ-นามสกุล</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={formData.employeeName}
+                                    onChange={(e) => setFormData({...formData, employeeName: e.target.value})}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label required">รหัสพนักงาน</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={formData.employeeId}
+                                    onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label className="form-label required">ตำแหน่ง</label>
+                                <select
+                                    className="form-select"
+                                    value={formData.position}
+                                    onChange={(e) => setFormData({...formData, position: e.target.value})}
+                                    required
+                                >
+                                    <option value="">เลือกตำแหน่ง</option>
+                                    {POSITIONS.map(pos => (
+                                        <option key={pos} value={pos}>{pos}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label required">Region</label>
+                                <select
+                                    className="form-select"
+                                    value={formData.region}
+                                    onChange={(e) => setFormData({...formData, region: e.target.value})}
+                                    required
+                                >
+                                    <option value="">เลือก Region</option>
+                                    {REGIONS.map(region => (
+                                        <option key={region} value={region}>{region}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ข้อมูลลูกค้า */}
+                    <div className="form-section">
+                        <h3>👥 ข้อมูลลูกค้า</h3>
+                        
+                        <div style={{display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap'}}>
+                            <button className={`btn btn-sm ${activeSection === 'personal' ? 'btn-primary' : 'btn-secondary'}`}
+                                onClick={() => setActiveSection('personal')}>ข้อมูลส่วนบุคคล</button>
+                            <button className={`btn btn-sm ${activeSection === 'financial' ? 'btn-primary' : 'btn-secondary'}`}
+                                onClick={() => setActiveSection('financial')}>ข้อมูลทางการเงิน</button>
+                            <button className={`btn btn-sm ${activeSection === 'family' ? 'btn-primary' : 'btn-secondary'}`}
+                                onClick={() => setActiveSection('family')}>ข้อมูลครอบครัว</button>
+                            <button className={`btn btn-sm ${activeSection === 'business' ? 'btn-primary' : 'btn-secondary'}`}
+                                onClick={() => setActiveSection('business')}>ข้อมูลธุรกิจ</button>
+                        </div>
+
+                        {activeSection === 'personal' && (
+                            <div className="form-subsection">
+                                <h4 className="subsection-title">ข้อมูลส่วนบุคคล</h4>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label required">ชื่อ-นามสกุลลูกค้า</label>
+                                        <input
+                                            type="text"
+                                            className="form-input"
+                                            value={formData.customerName}
+                                            onChange={(e) => setFormData({...formData, customerName: e.target.value})}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label required">เพศ</label>
+                                        <select
+                                            className="form-select"
+                                            value={formData.gender}
+                                            onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                                            required
+                                        >
+                                            <option value="">เลือกเพศ</option>
+                                            {GENDER_OPTIONS.map(gender => (
+                                                <option key={gender} value={gender}>{gender}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label required">อายุ</label>
+                                        <input
+                                            type="number"
+                                            className="form-input"
+                                            value={formData.age}
+                                            onChange={(e) => setFormData({...formData, age: e.target.value})}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label required">สถานภาพ</label>
+                                        <select
+                                            className="form-select"
+                                            value={formData.status}
+                                            onChange={(e) => setFormData({...formData, status: e.target.value})}
+                                            required
+                                        >
+                                            <option value="">เลือกสถานภาพ</option>
+                                            {STATUS_OPTIONS.map(status => (
+                                                <option key={status} value={status}>{status}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label required">อาชีพ</label>
                                     <select
                                         className="form-select"
-                                        value={formData.region}
-                                        onChange={(e) => handleRegionChange(e.target.value)}
+                                        value={formData.occupation}
+                                        onChange={(e) => setFormData({...formData, occupation: e.target.value})}
                                         required
                                     >
-                                        <option value="">เลือก Region</option>
-                                        {REGIONS.map(region => (
-                                            <option key={region} value={region}>{region}</option>
+                                        <option value="">เลือกอาชีพ</option>
+                                        {OCCUPATIONS.map(occupation => (
+                                            <option key={occupation} value={occupation}>{occupation}</option>
                                         ))}
                                     </select>
                                 </div>
-
-                                {formData.region && (
-                                    <div className="form-group">
-                                        <label className="form-label">Zone</label>
-                                        <select
-                                            className="form-select"
-                                            value={formData.zone}
-                                            onChange={(e) => handleZoneChange(e.target.value)}
-                                        >
-                                            <option value="">เลือก Zone</option>
-                                            {zones.map(zone => (
-                                                <option key={zone} value={zone}>{zone}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                )}
-
-                                {formData.zone && (
-                                    <div className="form-group">
-                                        <label className="form-label">สาขา</label>
-                                        <select
-                                            className="form-select"
-                                            value={formData.branch}
-                                            onChange={(e) => setFormData({...formData, branch: e.target.value})}
-                                        >
-                                            <option value="">เลือกสาขา</option>
-                                            {branches.map(branch => (
-                                                <option key={branch} value={branch}>{branch}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                )}
-                            </>
+                            </div>
                         )}
 
+                        {activeSection === 'financial' && (
+                            <div className="form-subsection">
+                                <h4 className="subsection-title">ข้อมูลทางการเงิน</h4>
+                                <div className="form-group">
+                                    <label className="form-label required">รายได้ต่อเดือน (บาท)</label>
+                                    <input
+                                        type="number"
+                                        className="form-input"
+                                        value={formData.income}
+                                        onChange={(e) => setFormData({...formData, income: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                
+                                <h5>ผลิตภัณฑ์ทางการเงินที่ถืออยู่</h5>
+                                <div className="financial-products">
+                                    {formData.financialProducts.map((product, index) => (
+                                        <div key={product.key} className="product-item">
+                                            <div className="product-checkbox">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={product.checked}
+                                                    onChange={(e) => {
+                                                        const newProducts = [...formData.financialProducts];
+                                                        newProducts[index].checked = e.target.checked;
+                                                        setFormData({...formData, financialProducts: newProducts});
+                                                    }}
+                                                />
+                                                <label>{product.type}</label>
+                                            </div>
+                                            {product.checked && (
+                                                <div className="product-inputs">
+                                                    <input
+                                                        type="number"
+                                                        placeholder="มูลค่า (บาท)"
+                                                        value={product.value}
+                                                        onChange={(e) => {
+                                                            const newProducts = [...formData.financialProducts];
+                                                            newProducts[index].value = e.target.value;
+                                                            setFormData({...formData, financialProducts: newProducts});
+                                                        }}
+                                                    />
+                                                    <input
+                                                        type="number"
+                                                        placeholder="หนี้สิน (บาท)"
+                                                        value={product.debt}
+                                                        onChange={(e) => {
+                                                            const newProducts = [...formData.financialProducts];
+                                                            newProducts[index].debt = e.target.value;
+                                                            setFormData({...formData, financialProducts: newProducts});
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeSection === 'family' && (
+                            <div className="form-subsection">
+                                <h4 className="subsection-title">ข้อมูลครอบครัว</h4>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label">อายุคู่สมรส</label>
+                                        <input
+                                            type="number"
+                                            className="form-input"
+                                            value={formData.spouseAge}
+                                            onChange={(e) => setFormData({...formData, spouseAge: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">อาชีพคู่สมรส</label>
+                                        <input
+                                            type="text"
+                                            className="form-input"
+                                            value={formData.spouseOccupation}
+                                            onChange={(e) => setFormData({...formData, spouseOccupation: e.target.value})}
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <div className="form-group">
+                                    <label className="form-label">บุตร</label>
+                                    <div className="children-list">
+                                        {formData.children.map((child, index) => (
+                                            <div key={index} className="child-item">
+                                                <input
+                                                    type="text"
+                                                    placeholder="ชื่อ"
+                                                    value={child.name}
+                                                    onChange={(e) => {
+                                                        const newChildren = [...formData.children];
+                                                        newChildren[index].name = e.target.value;
+                                                        setFormData({...formData, children: newChildren});
+                                                    }}
+                                                />
+                                                <input
+                                                    type="number"
+                                                    placeholder="อายุ"
+                                                    value={child.age}
+                                                    onChange={(e) => {
+                                                        const newChildren = [...formData.children];
+                                                        newChildren[index].age = e.target.value;
+                                                        setFormData({...formData, children: newChildren});
+                                                    }}
+                                                />
+                                                <button 
+                                                    className="remove-button"
+                                                    onClick={() => {
+                                                        const newChildren = formData.children.filter((_, i) => i !== index);
+                                                        setFormData({...formData, children: newChildren});
+                                                    }}
+                                                >
+                                                    ลบ
+                                                </button>
+                                            </div>
+                                        ))}
+                                        <button 
+                                            className="add-button"
+                                            onClick={() => {
+                                                const newChildren = [...formData.children, { name: '', age: '' }];
+                                                setFormData({...formData, children: newChildren});
+                                            }}
+                                        >
+                                            + เพิ่มบุตร
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeSection === 'business' && (
+                            <div className="form-subsection">
+                                <h4 className="subsection-title">ข้อมูลธุรกิจ</h4>
+                                <div className="form-group">
+                                    <label className="form-label">ชื่อธุรกิจ</label>
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        value={formData.businessName}
+                                        onChange={(e) => setFormData({...formData, businessName: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">ประเภทธุรกิจ</label>
+                                    <select
+                                        className="form-select"
+                                        value={formData.businessType}
+                                        onChange={(e) => setFormData({...formData, businessType: e.target.value})}
+                                    >
+                                        <option value="">เลือกประเภทธุรกิจ</option>
+                                        {BUSINESS_TYPES.map(type => (
+                                            <option key={type} value={type}>{type}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label">ทุนจดทะเบียน</label>
+                                        <input
+                                            type="number"
+                                            className="form-input"
+                                            value={formData.registeredCapital}
+                                            onChange={(e) => setFormData({...formData, registeredCapital: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">รายได้ต่อปี</label>
+                                        <input
+                                            type="number"
+                                            className="form-input"
+                                            value={formData.annualIncome}
+                                            onChange={(e) => setFormData({...formData, annualIncome: e.target.value})}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* ประเภท Coaching */}
+                    <div className="form-section">
+                        <h3>🎯 ประเภท Coaching ที่ต้องการ</h3>
                         <div className="form-group">
-                            <label className="form-label required">หลักสูตรที่ต้องการลงทะเบียน</label>
+                            <label className="form-label required">ประเภท Coaching</label>
                             <select
                                 className="form-select"
-                                value={formData.course}
-                                onChange={(e) => setFormData({...formData, course: e.target.value})}
+                                value={formData.coachingType}
+                                onChange={(e) => setFormData({...formData, coachingType: e.target.value})}
                                 required
                             >
-                                <option value="">เลือกหลักสูตร</option>
+                                <option value="">เลือกประเภท Coaching</option>
                                 {COURSES.map(course => (
                                     <option key={course} value={course}>{course}</option>
                                 ))}
                             </select>
                         </div>
+                        <div className="form-group">
+                            <label className="form-label">รายละเอียดเพิ่มเติม</label>
+                            <textarea
+                                className="form-textarea"
+                                value={formData.additionalDetails}
+                                onChange={(e) => setFormData({...formData, additionalDetails: e.target.value})}
+                                placeholder="ระบุรายละเอียดเพิ่มเติมเกี่ยวกับปัญหาหรือความต้องการ..."
+                                rows="4"
+                            />
+                        </div>
+                    </div>
 
-                        {formData.course === 'อื่น ๆ' && (
-                            <div className="form-group">
-                                <label className="form-label">ระบุหลักสูตร</label>
-                                <input
-                                    type="text"
-                                    className="form-input"
-                                    value={formData.otherCourse}
-                                    onChange={(e) => setFormData({...formData, otherCourse: e.target.value})}
+                    {editingData && (
+                        <CommentSection
+                            customerId={customerId}
+                            comments={formData.comments || []}
+                            onAddComment={(comment) => {
+                                DataService.addComment(customerId, comment, 'Trainer');
+                            }}
+                            currentUser="Trainer"
+                        />
+                    )}
+
+                    {renderLastUpdate()}
+
+                    <div className="form-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                        <button onClick={handleSave} className="btn btn-primary" disabled={isSubmitting}>
+                            {isSubmitting ? <LoadingSpinner /> : (editingData ? 'อัปเดต' : 'บันทึก')}
+                        </button>
+                        <button className="btn btn-secondary">ยกเลิก</button>
+                    </div>
+                </div>
+            );
+        };
+
+        // Enhanced Trainer Dashboard
+        const TrainerDashboard = ({ region, onLogout }) => {
+            const [activeMenu, setActiveMenu] = useState('dashboard');
+            const [stats, setStats] = useState(null);
+            const [selectedRegion, setSelectedRegion] = useState(region);
+            const [filters, setFilters] = useState({});
+            const [showCustomerSearch, setShowCustomerSearch] = useState(false);
+            const [editingCoaching, setEditingCoaching] = useState(null);
+            const [showPasswordChange, setShowPasswordChange] = useState(false);
+
+            useEffect(() => {
+                const dashboardData = DataService.getDashboardData(selectedRegion, filters);
+                setStats(dashboardData);
+            }, [selectedRegion, filters]);
+
+            const notifications = DataService.getNotifications(selectedRegion);
+
+            const handleCustomerFound = (coachingData) => {
+                setEditingCoaching(coachingData);
+                setActiveMenu('coach');
+            };
+
+            const handleUpdateCoaching = (updatedData) => {
+                setEditingCoaching(null);
+                DataService.clearNotifications(selectedRegion, 'coachings');
+            };
+
+            const renderDashboard = () => (
+                <div className="dashboard-content">
+                    <TeamOverview 
+                        onTrainerSelect={(trainer) => {
+                            // เปิด side panel แสดงรายละเอียด trainer
+                            alert(`ดูรายละเอียดของ ${trainer.name}`);
+                        }}
+                        region={selectedRegion}
+                    />
+                    
+                    <DashboardFilter onFilterChange={setFilters} currentFilters={filters} />
+                    
+                    {stats && (
+                        <>
+                            <div className="stats-grid">
+                                <div className="stat-card">
+                                    <div className="stat-number">{stats.totalRegistrations}</div>
+                                    <div className="stat-label">Total Registrations</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-number">{stats.totalCoachings}</div>
+                                    <div className="stat-label">Total Coachings</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-number">
+                                        {Object.keys(stats.registrationsByRegion).length}
+                                    </div>
+                                    <div className="stat-label">Regions Active</div>
+                                </div>
+                            </div>
+
+                            <div className="charts-grid">
+                                <PieChart 
+                                    data={stats.registrationsByRegion} 
+                                    title="สัดส่วนผู้เข้าใช้งานตาม Region"
+                                />
+                                <PieChart 
+                                    data={stats.coachingsByRegion} 
+                                    title="สัดส่วนคลาสตาม Region"
+                                />
+                                <BarChart 
+                                    data={stats.registrationsByPosition} 
+                                    title="จำนวนผู้เข้าอบรมแยกตามตำแหน่ง"
+                                />
+                                <BarChart 
+                                    data={stats.coachingTypes} 
+                                    title="สัดส่วนประเภทการบริการ"
                                 />
                             </div>
-                        )}
+                        </>
+                    )}
 
-                        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                            {isSubmitting ? <LoadingSpinner /> : 'Submit'}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        );
-    };
-
-    // Enhanced CoachForm with Complete Features
-    const CoachForm = ({ editingData = null, onUpdate = null }) => {
-        const [customerId, setCustomerId] = useState(editingData?.customerId || '');
-        const [isSaved, setIsSaved] = useState(!!editingData);
-        const [isSubmitting, setIsSubmitting] = useState(false);
-        const [activeSection, setActiveSection] = useState('personal');
-        
-        const [formData, setFormData] = useState(editingData || {
-            employeeName: '', employeeId: '', position: '', branchCode: '', region: '', zone: '',
-            customerName: '', gender: '', age: '', status: '', occupation: '', income: '',
-            financialProducts: [
-                { type: 'เงินฝาก', key: 'deposit', checked: false, value: '', debt: '' },
-                { type: 'หุ้นกู้', key: 'bonds', checked: false, value: '', debt: '' },
-                { type: 'กองทุนรวม', key: 'mutualFunds', checked: false, value: '', debt: '' },
-                { type: 'บัตรเครดิต', key: 'creditCard', checked: false, value: '', debt: '' },
-                { type: 'สินเชื่อ', key: 'loan', checked: false, value: '', debt: '' }
-            ],
-            insurance: { has: false, policyCount: '', coverage: '' },
-            otherProducts: [],
-            spouseAge: '', spouseOccupation: '', children: [],
-            hasDependents: false, dependentsCount: '', dependentRelationship: '',
-            businessName: '', businessType: '', registeredCapital: '', annualIncome: '',
-            netProfit: '', tax: '', sharePercentage: '', shareholderEquity: '', additionalInfo: '',
-            coachingType: '', additionalDetails: '',
-            unknownFlags: { income: false, financial: false, family: false, business: false }
-        });
-
-        useEffect(() => {
-            if (!editingData) {
-                setCustomerId(generateCustomerId());
-            }
-        }, [editingData]);
-
-        // ... (ฟังก์ชันจัดการฟอร์มเหมือนเดิม) ...
-
-const handleSave = async () => {
-            setIsSubmitting(true);
-            
-            // Validate required fields
-            if (!formData.employeeName || !formData.employeeId || !formData.customerName) {
-                alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน');
-                setIsSubmitting(false);
-                return;
-            }
-
-            try {
-                let success;
-                if (editingData && onUpdate) {
-                    success = DataService.updateCoaching(customerId, {
-                        ...formData,
-                        updatedBy: 'General User'
-                    });
-                    if (success) {
-                        onUpdate(formData);
-                        setIsSaved(true);
-                        alert('อัปเดตข้อมูลสำเร็จ');
-                    }
-                } else {
-                    const completeData = {
-                        customerId,
-                        ...formData,
-                        timestamp: formatThaiDateTime(),
-                        lastUpdate: formatThaiDateTime(),
-                        updatedBy: 'General User'
-                    };
-
-                    success = DataService.saveCoaching(completeData);
-                    if (success) {
-                        setIsSaved(true);
-                        alert(`ระบบจะทำการบันทึกข้อมูลของท่าน\nCustomer ID คือ : ${customerId}`);
-                    }
-                }
-            } catch (error) {
-                alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-            } finally {
-                setIsSubmitting(false);
-            }
-        };
-
-        const renderLastUpdate = () => (
-            <div className="last-update">
-                Last update: {formData.lastUpdate || formatThaiDateTime()} | {formData.updatedBy || 'General User'}
-            </div>
-        );
-
-        return (
-            <div className="form-container">
-                <h2 className="form-title">
-                    {editingData ? 'แก้ไขข้อมูลการโค้ช' : 'ระบบขอคำปรึกษา / Coaching'}
-                </h2>
-                
-                <div className="customer-id-display">
-                    <strong>Customer ID: {customerId}</strong>
-                    {!isSaved && <span className="unsaved-badge">ยังไม่บันทึก</span>}
-                </div>
-
-                {/* ข้อมูลพนักงาน */}
-                <div className="form-section">
-                    <h3>📋 ข้อมูลพนักงาน</h3>
-                    {/* ... (ฟอร์มข้อมูลพนักงานเหมือนเดิม) ... */}
-                </div>
-
-                {/* ข้อมูลลูกค้า */}
-                <div className="form-section">
-                    <h3>👥 ข้อมูลลูกค้า</h3>
-                    
-                    <div style={{display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap'}}>
-                        <button className={`btn btn-sm ${activeSection === 'personal' ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => setActiveSection('personal')}>ข้อมูลส่วนบุคคล</button>
-                        <button className={`btn btn-sm ${activeSection === 'financial' ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => setActiveSection('financial')}>ข้อมูลทางการเงิน</button>
-                        <button className={`btn btn-sm ${activeSection === 'family' ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => setActiveSection('family')}>ข้อมูลครอบครัว</button>
-                        <button className={`btn btn-sm ${activeSection === 'business' ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => setActiveSection('business')}>ข้อมูลธุรกิจ</button>
-                    </div>
-
-                    {/* ... (ส่วนต่างๆ ของฟอร์มเหมือนเดิม) ... */}
-                </div>
-
-                {/* ประเภท Coaching */}
-                <div className="form-section">
-                    <h3>🎯 ประเภท Coaching ที่ต้องการ</h3>
-                    {/* ... (ฟอร์มประเภท Coaching) ... */}
-                </div>
-
-                {editingData && (
-                    <CommentSection
-                        customerId={customerId}
-                        comments={formData.comments || []}
-                        onAddComment={(comment) => {
-                            DataService.addComment(customerId, comment, 'Trainer');
-                        }}
-                        currentUser="Trainer"
-                    />
-                )}
-
-                {renderLastUpdate()}
-
-                <div className="form-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                    <button onClick={handleSave} className="btn btn-primary" disabled={isSubmitting}>
-                        {isSubmitting ? <LoadingSpinner /> : (editingData ? 'อัปเดต' : 'บันทึก')}
-                    </button>
-                    <button className="btn btn-secondary">ยกเลิก</button>
-                </div>
-            </div>
-        );
-    };
-
-    // Enhanced Trainer Dashboard
-    const TrainerDashboard = ({ region, onLogout }) => {
-        const [activeMenu, setActiveMenu] = useState('dashboard');
-        const [stats, setStats] = useState(null);
-        const [selectedRegion, setSelectedRegion] = useState(region);
-        const [filters, setFilters] = useState({});
-        const [showCustomerSearch, setShowCustomerSearch] = useState(false);
-        const [editingCoaching, setEditingCoaching] = useState(null);
-        const [showPasswordChange, setShowPasswordChange] = useState(false);
-
-        useEffect(() => {
-            const dashboardData = DataService.getDashboardData(selectedRegion, filters);
-            setStats(dashboardData);
-        }, [selectedRegion, filters]);
-
-        const notifications = DataService.getNotifications(selectedRegion);
-
-        const handleCustomerFound = (coachingData) => {
-            setEditingCoaching(coachingData);
-            setActiveMenu('coach');
-        };
-
-        const handleUpdateCoaching = (updatedData) => {
-            setEditingCoaching(null);
-            DataService.clearNotifications(selectedRegion, 'coachings');
-        };
-
-        const renderDashboard = () => (
-            <div className="dashboard-content">
-                <TeamOverview 
-                    onTrainerSelect={(trainer) => {
-                        // เปิด side panel แสดงรายละเอียด trainer
-                        alert(`ดูรายละเอียดของ ${trainer.name}`);
-                    }}
-                    region={selectedRegion}
-                />
-                
-                <DashboardFilter onFilterChange={setFilters} currentFilters={filters} />
-                
-                {stats && (
-                    <>
-                        <div className="stats-grid">
-                            <div className="stat-card">
-                                <div className="stat-number">{stats.totalRegistrations}</div>
-                                <div className="stat-label">Total Registrations</div>
-                            </div>
-                            <div className="stat-card">
-                                <div className="stat-number">{stats.totalCoachings}</div>
-                                <div className="stat-label">Total Coachings</div>
-                            </div>
-                            <div className="stat-card">
-                                <div className="stat-number">
-                                    {Object.keys(stats.registrationsByRegion).length}
-                                </div>
-                                <div className="stat-label">Regions Active</div>
-                            </div>
-                        </div>
-
-                        <div className="charts-grid">
-                            <PieChart 
-                                data={stats.registrationsByRegion} 
-                                title="สัดส่วนผู้เข้าใช้งานตาม Region"
-                            />
-                            <PieChart 
-                                data={stats.coachingsByRegion} 
-                                title="สัดส่วนคลาสตาม Region"
-                            />
-                            <BarChart 
-                                data={stats.registrationsByPosition} 
-                                title="จำนวนผู้เข้าอบรมแยกตามตำแหน่ง"
-                            />
-                            <BarChart 
-                                data={stats.coachingTypes} 
-                                title="สัดส่วนประเภทการบริการ"
+                    <div className="form-section">
+                        <h3>ค้นหาข้อมูลลูกค้า</h3>
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                className="form-input"
+                                placeholder="ค้นหาด้วย Customer ID"
+                                onFocus={() => setShowCustomerSearch(true)}
                             />
                         </div>
-                    </>
-                )}
-
-                <div className="form-section">
-                    <h3>ค้นหาข้อมูลลูกค้า</h3>
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            className="form-input"
-                            placeholder="ค้นหาด้วย Customer ID"
-                            onFocus={() => setShowCustomerSearch(true)}
-                        />
-                    </div>
-                    <button 
-                        className="btn btn-primary"
-                        onClick={() => setShowCustomerSearch(true)}
-                    >
-                        ค้นหา
-                    </button>
-                </div>
-            </div>
-        );
-
-        return (
-            <div className="dashboard">
-                <Navigation 
-                    userType="trainer"
-                    activeMenu={activeMenu}
-                    onMenuSelect={setActiveMenu}
-                    onLogout={onLogout}
-                    notifications={notifications}
-                />
-                
-                <div className="main-nav" style={{background: '#f8f9fa'}}>
-                    <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
-                        <strong>Region: {selectedRegion}</strong>
-                        {region === 'all' && (
-                            <select 
-                                value={selectedRegion}
-                                onChange={(e) => setSelectedRegion(e.target.value)}
-                                className="form-select"
-                                style={{width: 'auto'}}
-                            >
-                                <option value="all">All Regions</option>
-                                {REGIONS.map(r => (
-                                    <option key={r} value={r}>{r}</option>
-                                ))}
-                            </select>
-                        )}
-                    </div>
-                    <div className="nav-actions">
                         <button 
-                            className="btn btn-sm btn-secondary"
-                            onClick={() => setShowPasswordChange(true)}
+                            className="btn btn-primary"
+                            onClick={() => setShowCustomerSearch(true)}
                         >
-                            เปลี่ยนรหัสผ่าน
+                            ค้นหา
                         </button>
                     </div>
                 </div>
+            );
 
-                {activeMenu === 'dashboard' && renderDashboard()}
-                {activeMenu === 'register' && <RegisterForm />}
-                {activeMenu === 'coach' && (
-                    editingCoaching ? 
-                    <CoachForm editingData={editingCoaching} onUpdate={handleUpdateCoaching} /> :
-                    <CoachForm />
-                )}
-                {activeMenu === 'library' && <IdeaLibrary />}
-
-                {showCustomerSearch && (
-                    <CustomerSearch
-                        onCustomerFound={handleCustomerFound}
-                        onClose={() => setShowCustomerSearch(false)}
+            return (
+                <div className="dashboard">
+                    <Navigation 
+                        userType="trainer"
+                        activeMenu={activeMenu}
+                        onMenuSelect={setActiveMenu}
+                        onLogout={onLogout}
+                        notifications={notifications}
                     />
-                )}
-
-                {showPasswordChange && (
-                    <PasswordChangeModal
-                        trainerId={region}
-                        onClose={() => setShowPasswordChange(false)}
-                    />
-                )}
-            </div>
-        );
-    };
-
-    // Admin Dashboard with Complete Management
-    const AdminDashboard = ({ onLogout }) => {
-        const [activeMenu, setActiveMenu] = useState('management');
-        const [passwordRequests, setPasswordRequests] = useState([]);
-
-        useEffect(() => {
-            DataService.checkAutoApprove();
-            setPasswordRequests(DataService.getPasswordChangeRequests());
-        }, []);
-
-        const handleApproveRequest = (requestId) => {
-            if (DataService.approvePasswordChange(requestId)) {
-                setPasswordRequests(DataService.getPasswordChangeRequests());
-                alert('อนุมัติการเปลี่ยนรหัสผ่านแล้ว');
-            }
-        };
-
-        const renderManagement = () => (
-            <div className="dashboard-content">
-                <div className="form-section">
-                    <h3>จัดการรหัสผ่าน Trainer</h3>
-                    <div className="form-group">
-                        <h4>คำขอเปลี่ยนรหัสผ่าน</h4>
-                        {passwordRequests.filter(req => req.status === 'pending').map(request => (
-                            <div key={request.id} style={{
-                                padding: '1rem',
-                                border: '1px solid #e0e0e0',
-                                borderRadius: '8px',
-                                marginBottom: '0.5rem',
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center'
-                            }}>
-                                <div>
-                                    <div>Trainer: {request.trainerId}</div>
-                                    <div>เวลาขอ: {request.timestamp}</div>
-                                    <div style={{fontSize: '0.875rem', color: '#666'}}>
-                                        อนุมัติอัตโนมัติใน: {Math.ceil((request.autoApproveTime - Date.now()) / 60000)} นาที
-                                    </div>
-                                </div>
-                                <button 
-                                    className="btn btn-primary btn-sm"
-                                    onClick={() => handleApproveRequest(request.id)}
+                    
+                    <div className="main-nav" style={{background: '#f8f9fa'}}>
+                        <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+                            <strong>Region: {selectedRegion}</strong>
+                            {region === 'all' && (
+                                <select 
+                                    value={selectedRegion}
+                                    onChange={(e) => setSelectedRegion(e.target.value)}
+                                    className="form-select"
+                                    style={{width: 'auto'}}
                                 >
-                                    อนุมัติ
-                                </button>
-                            </div>
-                        ))}
+                                    <option value="all">All Regions</option>
+                                    {REGIONS.map(r => (
+                                        <option key={r} value={r}>{r}</option>
+                                    ))}
+                                </select>
+                            )}
+                        </div>
+                        <div className="nav-actions">
+                            <button 
+                                className="btn btn-sm btn-secondary"
+                                onClick={() => setShowPasswordChange(true)}
+                            >
+                                เปลี่ยนรหัสผ่าน
+                            </button>
+                        </div>
+                    </div>
+
+                    {activeMenu === 'dashboard' && renderDashboard()}
+                    {activeMenu === 'register' && <RegisterForm />}
+                    {activeMenu === 'coach' && (
+                        editingCoaching ? 
+                        <CoachForm editingData={editingCoaching} onUpdate={handleUpdateCoaching} /> :
+                        <CoachForm />
+                    )}
+                    {activeMenu === 'library' && <IdeaLibrary />}
+
+                    {showCustomerSearch && (
+                        <CustomerSearch
+                            onCustomerFound={handleCustomerFound}
+                            onClose={() => setShowCustomerSearch(false)}
+                        />
+                    )}
+
+                    {showPasswordChange && (
+                        <PasswordChangeModal
+                            trainerId={region}
+                            onClose={() => setShowPasswordChange(false)}
+                        />
+                    )}
+                </div>
+            );
+        };
+
+        // Admin Dashboard with Complete Management
+        const AdminDashboard = ({ onLogout }) => {
+            const [activeMenu, setActiveMenu] = useState('management');
+            const [passwordRequests, setPasswordRequests] = useState([]);
+
+            useEffect(() => {
+                DataService.checkAutoApprove();
+                setPasswordRequests(DataService.getPasswordChangeRequests());
+            }, []);
+
+            const handleApproveRequest = (requestId) => {
+                if (DataService.approvePasswordChange(requestId)) {
+                    setPasswordRequests(DataService.getPasswordChangeRequests());
+                    alert('อนุมัติการเปลี่ยนรหัสผ่านแล้ว');
+                }
+            };
+
+            const renderManagement = () => (
+                <div className="dashboard-content">
+                    <div className="form-section">
+                        <h3>จัดการรหัสผ่าน Trainer</h3>
+                        <div className="form-group">
+                            <h4>คำขอเปลี่ยนรหัสผ่าน</h4>
+                            {passwordRequests.filter(req => req.status === 'pending').map(request => (
+                                <div key={request.id} style={{
+                                    padding: '1rem',
+                                    border: '1px solid #e0e0e0',
+                                    borderRadius: '8px',
+                                    marginBottom: '0.5rem',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}>
+                                    <div>
+                                        <div>Trainer: {request.trainerId}</div>
+                                        <div>เวลาขอ: {request.timestamp}</div>
+                                        <div style={{fontSize: '0.875rem', color: '#666'}}>
+                                            อนุมัติอัตโนมัติใน: {Math.ceil((request.autoApproveTime - Date.now()) / 60000)} นาที
+                                        </div>
+                                    </div>
+                                    <button 
+                                        className="btn btn-primary btn-sm"
+                                        onClick={() => handleApproveRequest(request.id)}
+                                    >
+                                        อนุมัติ
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h3>จัดการ Idea Library</h3>
+                        <div style={{display: 'flex', gap: '1rem', flexWrap: 'wrap'}}>
+                            <button className="btn btn-primary">อัปโหลดแบนเนอร์</button>
+                            <button className="btn btn-primary">อัปโหลดไฟล์ PDF</button>
+                            <button className="btn btn-primary">เพิ่มรหัส Trainer</button>
+                            <button className="btn btn-primary">จัดการพื้นที่รหัส</button>
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h3>รายงานและสถิติ</h3>
+                        <button className="btn btn-secondary">Export ข้อมูล</button>
                     </div>
                 </div>
+            );
 
-                <div className="form-section">
-                    <h3>จัดการ Idea Library</h3>
-                    <div style={{display: 'flex', gap: '1rem', flexWrap: 'wrap'}}>
-                        <button className="btn btn-primary">อัปโหลดแบนเนอร์</button>
-                        <button className="btn btn-primary">อัปโหลดไฟล์ PDF</button>
-                        <button className="btn btn-primary">เพิ่มรหัส Trainer</button>
-                        <button className="btn btn-primary">จัดการพื้นที่รหัส</button>
-                    </div>
+            return (
+                <div className="dashboard">
+                    <Navigation 
+                        userType="admin"
+                        activeMenu={activeMenu}
+                        onMenuSelect={setActiveMenu}
+                        onLogout={onLogout}
+                    />
+                    
+                    {activeMenu === 'management' && renderManagement()}
+                    {activeMenu === 'dashboard' && <TrainerDashboard region="all" onLogout={onLogout} />}
+                    {activeMenu === 'library' && <IdeaLibrary />}
                 </div>
-
-                <div className="form-section">
-                    <h3>รายงานและสถิติ</h3>
-                    <button className="btn btn-secondary">Export ข้อมูล</button>
-                </div>
-            </div>
-        );
-
-        return (
-            <div className="dashboard">
-                <Navigation 
-                    userType="admin"
-                    activeMenu={activeMenu}
-                    onMenuSelect={setActiveMenu}
-                    onLogout={onLogout}
-                />
-                
-                {activeMenu === 'management' && renderManagement()}
-                {activeMenu === 'dashboard' && <TrainerDashboard region="all" onLogout={
-                {activeMenu === 'library' && <div>Idea Library - กำลังพัฒนา</div>}
-            </div>
-        );
-    };
-
-    // Main App Component
-    const App = () => {
-        const [currentPage, setCurrentPage] = useState('loading');
-        const [pageProps, setPageProps] = useState({});
-
-        const handleNavigate = (page, props = {}) => {
-            setCurrentPage(page);
-            setPageProps(props);
+            );
         };
 
-        const handleLogout = () => {
-            setCurrentPage('loading');
-            setPageProps({});
+        // Main App Component
+        const App = () => {
+            const [currentPage, setCurrentPage] = useState('loading');
+            const [pageProps, setPageProps] = useState({});
+
+            const handleNavigate = (page, props = {}) => {
+                setCurrentPage(page);
+                setPageProps(props);
+            };
+
+            const handleLogout = () => {
+                setCurrentPage('loading');
+                setPageProps({});
+            };
+
+            const renderPage = () => {
+                switch (currentPage) {
+                    case 'loading':
+                        return <LoadingPage onNavigate={handleNavigate} />;
+                    case 'general-user':
+                        return <GeneralUserDashboard onLogout={handleLogout} />;
+                    case 'trainer':
+                        return <TrainerDashboard {...pageProps} onLogout={handleLogout} />;
+                    case 'admin':
+                        return <AdminDashboard onLogout={handleLogout} />;
+                    default:
+                        return <LoadingPage onNavigate={handleNavigate} />;
+                }
+            };
+
+            return <div className="app">{renderPage()}</div>;
         };
 
-        const renderPage = () => {
-            switch (currentPage) {
-                case 'loading':
-                    return <LoadingPage onNavigate={handleNavigate} />;
-                case 'general-user':
-                    return <GeneralUserDashboard onLogout={handleLogout} />;
-                case 'trainer':
-                    return <TrainerDashboard {...pageProps} onLogout={handleLogout} />;
-                case 'admin':
-                    return <AdminDashboard onLogout={handleLogout} />;
-                default:
-                    return <LoadingPage onNavigate={handleNavigate} />;
-            }
-        };
-
-        return <div className="app">{renderPage()}</div>;
-    };
-
-    // Render the App
-    ReactDOM.render(<App />, document.getElementById('root'));
-</script>
+        // Render the App
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
 </body>
 </html>
-```
