@@ -1,2129 +1,829 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบบริหารกิจกรรมฝึกอบรมและโค้ชชิ่ง</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        /* CSS เต็มรูปแบบเหมือนเดิม */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #007AFF;
-            --primary-dark: #0056CC;
-            --secondary-color: #5856D6;
-            --success-color: #34C759;
-            --warning-color: #FF9500;
-            --error-color: #FF3B30;
-            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --glass-bg: rgba(255, 255, 255, 0.25);
-            --glass-border: rgba(255, 255, 255, 0.18);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            --text-primary: #1D1D1F;
-            --text-secondary: #86868B;
-            --text-white: #FFFFFF;
-            --border-radius: 12px;
-            --border-radius-lg: 20px;
-            --spacing-xs: 0.5rem;
-            --spacing-sm: 1rem;
-            --spacing-md: 1.5rem;
-            --spacing-lg: 2rem;
-            --spacing-xl: 3rem;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .glass-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border-radius: var(--border-radius-lg);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .app {
-            min-height: 100vh;
-        }
-
-        .loading-page {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: var(--spacing-lg);
-        }
-
-        .dashboard {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .main-nav {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: var(--spacing-md) var(--spacing-lg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .nav-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: var(--spacing-sm);
-            align-items: center;
-        }
-
-        .menu-card {
-            background: white;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            font-weight: 600;
-            text-decoration: none;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-        }
-
-        .menu-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
-        }
-
-        .menu-card.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: var(--spacing-sm);
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: var(--text-white);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: var(--spacing-lg);
-        }
-
-        .form-section {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: var(--spacing-md);
-            color: var(--text-primary);
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: var(--spacing-xs);
-        }
-
-        .form-group {
-            margin-bottom: var(--spacing-md);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-md);
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: var(--spacing-xs);
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .form-label.required::after {
-            content: " *";
-            color: var(--error-color);
-        }
-
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #E5E5EA;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .input-with-button {
-            display: flex;
-            gap: var(--spacing-sm);
-        }
-
-        .input-with-button .form-input {
-            flex: 1;
-        }
-
-        .dashboard-content {
-            padding: var(--spacing-lg);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .stat-card {
-            background: white;
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        .team-overview {
-            background: white;
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .team-scroll {
-            display: flex;
-            gap: var(--spacing-md);
-            overflow-x: auto;
-            padding: var(--spacing-md) 0;
-        }
-
-        .trainer-card {
-            flex: 0 0 auto;
-            text-align: center;
-            padding: var(--spacing-md);
-            border: 2px solid transparent;
-            border-radius: var(--border-radius);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            min-width: 120px;
-        }
-
-        .trainer-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-        }
-
-        .trainer-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin: 0 auto var(--spacing-xs);
-            color: white;
-        }
-
-        .trainer-stats {
-            display: flex;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-xs);
-        }
-
-        .stat-badge {
-            background: var(--primary-color);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .customer-id-display {
-            background: var(--glass-card);
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius);
-            margin-bottom: var(--spacing-lg);
-            text-align: center;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .unsaved-badge {
-            background: var(--warning-color);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-left: var(--spacing-sm);
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .form-subsection {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid #007AFF;
-        }
-        
-        .subsection-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .financial-products {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .product-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.75rem;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .product-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            min-width: 150px;
-        }
-        
-        .product-inputs {
-            display: flex;
-            gap: 1rem;
-            flex: 1;
-        }
-        
-        .product-inputs input {
-            flex: 1;
-        }
-        
-        .children-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .child-item {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            padding: 1rem;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .add-button {
-            background: #34C759;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-        }
-        
-        .remove-button {
-            background: #FF3B30;
-            color: white;
-            border: none;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .unknown-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            font-size: 0.875rem;
-            color: #666;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: var(--spacing-lg);
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-lg);
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-md);
-            padding-bottom: var(--spacing-sm);
-            border-bottom: 1px solid #E5E5EA;
-        }
-
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--error-color);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .last-update {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            background: #f8f9fa;
-            border-radius: 6px;
-        }
-
-        .comment-section {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .comment {
-            padding: 0.75rem;
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            border-left: 3px solid var(--primary-color);
-        }
-
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.25rem;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .main-nav {
-                flex-direction: column;
-                gap: var(--spacing-md);
-            }
-            
-            .nav-menu {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .glass-container {
-                margin: var(--spacing-sm);
-                padding: var(--spacing-md);
-            }
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .chart-container {
-            background: white;
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .chart-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .simple-chart {
-            height: 200px;
-            display: flex;
-            align-items: end;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 1rem;
-        }
-
-        .chart-bar {
-            background: var(--primary-color);
-            border-radius: 4px 4px 0 0;
-            min-width: 40px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .chart-bar:hover {
-            background: var(--primary-dark);
-        }
-
-        .chart-label {
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            text-align: center;
-        }
-
-        .chart-value {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .filter-section {
-            background: white;
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: var(--spacing-lg);
-            display: flex;
-            gap: var(--spacing-md);
-            flex-wrap: wrap;
-            align-items: end;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .filter-label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Account Planning System - Prototype (One-file)</title>
+
+  <!-- Bootstrap 5 CSS (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- html2canvas + jsPDF for PDF export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <style>
+    body { padding: 1.25rem; background:#f7f9fc; }
+    .card { margin-bottom:1rem; }
+    .small-muted { font-size:0.85rem; color:#6c757d; }
+    .watermark { position:fixed; right:10px; bottom:10px; opacity:0.12; font-weight:700; font-size:12px; }
+    .required::after { content:" *"; color: #d00; }
+    .tag { padding:0.15rem 0.45rem; border-radius:0.25rem; background:#e9ecef; margin-right:0.25rem; font-size:0.85rem; }
+    .table-fixed { max-height:240px; overflow:auto; display:block; }
+  </style>
 </head>
 <body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect, useCallback } = React;
-
-        // Constants
-        const POSITIONS = ['BM', 'WCRM', 'CISA', 'CFSA', 'IA', 'IS', 'อื่น ๆ'];
-        const COURSES = ['Account Plan', 'Calling Skill', 'Sales Technique', 'Sales Idea', 'Sales Progress', 'อื่น ๆ'];
-        const REGIONS = ['RH1', 'RH2', 'RH3', 'RH4', 'RH5'];
-        const GENDER_OPTIONS = ['ชาย', 'หญิง', 'อื่นๆ'];
-        const STATUS_OPTIONS = ['โสด', 'แต่งงาน', 'หย่า', 'หม้าย'];
-        const OCCUPATIONS = ['ธุรกิจส่วนตัว', 'รับราชการ', 'พนักงานบริษัท', 'freelance', 'นักศึกษา', 'ไม่มีงานทำ', 'อื่นๆ'];
-        const BUSINESS_TYPES = ['บริการ', 'การค้า', 'อุตสาหกรรม', 'เกษตรกรรม', 'อสังหาริมทรัพย์', 'อื่นๆ'];
-        
-        const TRAINER_PASSWORDS = {
-            '0001': 'RH1',
-            '0002': 'RH2', 
-            '0003': 'RH3',
-            '0004': 'RH4',
-            '0005': 'RH5',
-            '0009': 'all'
-        };
-
-        // Mock Data สำหรับ Region/Zone/Branch
-        const BRANCH_DATA = {
-            '001': { name: 'สาขาสยามสแควร์', region: 'RH1', zone: 'Zone A' },
-            '002': { name: 'สาขาสีลม', region: 'RH1', zone: 'Zone A' },
-            '003': { name: 'สาขาห้างเซ็นทรัล', region: 'RH2', zone: 'Zone B' },
-            '004': { name: 'สาขาเดอะมอลล์', region: 'RH2', zone: 'Zone B' },
-            '005': { name: 'สาขาถนนรัชดา', region: 'RH3', zone: 'Zone C' }
-        };
-
-        const ZONE_DATA = {
-            'RH1': ['Zone A', 'Zone B'],
-            'RH2': ['Zone C', 'Zone D'],
-            'RH3': ['Zone E', 'Zone F'],
-            'RH4': ['Zone G', 'Zone H'],
-            'RH5': ['Zone I', 'Zone J']
-        };
-
-        const BRANCHES_BY_ZONE = {
-            'Zone A': ['สาขาสยามสแควร์', 'สาขาสีลม'],
-            'Zone B': ['สาขาบางนา', 'สาขาอุดมสุข'],
-            'Zone C': ['สาขาห้างเซ็นทรัล', 'สาขาโรบินสัน'],
-            'Zone D': ['สาขาเมกาบางนา', 'สาขาซีคอน'],
-            'Zone E': ['สาขาถนนรัชดา', 'สาขาลาดพร้าว']
-        };
-
-        // Utility Functions
-        const generateCustomerId = () => {
-            const now = new Date();
-            const year = (now.getFullYear() + 543).toString().slice(-2);
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            return `C-${year}${month}${day}${hours}${minutes}`;
-        };
-
-        const formatThaiDateTime = (date = new Date()) => {
-            return date.toLocaleString('th-TH', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            });
-        };
-
-        // Enhanced Data Service
-        const DataService = {
-            getRegistrations: () => {
-                return JSON.parse(localStorage.getItem('registrations') || '[]');
-            },
-            
-            saveRegistration: (data) => {
-                const registrations = DataService.getRegistrations();
-                const newData = { 
-                    ...data, 
-                    id: Date.now().toString(),
-                    timestamp: formatThaiDateTime(),
-                    lastUpdate: formatThaiDateTime(),
-                    updatedBy: 'General User'
-                };
-                registrations.push(newData);
-                localStorage.setItem('registrations', JSON.stringify(registrations));
-                
-                // ส่ง notification ไปยัง Trainer
-                DataService.addNotification(data.region || 'all', 'new_registration');
-                return true;
-            },
-            
-            getCoachings: () => {
-                return JSON.parse(localStorage.getItem('coachings') || '[]');
-            },
-            
-            saveCoaching: (data) => {
-                const coachings = DataService.getCoachings();
-                const newData = { 
-                    ...data, 
-                    id: Date.now().toString(),
-                    timestamp: formatThaiDateTime(),
-                    lastUpdate: formatThaiDateTime(),
-                    updatedBy: 'General User',
-                    comments: [],
-                    status: 'new'
-                };
-                coachings.push(newData);
-                localStorage.setItem('coachings', JSON.stringify(coachings));
-                
-                // ส่ง notification ไปยัง Trainer
-                DataService.addNotification(data.region || 'all', 'new_coaching');
-                return true;
-            },
-
-            updateCoaching: (customerId, updates) => {
-                const coachings = DataService.getCoachings();
-                const index = coachings.findIndex(c => c.customerId === customerId);
-                if (index !== -1) {
-                    coachings[index] = {
-                        ...coachings[index],
-                        ...updates,
-                        lastUpdate: formatThaiDateTime(),
-                        updatedBy: updates.updatedBy || 'General User'
-                    };
-                    localStorage.setItem('coachings', JSON.stringify(coachings));
-                    return true;
-                }
-                return false;
-            },
-
-            addComment: (customerId, comment, user) => {
-                const coachings = DataService.getCoachings();
-                const index = coachings.findIndex(c => c.customerId === customerId);
-                if (index !== -1) {
-                    if (!coachings[index].comments) {
-                        coachings[index].comments = [];
-                    }
-                    coachings[index].comments.push({
-                        id: Date.now().toString(),
-                        text: comment,
-                        user: user,
-                        timestamp: formatThaiDateTime()
-                    });
-                    coachings[index].lastUpdate = formatThaiDateTime();
-                    coachings[index].updatedBy = user;
-                    coachings[index].status = 'replied';
-                    localStorage.setItem('coachings', JSON.stringify(coachings));
-                    return true;
-                }
-                return false;
-            },
-
-            findCoachingByCustomerId: (customerId) => {
-                const coachings = DataService.getCoachings();
-                return coachings.find(c => c.customerId === customerId) || null;
-            },
-
-            getDashboardData: (region, filters = {}) => {
-                let registrations = DataService.getRegistrations();
-                let coachings = DataService.getCoachings();
-                
-                // Filter by region
-                if (region && region !== 'all') {
-                    registrations = registrations.filter(reg => reg.region === region);
-                    coachings = coachings.filter(coach => coach.region === region);
-                }
-
-                // Filter by date range
-                if (filters.startDate && filters.endDate) {
-                    // Simplified date filtering
-                    registrations = registrations.filter(reg => {
-                        const regDate = new Date(reg.timestamp);
-                        return regDate >= new Date(filters.startDate) && regDate <= new Date(filters.endDate);
-                    });
-                    coachings = coachings.filter(coach => {
-                        const coachDate = new Date(coach.timestamp);
-                        return coachDate >= new Date(filters.startDate) && coachDate <= new Date(filters.endDate);
-                    });
-                }
-
-                // Filter by position
-                if (filters.position) {
-                    registrations = registrations.filter(reg => reg.position === filters.position);
-                }
-
-                // Filter by coaching type
-                if (filters.coachingType) {
-                    coachings = coachings.filter(coach => coach.coachingType === filters.coachingType);
-                }
-                
-                return {
-                    totalRegistrations: registrations.length,
-                    totalCoachings: coachings.length,
-                    registrationsByRegion: DataService.groupBy(registrations, 'region'),
-                    coachingsByRegion: DataService.groupBy(coachings, 'region'),
-                    registrationsByPosition: DataService.groupBy(registrations, 'position'),
-                    coachingTypes: DataService.groupBy(coachings, 'coachingType'),
-                    monthlyData: DataService.getMonthlyData(registrations, coachings)
-                };
-            },
-
-            getMonthlyData: (registrations, coachings) => {
-                const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-                const currentMonth = new Date().getMonth();
-                
-                return months.map((month, index) => ({
-                    month,
-                    registrations: Math.floor(Math.random() * 20) + 5,
-                    coachings: Math.floor(Math.random() * 15) + 3
-                }));
-            },
-            
-            groupBy: (array, key) => {
-                return array.reduce((acc, item) => {
-                    const group = item[key] || 'Unknown';
-                    acc[group] = (acc[group] || 0) + 1;
-                    return acc;
-                }, {});
-            },
-
-            getNotifications: (region) => {
-                const notifications = JSON.parse(localStorage.getItem('notifications') || '{}');
-                return notifications[region] || { newRegistrations: 0, newCoachings: 0 };
-            },
-
-            addNotification: (region, type) => {
-                const notifications = JSON.parse(localStorage.getItem('notifications') || '{}');
-                if (!notifications[region]) {
-                    notifications[region] = { newRegistrations: 0, newCoachings: 0 };
-                }
-                if (type === 'new_registration') {
-                    notifications[region].newRegistrations++;
-                } else if (type === 'new_coaching') {
-                    notifications[region].newCoachings++;
-                }
-                localStorage.setItem('notifications', JSON.stringify(notifications));
-            },
-
-            clearNotifications: (region, type) => {
-                const notifications = JSON.parse(localStorage.getItem('notifications') || '{}');
-                if (notifications[region]) {
-                    if (type === 'registrations') {
-                        notifications[region].newRegistrations = 0;
-                    } else if (type === 'coachings') {
-                        notifications[region].newCoachings = 0;
-                    }
-                    localStorage.setItem('notifications', JSON.stringify(notifications));
-                }
-            },
-
-            // ระบบเปลี่ยนรหัสผ่าน
-            getPasswordChangeRequests: () => {
-                return JSON.parse(localStorage.getItem('passwordChangeRequests') || '[]');
-            },
-
-            requestPasswordChange: (trainerId, newPassword) => {
-                const requests = DataService.getPasswordChangeRequests();
-                const request = {
-                    id: Date.now().toString(),
-                    trainerId,
-                    newPassword,
-                    timestamp: formatThaiDateTime(),
-                    status: 'pending',
-                    autoApproveTime: Date.now() + 5 * 60 * 1000 // 5 minutes
-                };
-                requests.push(request);
-                localStorage.setItem('passwordChangeRequests', JSON.stringify(requests));
-                return true;
-            },
-
-            approvePasswordChange: (requestId) => {
-                const requests = DataService.getPasswordChangeRequests();
-                const request = requests.find(r => r.id === requestId);
-                if (request) {
-                    request.status = 'approved';
-                    localStorage.setItem('passwordChangeRequests', JSON.stringify(requests));
-                    
-                    // อัปเดตรหัสผ่านจริง (ใน production ควรเข้ารหัส)
-                    const trainers = JSON.parse(localStorage.getItem('trainers') || '{}');
-                    trainers[request.trainerId] = request.newPassword;
-                    localStorage.setItem('trainers', JSON.stringify(trainers));
-                    return true;
-                }
-                return false;
-            },
-
-            checkAutoApprove: () => {
-                const requests = DataService.getPasswordChangeRequests();
-                const now = Date.now();
-                let changed = false;
-
-                requests.forEach(request => {
-                    if (request.status === 'pending' && now >= request.autoApproveTime) {
-                        request.status = 'auto_approved';
-                        changed = true;
-                    }
-                });
-
-                if (changed) {
-                    localStorage.setItem('passwordChangeRequests', JSON.stringify(requests));
-                }
-            }
-        };
-
-        // Components
-        const LoadingSpinner = () => (
-            <div className="loading-spinner"></div>
-        );
-
-        const Navigation = ({ userType, activeMenu, onMenuSelect, onLogout, notifications = {} }) => (
-            <nav className="main-nav">
-                <div className="nav-brand">
-                    {userType === 'trainer' ? 'Trainer Dashboard' : 
-                     userType === 'admin' ? 'Admin Dashboard' : 'ระบบบริหารกิจกรรม'}
-                </div>
-                <div className="nav-menu">
-                    <button 
-                        className={`menu-card ${activeMenu === 'register' ? 'active' : ''}`}
-                        onClick={() => onMenuSelect('register')}
-                    >
-                        📝 Register
-                        {notifications.registrations > 0 && (
-                            <span className="notification-badge">{notifications.registrations}</span>
-                        )}
-                    </button>
-                    <button 
-                        className={`menu-card ${activeMenu === 'coach' ? 'active' : ''}`}
-                        onClick={() => onMenuSelect('coach')}
-                    >
-                        💼 Coach
-                        {notifications.coachings > 0 && (
-                            <span className="notification-badge">{notifications.coachings}</span>
-                        )}
-                    </button>
-                    <button 
-                        className={`menu-card ${activeMenu === 'library' ? 'active' : ''}`}
-                        onClick={() => onMenuSelect('library')}
-                    >
-                        📚 Idea Library
-                    </button>
-                    {userType === 'admin' && (
-                        <button 
-                            className={`menu-card ${activeMenu === 'management' ? 'active' : ''}`}
-                            onClick={() => onMenuSelect('management')}
-                        >
-                            ⚙️ Management
-                        </button>
-                    )}
-                </div>
-                <div className="nav-actions">
-                    <button className="btn btn-sm btn-secondary" onClick={() => onMenuSelect('home')}>
-                        🏠 Home
-                    </button>
-                    <button className="btn btn-sm btn-secondary" onClick={onLogout}>
-                        🚪 ออกจากระบบ
-                    </button>
-                </div>
-            </nav>
-        );
-
-        // Customer Search Component
-        const CustomerSearch = ({ onCustomerFound, onClose }) => {
-            const [customerId, setCustomerId] = useState('');
-            const [employeeId, setEmployeeId] = useState('');
-            const [showAuth, setShowAuth] = useState(false);
-            const [searchResult, setSearchResult] = useState(null);
-
-            const handleSearch = () => {
-                const coaching = DataService.findCoachingByCustomerId(customerId);
-                if (coaching) {
-                    setSearchResult(coaching);
-                    setShowAuth(true);
-                } else {
-                    alert('ไม่พบข้อมูลลูกค้าด้วย Customer ID นี้');
-                }
-            };
-
-            const handleAuth = () => {
-                if (searchResult && searchResult.employeeId === employeeId) {
-                    onCustomerFound(searchResult);
-                    onClose();
-                } else {
-                    alert('รหัสพนักงานไม่ถูกต้อง');
-                }
-            };
-
-            return (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h3 className="modal-title">ค้นหาข้อมูลลูกค้า</h3>
-                            <button className="modal-close" onClick={onClose}>×</button>
-                        </div>
-                        
-                        {!showAuth ? (
-                            <>
-                                <div className="form-group">
-                                    <label className="form-label">Customer ID</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        value={customerId}
-                                        onChange={(e) => setCustomerId(e.target.value)}
-                                        placeholder="กรอก Customer ID"
-                                    />
-                                </div>
-                                <button className="btn btn-primary" onClick={handleSearch}>
-                                    ค้นหา
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <div className="form-group">
-                                    <label className="form-label">รหัสพนักงาน</label>
-                                    <input
-                                        type="password"
-                                        className="form-input"
-                                        value={employeeId}
-                                        onChange={(e) => setEmployeeId(e.target.value)}
-                                        placeholder="กรอกรหัสพนักงานเพื่อยืนยันตัวตน"
-                                    />
-                                </div>
-                                <div style={{display: 'flex', gap: '1rem'}}>
-                                    <button className="btn btn-primary" onClick={handleAuth}>
-                                        ยืนยัน
-                                    </button>
-                                    <button className="btn btn-secondary" onClick={() => setShowAuth(false)}>
-                                        ย้อนกลับ
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </div>
-            );
-        };
-
-        // Comment System Component
-        const CommentSection = ({ customerId, comments = [], onAddComment, currentUser }) => {
-            const [newComment, setNewComment] = useState('');
-
-            const handleSubmit = () => {
-                if (newComment.trim()) {
-                    onAddComment(newComment);
-                    setNewComment('');
-                }
-            };
-
-            return (
-                <div className="comment-section">
-                    <h4>ความคิดเห็น</h4>
-                    {comments.map(comment => (
-                        <div key={comment.id} className="comment">
-                            <div className="comment-header">
-                                <span>{comment.user}</span>
-                                <span>{comment.timestamp}</span>
-                            </div>
-                            <div>{comment.text}</div>
-                        </div>
-                    ))}
-                    <div style={{marginTop: '1rem'}}>
-                        <textarea
-                            className="form-textarea"
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            placeholder="เพิ่มความคิดเห็น..."
-                            rows="3"
-                        />
-                        <button 
-                            className="btn btn-primary btn-sm"
-                            onClick={handleSubmit}
-                            style={{marginTop: '0.5rem'}}
-                        >
-                            เพิ่มความคิดเห็น
-                        </button>
-                    </div>
-                </div>
-            );
-        };
-
-        // Team Overview Component
-        const TeamOverview = ({ onTrainerSelect, region }) => {
-            const [trainers] = useState([
-                { id: '1', name: 'Trainer RH1', region: 'RH1', avatar: '👨‍💼', totalMTD: 45, newCases: 3 },
-                { id: '2', name: 'Trainer RH2', region: 'RH2', avatar: '👩‍💼', totalMTD: 38, newCases: 5 },
-                { id: '3', name: 'Trainer RH3', region: 'RH3', avatar: '👨‍💼', totalMTD: 52, newCases: 2 },
-                { id: '4', name: 'Trainer RH4', region: 'RH4', avatar: '👩‍💼', totalMTD: 29, newCases: 4 },
-                { id: '5', name: 'Trainer RH5', region: 'RH5', avatar: '👨‍💼', totalMTD: 41, newCases: 1 },
-            ]);
-
-            const filteredTrainers = region === 'all' 
-                ? trainers 
-                : trainers.filter(t => t.region === region);
-
-            return (
-                <div className="team-overview">
-                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
-                        <h3>Team Overview</h3>
-                        <button className="btn btn-sm btn-secondary">View All</button>
-                    </div>
-                    <div className="team-scroll">
-                        {filteredTrainers.map(trainer => (
-                            <div key={trainer.id} className="trainer-card" onClick={() => onTrainerSelect(trainer)}>
-                                <div className="trainer-avatar">{trainer.avatar}</div>
-                                <div style={{ fontWeight: '600', fontSize: '0.875rem' }}>{trainer.region}</div>
-                                <div className="trainer-stats">
-                                    <span className="stat-badge">{trainer.totalMTD}</span>
-                                    <span className="stat-badge" style={{ background: '#FF9500' }}>
-                                        {trainer.newCases}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        };
-
-        // Chart Components
-        const PieChart = ({ data, title }) => {
-            const total = Object.values(data).reduce((sum, value) => sum + value, 0);
-            
-            return (
-                <div className="chart-container">
-                    <div className="chart-title">{title}</div>
-                    <div className="simple-chart">
-                        {Object.entries(data).map(([label, value], index) => {
-                            const percentage = total > 0 ? (value / total) * 100 : 0;
-                            const colors = ['#007AFF', '#34C759', '#FF9500', '#FF3B30', '#5856D6'];
-                            
-                            return (
-                                <div key={label} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                                    <div 
-                                        className="chart-bar"
-                                        style={{
-                                            height: `${percentage}%`,
-                                            backgroundColor: colors[index % colors.length],
-                                            width: '40px'
-                                        }}
-                                    >
-                                        <div className="chart-value">{value}</div>
-                                    </div>
-                                    <div className="chart-label">{label}</div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            );
-        };
-
-        const BarChart = ({ data, title }) => {
-            const maxValue = Math.max(...Object.values(data), 1);
-            
-            return (
-                <div className="chart-container">
-                    <div className="chart-title">{title}</div>
-                    <div className="simple-chart">
-                        {Object.entries(data).map(([label, value]) => {
-                            const percentage = (value / maxValue) * 100;
-                            
-                            return (
-                                <div key={label} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                                    <div 
-                                        className="chart-bar"
-                                        style={{
-                                            height: `${percentage}%`,
-                                            backgroundColor: '#007AFF',
-                                            width: '30px'
-                                        }}
-                                    >
-                                        <div className="chart-value">{value}</div>
-                                    </div>
-                                    <div className="chart-label">{label}</div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            );
-        };
-
-        // Filter Component
-        const DashboardFilter = ({ onFilterChange, currentFilters }) => {
-            const [filters, setFilters] = useState(currentFilters || {});
-
-            const handleFilterChange = (key, value) => {
-                const newFilters = { ...filters, [key]: value };
-                setFilters(newFilters);
-                onFilterChange(newFilters);
-            };
-
-            return (
-                <div className="filter-section">
-                    <div className="filter-group">
-                        <div className="filter-label">Region</div>
-                        <select 
-                            className="form-select"
-                            value={filters.region || ''}
-                            onChange={(e) => handleFilterChange('region', e.target.value)}
-                        >
-                            <option value="">ทั้งหมด</option>
-                            {REGIONS.map(region => (
-                                <option key={region} value={region}>{region}</option>
-                            ))}
-                        </select>
-                    </div>
-                    
-                    <div className="filter-group">
-                        <div className="filter-label">ตำแหน่ง</div>
-                        <select 
-                            className="form-select"
-                            value={filters.position || ''}
-                            onChange={(e) => handleFilterChange('position', e.target.value)}
-                        >
-                            <option value="">ทั้งหมด</option>
-                            {POSITIONS.map(position => (
-                                <option key={position} value={position}>{position}</option>
-                            ))}
-                        </select>
-                    </div>
-                    
-                    <div className="filter-group">
-                        <div className="filter-label">ประเภท Coaching</div>
-                        <select 
-                            className="form-select"
-                            value={filters.coachingType || ''}
-                            onChange={(e) => handleFilterChange('coachingType', e.target.value)}
-                        >
-                            <option value="">ทั้งหมด</option>
-                            {COURSES.map(course => (
-                                <option key={course} value={course}>{course}</option>
-                            ))}
-                        </select>
-                    </div>
-                    
-                    <div className="filter-group">
-                        <div className="filter-label">วันที่เริ่ม</div>
-                        <input
-                            type="date"
-                            className="form-input"
-                            value={filters.startDate || ''}
-                            onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                        />
-                    </div>
-                    
-                    <div className="filter-group">
-                        <div className="filter-label">วันที่สิ้นสุด</div>
-                        <input
-                            type="date"
-                            className="form-input"
-                            value={filters.endDate || ''}
-                            onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                        />
-                    </div>
-                    
-                    <button 
-                        className="btn btn-secondary"
-                        onClick={() => {
-                            const resetFilters = {};
-                            setFilters(resetFilters);
-                            onFilterChange(resetFilters);
-                        }}
-                    >
-                        ล้างฟิลเตอร์
-                    </button>
-                </div>
-            );
-        };
-
-        // Password Change Component - แก้ไข syntax ถูกต้องแล้ว
-        const PasswordChangeModal = ({ trainerId, onClose }) => {
-            const [currentPassword, setCurrentPassword] = useState('');
-            const [newPassword, setNewPassword] = useState('');
-            const [confirmPassword, setConfirmPassword] = useState('');
-
-            const handleSubmit = () => {
-                if (newPassword !== confirmPassword) {
-                    alert('รหัสผ่านใหม่ไม่ตรงกัน');
-                    return;
-                }
-                
-                DataService.requestPasswordChange(trainerId, newPassword);
-                alert('ส่งคำขอกำหนดรหัสผ่านใหม่แล้ว รอการอนุมัติจาก Admin');
-                onClose();
-            };
-
-            return (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h3 className="modal-title">เปลี่ยนรหัสผ่าน</h3>
-                            <button className="modal-close" onClick={onClose}>×</button>
-                        </div>
-                        
-                        <div className="form-group">
-                            <label className="form-label">รหัสผ่านปัจจุบัน</label>
-                            <input
-                                type="password"
-                                className="form-input"
-                                value={currentPassword}
-                                onChange={(e) => setCurrentPassword(e.target.value)}
-                            />
-                        </div>
-                        
-                        <div className="form-group">
-                            <label className="form-label">รหัสผ่านใหม่</label>
-                            <input
-                                type="password"
-                                className="form-input"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                            />
-                        </div>
-                        
-                        <div className="form-group">
-                            <label className="form-label">ยืนยันรหัสผ่านใหม่</label>
-                            <input
-                                type="password"
-                                className="form-input"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                            />
-                        </div>
-                        
-                        <div style={{display: 'flex', gap: '1rem'}}>
-                            <button className="btn btn-primary" onClick={handleSubmit}>
-                                ส่งคำขอ
-                            </button>
-                            <button className="btn btn-secondary" onClick={onClose}>
-                                ยกเลิก
-                            </button>
-                        </div>
-                        
-                        <div style={{marginTop: '1rem', fontSize: '0.875rem', color: '#666'}}>
-                            หมายเหตุ: ระบบจะแจ้งไปยัง Admin เพื่ออนุมัติการเปลี่ยนรหัสผ่าน 
-                            หากไม่ได้รับการอนุมัติภายใน 5 นาที ระบบจะอนุมัติโดยอัตโนมัติ
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // Enhanced RegisterForm with Branch/Zone System
-        const RegisterForm = () => {
-            const [formData, setFormData] = useState({
-                name: '',
-                employeeId: '',
-                position: '',
-                branchCode: '',
-                branchName: '',
-                region: '',
-                zone: '',
-                branch: '',
-                course: '',
-                otherCourse: ''
-            });
-            const [isSubmitting, setIsSubmitting] = useState(false);
-            const [zones, setZones] = useState([]);
-            const [branches, setBranches] = useState([]);
-
-            const handleBranchCodeSearch = () => {
-                if (formData.branchCode && BRANCH_DATA[formData.branchCode]) {
-                    const branchInfo = BRANCH_DATA[formData.branchCode];
-                    setFormData({
-                        ...formData,
-                        branchName: branchInfo.name,
-                        region: branchInfo.region,
-                        zone: branchInfo.zone
-                    });
-                } else {
-                    alert('ไม่พบข้อมูลสาขาด้วยรหัสนี้');
-                }
-            };
-
-            const handleRegionChange = (region) => {
-                setFormData({
-                    ...formData,
-                    region,
-                    zone: '',
-                    branch: ''
-                });
-                setZones(ZONE_DATA[region] || []);
-                setBranches([]);
-            };
-
-            const handleZoneChange = (zone) => {
-                setFormData({
-                    ...formData,
-                    zone,
-                    branch: ''
-                });
-                setBranches(BRANCHES_BY_ZONE[zone] || []);
-            };
-
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                setIsSubmitting(true);
-                
-                try {
-                    const success = DataService.saveRegistration(formData);
-                    if (success) {
-                        alert('ลงทะเบียนสำเร็จ');
-                        setFormData({
-                            name: '', employeeId: '', position: '', branchCode: '',
-                            branchName: '', region: '', zone: '', branch: '',
-                            course: '', otherCourse: ''
-                        });
-                    }
-                } catch (error) {
-                    alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-                } finally {
-                    setIsSubmitting(false);
-                }
-            };
-
-            return (
-                <div className="form-container">
-                    <h2 className="form-title">ระบบลงทะเบียนอบรม</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-section">
-                            <div className="form-group">
-                                <label className="form-label required">ชื่อ-นามสกุล</label>
-                                <input
-                                    type="text"
-                                    className="form-input"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                    required
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label required">รหัสพนักงาน</label>
-                                <input
-                                    type="text"
-                                    className="form-input"
-                                    value={formData.employeeId}
-                                    onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                                    required
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label required">ตำแหน่ง</label>
-                                <select
-                                    className="form-select"
-                                    value={formData.position}
-                                    onChange={(e) => setFormData({...formData, position: e.target.value})}
-                                    required
-                                >
-                                    <option value="">เลือกตำแหน่ง</option>
-                                    {POSITIONS.map(pos => (
-                                        <option key={pos} value={pos}>{pos}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label">รหัสสาขา</label>
-                                <div className="input-with-button">
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        value={formData.branchCode}
-                                        onChange={(e) => setFormData({...formData, branchCode: e.target.value})}
-                                        placeholder="กรอกรหัสสาขา"
-                                    />
-                                    <button type="button" className="btn btn-sm btn-secondary" onClick={handleBranchCodeSearch}>
-                                        ค้นหา
-                                    </button>
-                                </div>
-                            </div>
-
-                            {formData.branchCode && formData.branchName && (
-                                <div className="form-group">
-                                    <label className="form-label">ข้อมูลสาขา</label>
-                                    <div style={{padding: '1rem', background: '#f8f9fa', borderRadius: '8px'}}>
-                                        <div>ชื่อสาขา: {formData.branchName}</div>
-                                        <div>Region: {formData.region}</div>
-                                        <div>Zone: {formData.zone}</div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {!formData.branchCode && (
-                                <>
-                                    <div className="form-group">
-                                        <label className="form-label required">Region</label>
-                                        <select
-                                            className="form-select"
-                                            value={formData.region}
-                                            onChange={(e) => handleRegionChange(e.target.value)}
-                                            required
-                                        >
-                                            <option value="">เลือก Region</option>
-                                            {REGIONS.map(region => (
-                                                <option key={region} value={region}>{region}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    {formData.region && (
-                                        <div className="form-group">
-                                            <label className="form-label">Zone</label>
-                                            <select
-                                                className="form-select"
-                                                value={formData.zone}
-                                                onChange={(e) => handleZoneChange(e.target.value)}
-                                            >
-                                                <option value="">เลือก Zone</option>
-                                                {zones.map(zone => (
-                                                    <option key={zone} value={zone}>{zone}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    )}
-
-                                    {formData.zone && (
-                                        <div className="form-group">
-                                            <label className="form-label">สาขา</label>
-                                            <select
-                                                className="form-select"
-                                                value={formData.branch}
-                                                onChange={(e) => setFormData({...formData, branch: e.target.value})}
-                                            >
-                                                <option value="">เลือกสาขา</option>
-                                                {branches.map(branch => (
-                                                    <option key={branch} value={branch}>{branch}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    )}
-                                </>
-                            )}
-
-                            <div className="form-group">
-                                <label className="form-label required">หลักสูตรที่ต้องการลงทะเบียน</label>
-                                <select
-                                    className="form-select"
-                                    value={formData.course}
-                                    onChange={(e) => setFormData({...formData, course: e.target.value})}
-                                    required
-                                >
-                                    <option value="">เลือกหลักสูตร</option>
-                                    {COURSES.map(course => (
-                                        <option key={course} value={course}>{course}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {formData.course === 'อื่น ๆ' && (
-                                <div className="form-group">
-                                    <label className="form-label">ระบุหลักสูตร</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        value={formData.otherCourse}
-                                        onChange={(e) => setFormData({...formData, otherCourse: e.target.value})}
-                                    />
-                                </div>
-                            )}
-
-                            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                                {isSubmitting ? <LoadingSpinner /> : 'Submit'}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            );
-        };
-
-        // Enhanced CoachForm with Complete Features
-        const CoachForm = ({ editingData = null, onUpdate = null }) => {
-            const [customerId, setCustomerId] = useState(editingData?.customerId || '');
-            const [isSaved, setIsSaved] = useState(!!editingData);
-            const [isSubmitting, setIsSubmitting] = useState(false);
-            const [activeSection, setActiveSection] = useState('personal');
-            
-            const [formData, setFormData] = useState(editingData || {
-                employeeName: '', employeeId: '', position: '', branchCode: '', region: '', zone: '',
-                customerName: '', gender: '', age: '', status: '', occupation: '', income: '',
-                financialProducts: [
-                    { type: 'เงินฝาก', key: 'deposit', checked: false, value: '', debt: '' },
-                    { type: 'หุ้นกู้', key: 'bonds', checked: false, value: '', debt: '' },
-                    { type: 'กองทุนรวม', key: 'mutualFunds', checked: false, value: '', debt: '' },
-                    { type: 'บัตรเครดิต', key: 'creditCard', checked: false, value: '', debt: '' },
-                    { type: 'สินเชื่อ', key: 'loan', checked: false, value: '', debt: '' }
-                ],
-                insurance: { has: false, policyCount: '', coverage: '' },
-                otherProducts: [],
-                spouseAge: '', spouseOccupation: '', children: [],
-                hasDependents: false, dependentsCount: '', dependentRelationship: '',
-                businessName: '', businessType: '', registeredCapital: '', annualIncome: '',
-                netProfit: '', tax: '', sharePercentage: '', shareholderEquity: '', additionalInfo: '',
-                coachingType: '', additionalDetails: '',
-                unknownFlags: { income: false, financial: false, family: false, business: false }
-            });
-
-            useEffect(() => {
-                if (!editingData) {
-                    setCustomerId(generateCustomerId());
-                }
-            }, [editingData]);
-
-            const handleFinancialProductChange = (index, field, value) => {
-                const updatedProducts = [...formData.financialProducts];
-                if (field === 'checked') {
-                    updatedProducts[index].checked = value;
-                    if (!value) {
-                        updatedProducts[index].value = '';
-                        updatedProducts[index].debt = '';
-                    }
-                } else {
-                    updatedProducts[index][field] = value;
-                }
-                setFormData({ ...formData, financialProducts: updatedProducts });
-            };
-
-            const addOtherProduct = () => {
-                setFormData({
-                    ...formData,
-                    otherProducts: [...formData.otherProducts, { type: '', value: '', debt: '' }]
-                });
-            };
-
-            const removeOtherProduct = (index) => {
-                const updatedProducts = [...formData.otherProducts];
-                updatedProducts.splice(index, 1);
-                setFormData({ ...formData, otherProducts: updatedProducts });
-            };
-
-            const handleOtherProductChange = (index, field, value) => {
-                const updatedProducts = [...formData.otherProducts];
-                updatedProducts[index][field] = value;
-                setFormData({ ...formData, otherProducts: updatedProducts });
-            };
-
-            const addChild = () => {
-                setFormData({
-                    ...formData,
-                    children: [...formData.children, { age: '', occupation: '' }]
-                });
-            };
-
-            const removeChild = (index) => {
-                const updatedChildren = [...formData.children];
-                updatedChildren.splice(index, 1);
-                setFormData({ ...formData, children: updatedChildren });
-            };
-
-            const handleChildChange = (index, field, value) => {
-                const updatedChildren = [...formData.children];
-                updatedChildren[index][field] = value;
-                setFormData({ ...formData, children: updatedChildren });
-            };
-
-            const handleUnknownFlag = (field, checked) => {
-                setFormData({
-                    ...formData,
-                    unknownFlags: {
-                        ...formData.unknownFlags,
-                        [field]: checked
-                    }
-                });
-            };
-
-            const handleSave = async () => {
-                setIsSubmitting(true);
-                
-                try {
-                    let success;
-                    if (editingData && onUpdate) {
-                        success = DataService.updateCoaching(customerId, {
-                            ...formData,
-                            updatedBy: 'General User'
-                        });
-                        if (success) {
-                            onUpdate(formData);
-                            setIsSaved(true);
-                            alert('อัปเดตข้อมูลสำเร็จ');
-                        }
-                    } else {
-                        const completeData = {
-                            customerId,
-                            ...formData,
-                            timestamp: formatThaiDateTime(),
-                            lastUpdate: formatThaiDateTime(),
-                            updatedBy: 'General User'
-                        };
-
-                        success = DataService.saveCoaching(completeData);
-                        if (success) {
-                            setIsSaved(true);
-                            alert(`ระบบจะทำการบันทึกข้อมูลของท่าน\nCustomer ID คือ : ${customerId}`);
-                        }
-                    }
-                } catch (error) {
-                    alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-                } finally {
-                    setIsSubmitting(false);
-                }
-            };
-
-            const renderPersonalInfo = () => (
-                <div className="form-subsection">
-                    <div className="subsection-title">👤 ข้อมูลส่วนบุคคล</div>
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label className="form-label required">ชื่อหรือนามสมมติ</label>
-                            <input
-                                type="text"
-                                className="form-input"
-                                value={formData.customerName}
-                                onChange={(e) => setFormData({...formData, customerName: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label required">เพศ</label>
-                            <select
-                                className="form-select"
-                                value={formData.gender}
-                                onChange={(e) => setFormData({...formData, gender: e.target.value})}
-                                required
-                            >
-                                <option value="">เลือกเพศ</option>
-                                {GENDER_OPTIONS.map(gender => (
-                                    <option key={gender} value={gender}>{gender}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label className="form-label required">อายุ</label>
-                            <input
-                                type="number"
-                                className="form-input"
-                                value={formData.age}
-                                onChange={(e) => setFormData({...formData, age: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label required">สถานภาพ</label>
-                            <select
-                                className="form-select"
-                                value={formData.status}
-                                onChange={(e) => setFormData({...formData, status: e.target.value})}
-                                required
-                            >
-                                <option value="">เลือกสถานภาพ</option>
-                                {STATUS_OPTIONS.map(status => (
-                                    <option key={status} value={status}>{status}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label className="form-label required">อาชีพ</label>
-                            <select
-                                className="form-select"
-                                value={formData.occupation}
-                                onChange={(e) => setFormData({...formData, occupation: e.target.value})}
-                                required
-                            >
-                                <option value="">เลือกอาชีพ</option>
-                                {OCCUPATIONS.map(occupation => (
-                                    <option key={occupation} value={occupation}>{occupation}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label required">รายได้สุทธิ/เดือน (บาท)</label>
-                            <input
-                                type="number"
-                                className="form-input"
-                                value={formData.income}
-                                onChange={(e) => setFormData({...formData, income: e.target.value})}
-                                required
-                            />
-                            <div className="unknown-checkbox">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.unknownFlags.income}
-                                    onChange={(e) => handleUnknownFlag('income', e.target.checked)}
-                                />
-                                <label>ไม่มีข้อมูล หรือ ไม่ทราบข้อมูล</label>
-                            </div>
-                            {formData.income && (
-                                <div style={{marginTop: '0.5rem', color: '#666', fontSize: '0.875rem'}}>
-                                    รายได้ต่อปี: {(parseFloat(formData.income) * 12).toLocaleString()} บาท
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            );
-
-            const renderFinancialInfo = () => (
-                <div className="form-subsection">
-                    <div className="subsection-title">💰 ผลิตภัณฑ์ทางการเงินที่ถือครอง</div>
-                    
-                    <div className="financial-products">
-                        {formData.financialProducts.map((product, index) => (
-                            <div key={product.key} className="product-item">
-                                <div className="product-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        checked={product.checked}
-                                        onChange={(e) => handleFinancialProductChange(index, 'checked', e.target.checked)}
-                                    />
-                                    <label>{product.type}</label>
-                                </div>
-                                {product.checked && (
-                                    <div className="product-inputs">
-                                        <input
-                                            type="text"
-                                            placeholder={`มูลค่า${product.type === 'บัตรเครดิต' || product.type === 'สินเชื่อ' ? 'หนี้' : ''} (บาท)`}
-                                            value={product.type === 'บัตรเครดิต' || product.type === 'สินเชื่อ' ? product.debt : product.value}
-                                            onChange={(e) => handleFinancialProductChange(
-                                                index, 
-                                                product.type === 'บัตรเครดิต' || product.type === 'สินเชื่อ' ? 'debt' : 'value', 
-                                                e.target.value
-                                            )}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="form-group" style={{marginTop: '1rem'}}>
-                        <label className="form-label">ประกันชีวิต</label>
-                        <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="insurance"
-                                    checked={formData.insurance.has === true}
-                                    onChange={() => setFormData({
-                                        ...formData, 
-                                        insurance: {...formData.insurance, has: true}
-                                    })}
-                                /> มี
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="insurance"
-                                    checked={formData.insurance.has === false}
-                                    onChange={() => setFormData({
-                                        ...formData, 
-                                        insurance: {...formData.insurance, has: false, policyCount: '', coverage: ''}
-                                    })}
-                                /> ไม่มี
-                            </label>
-                        </div>
-                        {formData.insurance.has && (
-                            <div style={{marginTop: '1rem', display: 'flex', gap: '1rem'}}>
-                                <input
-                                    type="text"
-                                    className="form-input"
-                                    placeholder="จำนวนกรมธรรม์"
-                                    value={formData.insurance.policyCount}
-                                    onChange={(e) => setFormData({
-                                        ...formData, 
-                                        insurance: {...formData.insurance, policyCount: e.target.value}
-                                    })}
-                                />
-                                <input
-                                    type="text"
-                                    className="form-input"
-                                    placeholder="มูลค่าคุ้มครองรวม (บาท)"
-                                    value={formData.insurance.coverage}
-                                    onChange={(e) => setFormData({
-                                        ...formData, 
-                                        insurance: {...formData.insurance, coverage: e.target.value}
-                                    })}
-                                />
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="form-group">
-                        <label className="form-label">ผลิตภัณฑ์อื่นๆ</label>
-                        {formData.otherProducts.map((product, index) => (
-                            <div key={index} className="product-item">
-                                <input
-                                    type="text"
-                                    className="form-input"
-                                    placeholder="ประเภทผลิตภัณฑ์ (เช่น หุ้น, LTF, RMF, ประกันสุขภาพ)"
-                                    value={product.type}
-                                    onChange={(e) => handleOtherProductChange(index, 'type', e.target.value)}
-                                />
-                                <input
-                                    type="text"
-                                    className="form-input"
-                                    placeholder="มูลค่า/หนี้ (บาท)"
-                                    value={product.value}
-                                    onChange={(e) => handleOtherProductChange(index, 'value', e.target.value)}
-                                />
-                                <button 
-                                    className="remove-button"
-                                    onClick={() => removeOtherProduct(index)}
-                                >
-                                    ลบ
-                                </button>
-                            </div>
-                        ))}
-                        <button className="add-button" onClick={addOtherProduct}>
-                            ➕ เพิ่มรายการ
-                        </button>
-                    </div>
-
-                    <div className="unknown-checkbox">
-                        <input
-                            type="checkbox"
-                            checked={formData.unknownFlags.financial}
-                            onChange={(e) => handleUnknownFlag('financial', e.target.checked)}
-                        />
-                        <label>ไม่มีข้อมูล หรือ ไม่ทราบข้อมูล</label>
-                    </div>
-                </div>
-            );
-
-            const renderFamilyInfo = () => (
-                <div className="form-subsection">
-                    <div className="subsection-title">👨‍👩‍👧‍👦 ข้อมูลครอบครัว</div>
-                    
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label className="form-label">อายุคู่สมรส</label>
-                            <input
-                                type="number"
-                                className="form-input"
-                                value={formData.spouseAge}
-                                onChange={(e) => setFormData({...formData, spouseAge: e.target.value})}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label">อาชีพคู่สมรส</label>
-                            <select
-                                className="form-select"
-                                value={formData.spouseOccupation}
-                                onChange={(e) => setFormData({...formData, spouseOccupation: e.target.value})}
-                            >
-                                <option value="">เลือกอาชีพ</option>
-                                {OCCUPATIONS.map(occupation => (
-                                    <option key={occupation} value={occupation}>{occupation}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label className="form-label">ข้อมูลบุตร</label>
-                        <div className="children-list">
-                            {formData.children.map((child, index) => (
-                                <div key={index} className="child-item">
-                                    <input
-                                        type="number"
-                                        className="form-input"
-                                        placeholder="อายุ"
-                                        value={child.age}
-                                        onChange={(e) => handleChildChange(index, 'age', e.target.value)}
-                                    />
-                                    <select
-                                        className="form-select"
-                                        value={child.occupation}
-                                        onChange={(e) => handleChildChange(index, 'occupation', e.target.value)}
-                                    >
-                                        <option value="">เลือกอาชีพ</option>
-                                        <option value="นักเรียน">นักเรียน</option>
-                                        <option value="นักศึกษา">นักศึกษา</option>
-                                        <option value="ทำงาน">ทำงาน</option>
-                                        <option value="ว่างงาน">ว่างงาน</option>
-                                    </select>
-                                    <button 
-                                        className="remove-button"
-                                        onClick={() => removeChild(index)}
-                                    >
-                                        ลบ
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                        <button className="add-button" onClick={addChild}>
-                            ➕ เพิ่มบุตร
-                        </button>
-                    </div>
-
-                    <div className="form-group">
-                        <label className="form-label">มีบุคคลอื่นที่ต้องดูแลหรือไม่</label>
-                        <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="dependents"
-                                    checked={formData.hasDependents === true}
-                                    onChange={() => setFormData({
-                                        ...formData, 
-                                        hasDependents: true
-                                    })}
-                                /> มี
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="dependents"
-                                    checked={formData.hasDependents === false}
-                                    onChange={() => setFormData({
-                                        ...formData, 
-                                        hasDependents: false,
-                                        dependentsCount: '',
-                                        dependentRelationship: ''
-                                    })}
-                                /> ไม่มี
-                            </label>
-                        </div>
-                        {formData.hasDependents && (
-                            <div style={{marginTop: '1rem', display: 'flex', gap: '1rem'}}>
-                                <input
-                                    type="number"
-                                    className="form-input"
-                                    placeholder="จำนวนคน"
-                                    value={formData.dependentsCount}
-                                    onChange={(e) => setFormData({
-                                        ...formData, 
-                                        dependentsCount: e.target.value
-                                    })}
-                                />
-                                <input
-                                    type="text"
-                                    className="form-input"
-                                    placeholder="ความสัมพันธ์"
-                                    value={formData.dependentRelationship}
+  <div class="container">
+    <h3>Account Planning System — Prototype</h3>
+    <p class="small-muted">ตัวอย่างใช้งานบน browser (localStorage). ทดสอบ: สร้างลูกค้า → ดูรายงาน (passcode protected) → Export PDF</p>
+
+    <!-- NAV -->
+    <nav class="nav nav-pills mb-3">
+      <button class="nav-link active" id="tab-form">Create / Edit Customer</button>
+      <button class="nav-link" id="tab-list">Customer List & Search</button>
+      <button class="nav-link" id="tab-report">Reports (Passcode)</button>
+      <button class="nav-link" id="tab-admin">Admin / Audit</button>
+    </nav>
+
+    <!-- Main content -->
+    <div id="content">
+
+      <!-- FORM -->
+      <div id="panel-form" class="card p-3">
+        <h5>1) ฟอร์มกรอกข้อมูลลูกค้า</h5>
+        <div class="small-muted mb-2">กรอกข้อมูลให้ครบ — ระบบจะสร้าง Customer ID อัตโนมัติ</div>
+
+        <form id="customerForm" class="row g-3">
+          <!-- created_by block -->
+          <div class="col-12 col-md-6">
+            <label class="form-label required">Employee name (ผู้กรอก)</label>
+            <input type="text" id="employee_name" class="form-control" placeholder="ชื่อผู้กรอก (เช่น Somchai)">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label required">Employee ID</label>
+            <input type="text" id="employee_id" class="form-control" placeholder="BR1234">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label required">Branch</label>
+            <input type="text" id="branch" class="form-control" placeholder="Bangkok Central">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Zone</label>
+            <input type="text" id="zone" class="form-control" placeholder="Zone A">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label required">RH (RH1-RH5)</label>
+            <select id="rh" class="form-select">
+              <option value="">เลือก RH</option>
+              <option>RH1</option>
+              <option>RH2</option>
+              <option>RH3</option>
+              <option>RH4</option>
+              <option>RH5</option>
+            </select>
+          </div>
+
+          <!-- Customer personal -->
+          <div class="col-12"><hr></div>
+          <div class="col-md-4">
+            <label class="form-label required">ชื่อ</label>
+            <input type="text" id="cust_first" class="form-control" placeholder="ชื่อ">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label required">นามสกุล</label>
+            <input type="text" id="cust_last" class="form-control" placeholder="นามสกุล">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Phone</label>
+            <input type="tel" id="cust_phone" class="form-control" placeholder="0812345678">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Email</label>
+            <input type="email" id="cust_email" class="form-control" placeholder="example@domain.com">
+          </div>
+          <div class="col-12">
+            <label class="form-label">ที่อยู่</label>
+            <textarea id="cust_address" rows="2" class="form-control" placeholder="ที่อยู่"></textarea>
+          </div>
+
+          <!-- Family / Job -->
+          <div class="col-12"><hr></div>
+          <div class="col-md-4">
+            <label class="form-label">DOB</label>
+            <input type="date" id="cust_dob" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">สถานภาพสมรส</label>
+            <input type="text" id="cust_marital" class="form-control" placeholder="โสด / สมรส">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">ผู้ร่วมอาศัย</label>
+            <input type="text" id="cust_household" class="form-control" placeholder="เช่น เกิดขึ้น: แม่, ภรรยา, ลูก 2 คน (อายุ)">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">อาชีพ / ธุรกิจ</label>
+            <input type="text" id="cust_occupation" class="form-control" placeholder="วิศวกร / เจ้าของกิจการ">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">รายได้จริง / เดือน (บาท)</label>
+            <input type="number" id="cust_income" class="form-control" placeholder="30000">
+          </div>
+
+          <!-- Products -->
+          <div class="col-12"><hr></div>
+          <div class="col-12">
+            <label class="form-label">ผลิตภัณฑ์ที่มีอยู่ (เพิ่มได้หลายรายการ)</label>
+            <div class="d-flex gap-2 mb-2">
+              <input type="text" id="prod_name" class="form-control" placeholder="ชื่อผลิตภัณฑ์ (เช่น ABC Life 20Y)">
+              <input type="number" id="prod_sum" class="form-control" placeholder="Sum Assured / มูลค่า">
+              <input type="number" id="prod_premium" class="form-control" placeholder="เบี้ย/ปี">
+              <button type="button" id="btnAddProd" class="btn btn-outline-primary">เพิ่ม</button>
+            </div>
+            <div id="prodList" class="mb-2"></div>
+          </div>
+
+          <!-- Opportunity -->
+          <div class="col-12"><hr></div>
+          <div class="col-md-4">
+            <label class="form-label">Opportunity Type</label>
+            <select id="opp_type" class="form-select">
+              <option value="">เลือก</option>
+              <option>Protection</option>
+              <option>Wealth</option>
+              <option>Health</option>
+              <option>Savings</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Estimated Value (THB)</label>
+            <input type="number" id="opp_value" class="form-control" placeholder="ประมาณมูลค่า">
+          </div>
+          <div class="col-4">
+            <label class="form-label">Status</label>
+            <input type="text" id="opp_status" class="form-control" placeholder="Open / In-progress / Closed">
+          </div>
+          <div class="col-12">
+            <label class="form-label">ความคิดเห็นของพนักงาน (1-2 ประโยค)</label>
+            <textarea id="opp_comment" rows="2" class="form-control"></textarea>
+          </div>
+
+          <!-- Attachments -->
+          <div class="col-12"><hr></div>
+          <div class="col-md-6">
+            <label class="form-label">Attach file (PDF/JPG/PNG)</label>
+            <input type="file" id="file_attach" class="form-control">
+            <div id="attachList" class="mt-2"></div>
+          </div>
+
+          <!-- Consent (PDPA demo) -->
+          <div class="col-12">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="consent" checked>
+              <label class="form-check-label small-muted" for="consent">
+                ลูกค้ายินยอมให้เก็บข้อมูลสำหรับการนำเสนอผลิตภัณฑ์ (Consent recorded)
+              </label>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="col-12 d-flex gap-2">
+            <button type="button" id="btnSave" class="btn btn-primary">บันทึกข้อมูล (Create)</button>
+            <button type="button" id="btnClear" class="btn btn-secondary">ล้างฟอร์ม</button>
+            <div class="ms-auto small-muted align-self-center" id="formStatus"></div>
+          </div>
+        </form>
+      </div>
+
+      <!-- LIST / SEARCH -->
+      <div id="panel-list" class="card p-3" style="display:none;">
+        <h5>2) รายการลูกค้า / ค้นหา</h5>
+        <div class="row g-2 mb-2">
+          <div class="col-md-3">
+            <input type="text" id="search_customer" class="form-control" placeholder="Search Customer ID">
+          </div>
+          <div class="col-md-3">
+            <input type="text" id="search_by_creator" class="form-control" placeholder="Search by Employee ID">
+          </div>
+          <div class="col-md-3">
+            <select id="filter_rh" class="form-select">
+              <option value="">Filter RH</option>
+              <option>RH1</option>
+              <option>RH2</option>
+              <option>RH3</option>
+              <option>RH4</option>
+              <option>RH5</option>
+            </select>
+          </div>
+          <div class="col-md-3 d-flex gap-2">
+            <button class="btn btn-outline-primary" id="btnSearch">ค้นหา</button>
+            <button class="btn btn-outline-secondary" id="btnRefresh">รีเฟรชทั้งหมด</button>
+            <button class="btn btn-outline-success" id="btnBulkExport">Export Selected → PDF</button>
+          </div>
+        </div>
+
+        <div class="table-responsive table-fixed">
+          <table class="table table-striped" id="customerTable">
+            <thead class="table-light">
+              <tr>
+                <th><input type="checkbox" id="selectAll"></th>
+                <th>Customer ID</th>
+                <th>Name</th>
+                <th>Branch</th>
+                <th>RH</th>
+                <th>Created By</th>
+                <th>Created At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customerTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REPORTS (Passcode protected) -->
+      <div id="panel-report" class="card p-3" style="display:none;">
+        <h5>3) รายงาน / Dashboard (Passcode protected)</h5>
+        <div id="reportLocked" class="mb-3">
+          <p class="small-muted">กรุณาใส่ Passcode เพื่อเข้าใช้งานเมนูรายงาน</p>
+          <div class="d-flex gap-2">
+            <input type="password" id="reportPass" class="form-control" placeholder="Passcode">
+            <button id="btnUnlock" class="btn btn-primary">Unlock</button>
+            <div class="ms-auto small-muted align-self-center">(default demo passcode: <strong>2568</strong>)</div>
+          </div>
+          <div class="form-text small text-danger mt-1">คำเตือน: passcode คงที่ไม่ปลอดภัยสำหรับ production — เปลี่ยนเป็น SSO/temporary token</div>
+        </div>
+
+        <div id="reportPanel" style="display:none;">
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <div class="card p-2 text-center">
+                <div class="small-muted">Total Cases MTD</div>
+                <div id="kpi_total" class="h4">0</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card p-2 text-center">
+                <div class="small-muted">New Opportunities MTD</div>
+                <div id="kpi_opp_count" class="h4">0</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card p-2 text-center">
+                <div class="small-muted">Est. Opportunity Value (MTD)</div>
+                <div id="kpi_opp_value" class="h5">0</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card p-2 text-center">
+                <div class="small-muted">Top Branch (cases)</div>
+                <div id="kpi_top_branch" class="h6">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <canvas id="chartRh" height="200"></canvas>
+            </div>
+            <div class="col-md-6">
+              <canvas id="chartBranch" height="200"></canvas>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h6>Recent activity</h6>
+            <div id="recentActivity" class="small-muted"></div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button id="btnExportAll" class="btn btn-outline-primary">Export All → Multi-page PDF</button>
+            <button id="btnExportCSV" class="btn btn-outline-secondary">Export CSV</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN / AUDIT -->
+      <div id="panel-admin" class="card p-3" style="display:none;">
+        <h5>4) Admin / Audit</h5>
+        <div class="small-muted mb-2">Audit log (view only) — บันทึกการสร้าง แก้ไข และ export</div>
+        <div id="auditList" class="small-muted"></div>
+        <div class="mt-3">
+          <button id="btnResetAll" class="btn btn-danger">[Danger] Reset all data (localStorage)</button>
+          <div class="form-text small text-danger">ใช้ใน demo เท่านั้น — จะลบข้อมูลทุกอย่าง</div>
+        </div>
+      </div>
+
+    </div> <!-- content -->
+
+    <div class="watermark">Prototype — For internal demo</div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    /**************************************************************************
+     * Account Planning System — Single HTML prototype
+     * - Storage: localStorage (key: 'aps_customers', 'aps_audit', 'aps_counters')
+     * - Passcode for report: default '2568' (demo only) -> change in production
+     * - PDF export uses html2canvas + jsPDF
+     *
+     * Usage:
+     * - Create / edit customers
+     * - Search by customer code or created_by
+     * - View Reports (MTD) after unlocking with passcode
+     **************************************************************************/
+
+    // ---------- Utilities ----------
+    const STORAGE_KEY = 'aps_customers';
+    const AUDIT_KEY = 'aps_audit';
+    const COUNTER_KEY = 'aps_counters';
+    const REPORT_PASSCODE = '2568'; // demo only! replace with secure auth
+
+    function nowISO() {
+      return new Date().toISOString();
+    }
+
+    function formatDateISOToLocalShort(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return d.toLocaleString('th-TH', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch(e) { return []; }
+    }
+    function saveData(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+    function loadAudit() {
+      try { return JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]'); } catch(e) { return []; }
+    }
+    function saveAudit(a) { localStorage.setItem(AUDIT_KEY, JSON.stringify(a)); }
+
+    function appendAudit(action, entityId, performedBy, data=null) {
+      const a = loadAudit();
+      a.unshift({ action, entity: entityId, performed_by: performedBy, time: nowISO(), data });
+      saveAudit(a);
+    }
+
+    // Manage simple sequential counter per day for Customer code
+    function genCustomerCode() {
+      const counters = JSON.parse(localStorage.getItem(COUNTER_KEY) || '{}');
+      const dateKey = new Date().toISOString().slice(0,10).replace(/-/g,''); // YYYYMMDD
+      counters[dateKey] = (counters[dateKey] || 0) + 1;
+      localStorage.setItem(COUNTER_KEY, JSON.stringify(counters));
+      const seq = String(counters[dateKey]).padStart(4,'0');
+      return `CUST${dateKey}-${seq}`;
+    }
+
+    // ---------- DOM helpers ----------
+    const $ = (id) => document.getElementById(id);
+
+    // ---------- Products UI ----------
+    let tmpProducts = [];
+    function renderProdList() {
+      const container = $('prodList');
+      container.innerHTML = tmpProducts.map((p,idx) => `
+        <div class="d-flex align-items-center mb-1" data-idx="${idx}">
+          <div class="me-auto">
+            <strong>${p.product_name || ''}</strong>
+            <div class="small-muted">Sum: ${p.sum_assured || 0} | Premium: ${p.premium || 0}</div>
+          </div>
+          <button class="btn btn-sm btn-outline-danger" onclick="removeProd(${idx})">ลบ</button>
+        </div>
+      `).join('') || '<div class="small-muted">ยังไม่มีผลิตภัณฑ์</div>';
+    }
+    function removeProd(i) { tmpProducts.splice(i,1); renderProdList(); }
+
+    // ---------- Attachment handling ----------
+    let tmpAttachments = []; // {name, type, dataUrl}
+    function renderAttachList() {
+      const container = $('attachList');
+      container.innerHTML = tmpAttachments.map((f,idx) => `
+        <div class="d-flex align-items-center mb-1">
+          <div class="me-auto small-muted">${f.name} (${f.type})</div>
+          <button class="btn btn-sm btn-outline-danger" onclick="removeAttach(${idx})">ลบ</button>
+        </div>
+      `).join('') || '<div class="small-muted">ยังไม่มีไฟล์แนบ</div>';
+    }
+    function removeAttach(i) { tmpAttachments.splice(i,1); renderAttachList(); }
+
+    // ---------- Form actions ----------
+    $('btnAddProd').addEventListener('click', () => {
+      const name = $('prod_name').value.trim();
+      const sum = Number($('prod_sum').value || 0);
+      const prem = Number($('prod_premium').value || 0);
+      if (!name) return alert('กรุณาใส่ชื่อผลิตภัณฑ์');
+      tmpProducts.push({ product_name: name, sum_assured: sum, premium: prem });
+      $('prod_name').value=''; $('prod_sum').value=''; $('prod_premium').value='';
+      renderProdList();
+    });
+
+    $('file_attach').addEventListener('change', async (ev) => {
+      const f = ev.target.files[0];
+      if (!f) return;
+      // limit file size to 2MB for demo
+      if (f.size > 2 * 1024 * 1024) { alert('ไฟล์ใหญ่เกิน 2MB (demo limit)'); return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        tmpAttachments.push({ name: f.name, type: f.type, dataUrl: reader.result });
+        renderAttachList();
+      };
+      reader.readAsDataURL(f);
+      ev.target.value = '';
+    });
+
+    function clearForm() {
+      document.getElementById('customerForm').reset();
+      tmpProducts = []; tmpAttachments = [];
+      renderProdList(); renderAttachList();
+      $('formStatus').textContent = '';
+    }
+    $('btnClear').addEventListener('click', clearForm);
+
+    // Save / Create function
+    $('btnSave').addEventListener('click', () => {
+      // validation minimal
+      const required = [
+        ['employee_name','กรอกชื่อผู้กรอก'],
+        ['employee_id','กรอก Employee ID'],
+        ['branch','กรอก Branch'],
+        ['cust_first','กรอกชื่อ'],
+        ['cust_last','กรอกนามสกุล'],
+        ['rh','เลือก RH']
+      ];
+      for (let [id,msg] of required) {
+        const el = $(id);
+        if (!el) continue;
+        if (!el.value || el.value.trim()==='') { alert(msg); el.focus(); return; }
+      }
+
+      const createdBy = $('employee_id').value.trim();
+      const empName = $('employee_name').value.trim();
+      const branch = $('branch').value.trim();
+      const zone = $('zone').value.trim();
+      const rh = $('rh').value.trim();
+
+      const customer = {
+        customer_id: genCustomerCode(),
+        first_name: $('cust_first').value.trim(),
+        last_name: $('cust_last').value.trim(),
+        phone: $('cust_phone').value.trim(),
+        email: $('cust_email').value.trim(),
+        address: $('cust_address').value.trim(),
+        dob: $('cust_dob').value || null,
+        marital_status: $('cust_marital').value.trim(),
+        household: $('cust_household').value.trim(),
+        occupation: $('cust_occupation').value.trim(),
+        monthly_income: Number($('cust_income').value || 0),
+        branch, zone, rh,
+        products: tmpProducts.slice(),
+        opportunities: [{
+          type: $('opp_type').value || null,
+          estimated_value: Number($('opp_value').value || 0),
+          status: $('opp_status').value || null,
+          comment: $('opp_comment').value.trim(),
+          created_at: nowISO(),
+          created_by: createdBy
+        }],
+        attachments: tmpAttachments.slice(),
+        created_by: createdBy,
+        created_by_name: empName,
+        consent: !!$('consent').checked,
+        created_at: nowISO(),
+        updated_at: nowISO()
+      };
+
+      const all = loadData();
+      all.unshift(customer);
+      saveData(all);
+      appendAudit('create', customer.customer_id, createdBy, { first_name: customer.first_name, branch });
+      clearForm();
+      $('formStatus').textContent = `บันทึกเรียบร้อย: ${customer.customer_id}`;
+      refreshList();
+      // if report unlocked, also refresh report
+      if (reportUnlocked) renderReport();
+    });
+
+    // ---------- List / Search ----------
+    function renderTableRows(list) {
+      const tbody = $('customerTbody');
+      tbody.innerHTML = list.map(c => `
+        <tr>
+          <td><input type="checkbox" class="rowSelect" data-id="${c.customer_id}"></td>
+          <td>${c.customer_id}</td>
+          <td>${c.first_name} ${c.last_name}</td>
+          <td>${c.branch || '-'}</td>
+          <td>${c.rh || '-'}</td>
+          <td>${c.created_by || '-'}</td>
+          <td>${formatDateISOToLocalShort(c.created_at)}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary" onclick="viewDetail('${c.customer_id}')">View</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="exportSinglePDF('${c.customer_id}')">PDF</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteRecord('${c.customer_id}')">Del</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function refreshList() {
+      const all = loadData();
+      renderTableRows(all);
+    }
+    $('btnRefresh').addEventListener('click', refreshList);
+
+    $('btnSearch').addEventListener('click', () => {
+      const q = $('search_customer').value.trim().toLowerCase();
+      const by = $('search_by_creator').value.trim().toLowerCase();
+      const rh = $('filter_rh').value.trim();
+      let all = loadData();
+      if (q) all = all.filter(c => c.customer_id.toLowerCase().includes(q) || (c.first_name + ' ' + c.last_name).toLowerCase().includes(q));
+      if (by) all = all.filter(c => (c.created_by || '').toLowerCase().includes(by) || (c.created_by_name || '').toLowerCase().includes(by));
+      if (rh) all = all.filter(c => (c.rh || '') === rh);
+      renderTableRows(all);
+    });
+
+    // bulk export selected
+    $('btnBulkExport').addEventListener('click', async () => {
+      const checks = Array.from(document.querySelectorAll('.rowSelect:checked'));
+      if (!checks.length) return alert('เลือกอย่างน้อย 1 รายการเพื่อ export');
+      const ids = checks.map(ch => ch.dataset.id);
+      const all = loadData();
+      const items = all.filter(c => ids.includes(c.customer_id));
+      // Multi-page PDF: create each as a page
+      await exportMultiplePDF(items);
+      appendAudit('export_bulk_pdf', `bulk:${ids.join(',')}`, 'local-user', { count: items.length });
+    });
+
+    // select all
+    $('selectAll').addEventListener('change', (e) => {
+      document.querySelectorAll('.rowSelect').forEach(cb => cb.checked = e.target.checked);
+    });
+
+    // view detail -> show modal-like (simple)
+    window.viewDetail = function(customerId) {
+      const all = loadData();
+      const c = all.find(x => x.customer_id === customerId);
+      if (!c) return alert('ไม่พบข้อมูล');
+      // show detail in a prompt-like modal (simple)
+      const html = `
+        <div>
+          <h5>${c.first_name} ${c.last_name} (${c.customer_id})</h5>
+          <div><strong>Branch:</strong> ${c.branch} | <strong>RH:</strong> ${c.rh}</div>
+          <div><strong>Phone:</strong> ${c.phone || '-'} | <strong>Email:</strong> ${c.email || '-'}</div>
+          <hr>
+          <div><strong>Occupation:</strong> ${c.occupation || '-'} | <strong>Income:</strong> ${c.monthly_income || 0}</div>
+          <hr>
+          <div><strong>Products:</strong>
+            <ul>${(c.products||[]).map(p=>`<li>${p.product_name} | Sum: ${p.sum_assured || 0} | Premium: ${p.premium || 0}</li>`).join('') || '<li>-</li>'}</ul>
+          </div>
+          <div><strong>Opportunities:</strong>
+            <ul>${(c.opportunities||[]).map(o=>`<li>${o.type || '-'} | ${o.estimated_value || 0} | ${o.status || '-'}<br><small class="small-muted">${o.comment||''} — added:${formatDateISOToLocalShort(o.created_at)}</small></li>`).join('')}</ul>
+          </div>
+          <div><strong>Attachments:</strong>
+            <ul>${(c.attachments||[]).map(a=>`<li>${a.name} (${a.type}) <a href="${a.dataUrl}" target="_blank">View</a></li>`).join('') || '<li>-</li>'}</ul>
+          </div>
+          <div class="small-muted">Created by: ${c.created_by_name || c.created_by} | ${formatDateISOToLocalShort(c.created_at)}</div>
+        </div>
+      `;
+      const w = window.open('', '_blank', 'width=800,height=600');
+      w.document.write(html);
+      w.document.close();
+    };
+
+    // delete record (demo)
+    window.deleteRecord = function(customerId) {
+      if (!confirm('ลบรายการนี้จริงหรือไม่?')) return;
+      let all = loadData();
+      all = all.filter(x => x.customer_id !== customerId);
+      saveData(all);
+      appendAudit('delete', customerId, 'local-user', null);
+      refreshList();
+      if (reportUnlocked) renderReport();
+    };
+
+    // ---------- PDF Export functions ----------
+    async function exportSinglePDF(customerId) {
+      const all = loadData();
+      const c = all.find(x => x.customer_id === customerId);
+      if (!c) return alert('ไม่พบข้อมูล');
+      await exportMultiplePDF([c]);
+      appendAudit('export_pdf', customerId, 'local-user', null);
+    }
+
+    // render HTML fragment and convert to pdf pages
+    async function exportMultiplePDF(items) {
+      // For each item, render a HTML container then capture with html2canvas -> add as page
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit:'px', format:'a4' });
+      for (let i=0;i<items.length;i++) {
+        const c = items[i];
+        const wrapper = document.createElement('div');
+        wrapper.style.width = '794px'; // ~A4 595x842 px at 72dpi, but use 794x1123 for 96dpi style — OK for demo
+        wrapper.style.padding = '20px';
+        wrapper.style.background = '#fff';
+        wrapper.innerHTML = `
+          <div style="font-family: Arial, Helvetica, sans-serif; color:#111;">
+            <h2 style="margin:0;">Customer Summary — ${c.customer_id}</h2>
+            <div style="color:#666;">Generated: ${formatDateISOToLocalShort(nowISO())}</div>
+            <hr>
+            <h4>Basic</h4>
+            <div><strong>Name:</strong> ${c.first_name} ${c.last_name}</div>
+            <div><strong>Phone / Email:</strong> ${c.phone || '-'} / ${c.email || '-'}</div>
+            <div><strong>Branch / Zone / RH:</strong> ${c.branch || '-'} / ${c.zone || '-'} / ${c.rh || '-'}</div>
+            <div><strong>Occupation / Income:</strong> ${c.occupation || '-'} / ${c.monthly_income || 0}</div>
+            <hr>
+            <h4>Products</h4>
+            <table style="width:100%; border-collapse:collapse;">
+              <thead><tr><th style="text-align:left">Name</th><th style="text-align:right">Sum</th><th style="text-align:right">Premium</th></tr></thead>
+              <tbody>
+                ${ (c.products||[]).map(p=>`<tr><td>${p.product_name}</td><td style="text-align:right">${p.sum_assured||0}</td><td style="text-align:right">${p.premium||0}</td></tr>`).join('') || '<tr><td>-</td><td>-</td><td>-</td></tr>' }
+              </tbody>
+            </table>
+            <hr>
+            <h4>Opportunities</h4>
+            ${ (c.opportunities||[]).map(o=>`<div><strong>${o.type||'-'}</strong> | ${o.estimated_value||0} THB | ${o.status||'-'}<div style="color:#666">${o.comment||''}</div></div>`).join('') }
+            <hr>
+            <div style="font-size:11px;color:#999;">Confidential — For internal use only. Exported by demo system.</div>
+          </div>
+        `;
+        document.body.appendChild(wrapper);
+        // use html2canvas
+        // scale to improve quality
+        const canvas = await html2canvas(wrapper, { scale: 2, useCORS:true, backgroundColor: '#ffffff' });
+        document.body.removeChild(wrapper);
+        const imgData = canvas.toDataURL('image/png');
+        const imgProps = doc.getImageProperties(imgData);
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        if (i < items.length - 1) doc.addPage();
+      }
+      // download
+      doc.save(`APS_export_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'_')}.pdf`);
+    }
+
+    // ---------- Reports (MTD) ----------
+    let reportUnlocked = false;
+    $('btnUnlock').addEventListener('click', () => {
+      const v = $('reportPass').value.trim();
+      if (v === REPORT_PASSCODE) {
+        reportUnlocked = true;
+        $('reportLocked').style.display = 'none';
+        $('reportPanel').style.display = 'block';
+        appendAudit('report_unlock', 'report_panel', 'local-user', null);
+        renderReport();
+      } else {
+        alert('Passcode ไม่ถูกต้อง');
+      }
+    });
+
+    // helper: is date in current month-to-date
+    function isMTD(isoDate) {
+      if (!isoDate) return false;
+      const d = new Date(isoDate);
+      const now = new Date();
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() <= now.getDate();
+    }
+
+    // build report data and render charts
+    async function renderReport() {
+      const all = loadData();
+      // filter MTD
+      const listMTD = all.filter(c => isMTD(c.created_at));
+      $('kpi_total').textContent = listMTD.length;
+      const opps = listMTD.flatMap(c => (c.opportunities||[]).map(o => ({...o, customer_id: c.customer_id})));
+      $('kpi_opp_count').textContent = opps.length;
+      const totalOppVal = opps.reduce((s,o)=> s + (Number(o.estimated_value)||0), 0);
+      $('kpi_opp_value').textContent = totalOppVal.toLocaleString();
+      // top branch
+      const branchCounts = {};
+      listMTD.forEach(c => { branchCounts[c.branch] = (branchCounts[c.branch]||0)+1; });
+      const topBranch = Object.entries(branchCounts).sort((a,b)=>b[1]-a[1])[0];
+      $('kpi_top_branch').textContent = topBranch ? `${topBranch[0]} (${topBranch[1]})` : '-';
+
+      // RH counts
+      const rhLabels = ['RH1','RH2','RH3','RH4','RH5'];
+      const rhData = rhLabels.map(r => listMTD.filter(c => c.rh === r).length);
+
+      // Branch chart top 10
+      const branchEntries = Object.entries(branchCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+      const branchLabels = branchEntries.map(e=>e[0]||'-');
+      const branchVals = branchEntries.map(e=>e[1]);
+
+      // render charts
+      const ctxRh = $('chartRh').getContext('2d');
+      if (window._chartRh) window._chartRh.destroy();
+      window._chartRh = new Chart(ctxRh, {
+        type: 'bar',
+        data: { labels: rhLabels, datasets: [{ label:'Cases MTD', data: rhData }] },
+        options: { responsive:true, maintainAspectRatio:false }
+      });
+
+      const ctxBranch = $('chartBranch').getContext('2d');
+      if (window._chartBranch) window._chartBranch.destroy();
+      window._chartBranch = new Chart(ctxBranch, {
+        type: 'bar',
+        data: { labels: branchLabels, datasets: [{ label:'Top Branches', data: branchVals }] },
+        options: { responsive:true, maintainAspectRatio:false }
+      });
+
+      // recent activity (last 10 audit)
+      const audits = loadAudit().slice(0,10);
+      $('recentActivity').innerHTML = audits.map(a => `<div>[${formatDateISOToLocalShort(a.time)}] <strong>${a.action}</strong> — ${a.entity} by ${a.performed_by}</div>`).join('');
+    }
+
+    // export CSV
+    $('btnExportCSV').addEventListener('click', () => {
+      const all = loadData();
+      const rows = all.map(c => ({
+        customer_id: c.customer_id,
+        name: `${c.first_name} ${c.last_name}`,
+        branch: c.branch,
+        rh: c.rh,
+        created_by: c.created_by,
+        created_at: c.created_at
+      }));
+      const csv = [Object.keys(rows[0]||{}).join(',')].concat(rows.map(r => Object.values(r).map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','))).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `aps_export_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(url);
+      appendAudit('export_csv', 'all', 'local-user', { count: rows.length });
+    });
+
+    // export all (multi-page PDF)
+    $('btnExportAll').addEventListener('click', async () => {
+      const all = loadData();
+      if (!all.length) return alert('ไม่มีข้อมูลสำหรับ export');
+      await exportMultiplePDF(all);
+      appendAudit('export_all_pdf', 'all', 'local-user', { count: all.length });
+    });
+
+    // ---------- Admin / Audit ----------
+    function renderAuditList() {
+      const a = loadAudit();
+      $('auditList').innerHTML = a.map(x => `<div>${formatDateISOToLocalShort(x.time)} — <strong>${x.action}</strong> ${x.entity} by ${x.performed_by}</div>`).join('') || '<div class="small-muted">ยังไม่มี log</div>';
+    }
+
+    $('btnResetAll').addEventListener('click', () => {
+      if (!confirm('จะลบข้อมูลทั้งหมดใน localStorage ใช่หรือไม่?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(AUDIT_KEY);
+      localStorage.removeItem(COUNTER_KEY);
+      refreshList(); renderAuditList(); if (reportUnlocked) renderReport();
+    });
+
+    // ---------- Navigation tabs ----------
+    $('tab-form').addEventListener('click', () => { showPanel('form'); });
+    $('tab-list').addEventListener('click', () => { showPanel('list'); });
+    $('tab-report').addEventListener('click', () => { showPanel('report'); });
+    $('tab-admin').addEventListener('click', () => { showPanel('admin'); });
+
+    function showPanel(name) {
+      document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+      if (name==='form') $('tab-form').classList.add('active');
+      if (name==='list') $('tab-list').classList.add('active');
+      if (name==='report') $('tab-report').classList.add('active');
+      if (name==='admin') $('tab-admin').classList.add('active');
+
+      $('panel-form').style.display = (name==='form') ? 'block' : 'none';
+      $('panel-list').style.display = (name==='list') ? 'block' : 'none';
+      $('panel-report').style.display = (name==='report') ? 'block' : 'none';
+      $('panel-admin').style.display = (name==='admin') ? 'block' : 'none';
+    }
+
+    // ---------- Init ----------
+    function initDemoData() {
+      // If no data exists, seed small demo
+      if (loadData().length === 0) {
+        const demo = [
+          { customer_id: genCustomerCode(), first_name:'สมชาย', last_name:'ใจดี', phone:'0811111111', email:'s@example.com', branch:'Bangkok Central', zone:'Zone A', rh:'RH1', products:[], opportunities:[{type:'Protection', estimated_value:50000, status:'Open', comment:'Need health cover', created_at:nowISO(), created_by:'BR1001'}], created_by:'BR1001', created_by_name:'Somchai', created_at: nowISO(), updated_at: nowISO(), attachments:[], occupation:'พนักงานบริษัท', monthly_income:40000, consent:true },
+          { customer_id: genCustomerCode(), first_name:'มาลี', last_name:'สมหวัง', phone:'0822222222', email:'m@example.com', branch:'North Branch', zone:'Zone B', rh:'RH3', products:[], opportunities:[{type:'Wealth', estimated_value:200000, status:'Open', comment:'Has savings to invest', created_at:nowISO(), created_by:'BR2002'}], created_by:'BR2002', created_by_name:'Malee', created_at: nowISO(), updated_at: nowISO(), attachments:[], occupation:'เจ้าของกิจการ', monthly_income:90000, consent:true }
+        ];
+        saveData(demo);
+      }
+    }
+
+    // initial render
+    initDemoData();
+    refreshList();
+    renderAuditList();
+    // default show form
+    showPanel('form');
+
+    // render product and attachment lists initially
+    renderProdList();
+    renderAttachList();
+
+    // ensure when table rows are updated, selectAll works
+    document.addEventListener('click', (e) => {
+      if (e.target && e.target.matches('.rowSelect')) {
+        const all = document.querySelectorAll('.rowSelect');
+        const checked = Array.from(all).every(cb => cb.checked);
+        $('selectAll').checked = checked;
+      }
+    });
+
+    // Expose some functions to window for buttons created in markup
+    window.exportSinglePDF = exportSinglePDF;
+    window.deleteRecord = deleteRecord;
+    window.viewDetail = viewDetail;
+    window.removeProd = removeProd;
+    window.removeAttach = removeAttach;
+  </script>
+</body>
+</html>
