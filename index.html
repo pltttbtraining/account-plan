@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Account Planning System</title>
+  <title>PLT-ttb Training - Account Planning System</title>
 
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -706,6 +706,87 @@
         grid-template-columns: 1fr;
       }
     }
+
+    .start-container {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .start-logo {
+      font-size: 3.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .start-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .start-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .start-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+    }
+
+    .start-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    .customer-id-display {
+      background: var(--primary-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .comment-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .comment-item {
+      background: #f8f9fa;
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+
+    .comment-meta {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .admin-tabs {
+      margin-top: 1rem;
+    }
+
+    .admin-tab-content {
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -714,6 +795,7 @@
     <div class="loading-logo">
       <i class="fas fa-chart-line"></i>
     </div>
+    <div class="loading-text">PLT-ttb Training</div>
     <div class="loading-text">Account Planning System</div>
     <div class="loading-spinner-large"></div>
     <div class="loading-progress">
@@ -729,28 +811,28 @@
       <nav class="compact-nav">
         <div class="nav-brand">
           <i class="fas fa-chart-line"></i>
-          APS
+          PLT-ttb Training
         </div>
         <div class="nav-menu">
-          <button class="nav-btn active" id="tab-form" data-panel="form">
-            <i class="fas fa-user-plus"></i> Create
+          <button class="nav-btn" id="tab-start" data-panel="start">
+            <i class="fas fa-home"></i> หน้าแรก
+          </button>
+          <button class="nav-btn" id="tab-form" data-panel="form">
+            <i class="fas fa-user-plus"></i> สร้างลูกค้า
           </button>
           <button class="nav-btn" id="tab-list" data-panel="list">
-            <i class="fas fa-list"></i> List
+            <i class="fas fa-list"></i> รายการลูกค้า
           </button>
           <button class="nav-btn" id="tab-report" data-panel="report">
-            <i class="fas fa-chart-bar"></i> Reports
+            <i class="fas fa-chart-bar"></i> รายงาน
           </button>
           <button class="nav-btn" id="tab-admin" data-panel="admin">
             <i class="fas fa-cog"></i> Admin
           </button>
-          <button class="nav-btn" id="tab-settings" data-panel="settings">
-            <i class="fas fa-sliders-h"></i> Settings
-          </button>
         </div>
         <div class="nav-actions">
           <button class="btn btn-sm btn-secondary" id="btn-logout">
-            <i class="fas fa-sign-out-alt"></i> Logout
+            <i class="fas fa-sign-out-alt"></i> ออกจากระบบ
           </button>
         </div>
       </nav>
@@ -758,8 +840,22 @@
       <!-- Content Area -->
       <div id="content-area">
         
+        <!-- START PANEL -->
+        <div id="panel-start" class="content-panel active">
+          <div class="start-container">
+            <div class="start-logo">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h1 class="start-title">PLT-ttb Training</h1>
+            <p class="start-subtitle">ระบบวางแผนการขายและบริหารลูกค้า</p>
+            <button class="start-btn" id="btn-start">
+              <i class="fas fa-play-circle"></i> เริ่มต้นใช้งาน
+            </button>
+          </div>
+        </div>
+
         <!-- FORM PANEL -->
-        <div id="panel-form" class="content-panel active">
+        <div id="panel-form" class="content-panel">
           <div class="page-header">
             <div class="page-title">
               <i class="fas fa-user-plus"></i> ฟอร์มกรอกข้อมูลลูกค้า
@@ -776,6 +872,7 @@
 
           <div class="card">
             <div class="card-body">
+              <div class="customer-id-display" id="customerIdDisplay">Customer ID: กำลังสร้าง...</div>
               <p class="small-muted mb-3">กรอกข้อมูลให้ครบ — ระบบจะสร้าง Customer ID อัตโนมัติ</p>
 
               <form id="customerForm" class="row g-3">
@@ -824,44 +921,275 @@
                   </div>
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label required">ชื่อ</label>
-                      <input type="text" id="cust_first" class="form-control" placeholder="ชื่อ">
+                      <label class="form-label required">ชื่อนามสมมุติ</label>
+                      <input type="text" id="cust_name" class="form-control" placeholder="ชื่อนามสมมุติ">
                     </div>
                     <div class="form-group">
-                      <label class="form-label required">นามสกุล</label>
-                      <input type="text" id="cust_last" class="form-control" placeholder="นามสกุล">
+                      <label class="form-label required">อายุ</label>
+                      <input type="number" id="cust_age" class="form-control" placeholder="อายุ">
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-group">
-                      <label class="form-label">เบอร์โทรศัพท์</label>
-                      <input type="tel" id="cust_phone" class="form-control" placeholder="0812345678">
+                      <label class="form-label required">เพศ</label>
+                      <select id="cust_gender" class="form-select">
+                        <option value="">เลือกเพศ</option>
+                        <option>ชาย</option>
+                        <option>หญิง</option>
+                        <option>อื่นๆ</option>
+                      </select>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">อีเมล</label>
-                      <input type="email" id="cust_email" class="form-control" placeholder="example@domain.com">
+                      <label class="form-label required">อาชีพ</label>
+                      <select id="cust_occupation" class="form-select">
+                        <option value="">เลือกอาชีพ</option>
+                        <option>พนักงานบริษัท</option>
+                        <option>ข้าราชการ</option>
+                        <option>เจ้าของกิจการ/ธุรกิจส่วนตัว</option>
+                        <option>แพทย์</option>
+                        <option>วิศวกร</option>
+                        <option>ครู</option>
+                        <option>นักกฎหมาย</option>
+                        <option>อื่นๆ</option>
+                      </select>
                     </div>
                   </div>
-                  <div class="form-group">
-                    <label class="form-label">ที่อยู่</label>
-                    <textarea id="cust_address" rows="2" class="form-control" placeholder="ที่อยู่"></textarea>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label required">รายได้ต่อเดือน (บาท)</label>
+                      <input type="number" id="cust_monthly_income" class="form-control" placeholder="รายได้ต่อเดือน">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">รายได้ต่อปี (บาท)</label>
+                      <input type="text" id="cust_yearly_income" class="form-control" placeholder="ระบบคำนวณอัตโนมัติ" readonly>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">มีสวัสดิการหรือไม่</label>
+                      <select id="cust_welfare" class="form-select">
+                        <option value="">เลือก</option>
+                        <option>ไม่มี</option>
+                        <option>มี - วงเงินสูง</option>
+                        <option>มี - วงเงินกลาง</option>
+                        <option>มี - วงเงินต่ำ</option>
+                        <option>มี - ทุนประกันต่อปี</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">ทุนประกันต่อปี (บาท)</label>
+                      <input type="number" id="cust_insurance_capital" class="form-control" placeholder="ทุนประกันต่อปี">
+                    </div>
                   </div>
                 </div>
 
-                <!-- Products -->
+                <!-- Family Information -->
                 <div class="form-subsection">
                   <div class="subsection-title">
-                    <i class="fas fa-box"></i> ผลิตภัณฑ์ที่มีอยู่
+                    <i class="fas fa-users"></i> ข้อมูลครอบครัว
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">สถานภาพ</label>
+                      <select id="cust_marital_status" class="form-select">
+                        <option value="">เลือกสถานภาพ</option>
+                        <option>โสด</option>
+                        <option>สมรส</option>
+                        <option>หม้าย</option>
+                        <option>หย่า</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">อายุคู่สมรส</label>
+                      <input type="number" id="cust_spouse_age" class="form-control" placeholder="อายุคู่สมรส">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">อาชีพคู่สมรส</label>
+                      <select id="cust_spouse_occupation" class="form-select">
+                        <option value="">เลือกอาชีพ</option>
+                        <option>ไม่มี</option>
+                        <option>พนักงานบริษัท</option>
+                        <option>ข้าราชการ</option>
+                        <option>เจ้าของกิจการ/ธุรกิจส่วนตัว</option>
+                        <option>แพทย์</option>
+                        <option>วิศวกร</option>
+                        <option>ครู</option>
+                        <option>แม่บ้าน</option>
+                        <option>อื่นๆ</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">มีบุตรหรือไม่</label>
+                      <select id="cust_has_children" class="form-select">
+                        <option value="">เลือก</option>
+                        <option>ไม่มี</option>
+                        <option>มี</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div id="children-section" style="display: none;">
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">จำนวนบุตร</label>
+                        <input type="number" id="cust_children_count" class="form-control" placeholder="จำนวนบุตร">
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">อายุบุตร</label>
+                        <input type="text" id="cust_children_ages" class="form-control" placeholder="อายุบุตร (คั่นด้วย ,)">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">อาชีพบุตร</label>
+                      <select id="cust_children_occupation" class="form-select">
+                        <option value="">เลือกอาชีพ</option>
+                        <option>นักเรียน</option>
+                        <option>นักศึกษา</option>
+                        <option>พนักงานบริษัท</option>
+                        <option>อื่นๆ</option>
+                      </select>
+                    </div>
                   </div>
                   <div class="form-group">
-                    <label class="form-label">ผลิตภัณฑ์ที่มีอยู่ (เพิ่มได้หลายรายการ)</label>
-                    <div class="d-flex gap-2 mb-2">
-                      <input type="text" id="prod_name" class="form-control" placeholder="ชื่อผลิตภัณฑ์ (เช่น ABC Life 20Y)">
-                      <input type="number" id="prod_sum" class="form-control" placeholder="Sum Assured / มูลค่า">
-                      <input type="number" id="prod_premium" class="form-control" placeholder="เบี้ย/ปี">
-                      <button type="button" id="btnAddProd" class="btn btn-outline-primary btn-sm">เพิ่ม</button>
+                    <label class="form-label">มีบุคคลอื่นที่ต้องดูแลหรือไม่</label>
+                    <select id="cust_has_dependents" class="form-select">
+                      <option value="">เลือก</option>
+                      <option>ไม่มี</option>
+                      <option>มี</option>
+                    </select>
+                  </div>
+                  <div id="dependents-section" style="display: none;">
+                    <div class="form-group">
+                      <label class="form-label">รายละเอียดบุคคลที่ต้องดูแล</label>
+                      <textarea id="cust_dependents_details" class="form-control" placeholder="ระบุรายละเอียดบุคคลที่ต้องดูแล"></textarea>
                     </div>
-                    <div id="prodList" class="mb-2"></div>
+                  </div>
+                </div>
+
+                <!-- Business Information (only for business owners) -->
+                <div class="form-subsection" id="business-section" style="display: none;">
+                  <div class="subsection-title">
+                    <i class="fas fa-briefcase"></i> ข้อมูลธุรกิจ
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">ประเภทธุรกิจ/กิจการ</label>
+                      <input type="text" id="cust_business_type" class="form-control" placeholder="ประเภทธุรกิจ">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">ทุนจดทะเบียน (บาท)</label>
+                      <input type="number" id="cust_business_capital" class="form-control" placeholder="ทุนจดทะเบียน">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">รายได้ต่อปี (บาท)</label>
+                      <input type="number" id="cust_business_income" class="form-control" placeholder="รายได้ต่อปี">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">กำไร (บาท)</label>
+                      <input type="number" id="cust_business_profit" class="form-control" placeholder="กำไร">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">ภาษีที่เสียปีล่าสุด (บาท)</label>
+                      <input type="number" id="cust_business_tax" class="form-control" placeholder="ภาษีที่เสียปีล่าสุด">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">สัดส่วนหุ้นที่ถือครอง (%)</label>
+                      <input type="number" id="cust_business_share" class="form-control" placeholder="สัดส่วนหุ้นที่ถือครอง" min="0" max="100">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Financial Products -->
+                <div class="form-subsection">
+                  <div class="subsection-title">
+                    <i class="fas fa-piggy-bank"></i> ผลิตภัณฑ์ทางการเงินที่ถือครอง
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">เงินฝากออมทรัพย์ (บาท)</label>
+                      <input type="number" id="prod_savings" class="form-control" placeholder="จำนวนเงิน">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">เงินฝากประจำ (บาท)</label>
+                      <input type="number" id="prod_fixed" class="form-control" placeholder="จำนวนเงิน">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">กองทุน (บาท)</label>
+                      <input type="number" id="prod_fund" class="form-control" placeholder="จำนวนเงิน">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">บัตรเครดิต (บาท)</label>
+                      <input type="number" id="prod_credit_card" class="form-control" placeholder="จำนวนเงิน">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">เงินกู้บ้าน (บาท)</label>
+                      <input type="number" id="prod_home_loan" class="form-control" placeholder="จำนวนเงิน">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">เงินกู้รถ (บาท)</label>
+                      <input type="number" id="prod_car_loan" class="form-control" placeholder="จำนวนเงิน">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">เงินกู้ส่วนบุคคล (บาท)</label>
+                      <input type="number" id="prod_personal_loan" class="form-control" placeholder="จำนวนเงิน">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Insurance Policies -->
+                <div class="form-subsection">
+                  <div class="subsection-title">
+                    <i class="fas fa-shield-alt"></i> กรมธรรม์ประกันที่ถือครอง
+                  </div>
+                  <div id="insurance-policies">
+                    <!-- Dynamic insurance policies will be added here -->
+                  </div>
+                  <button type="button" class="btn btn-outline-primary btn-sm" id="btnAddInsurance">
+                    <i class="fas fa-plus"></i> เพิ่มกรมธรรม์
+                  </button>
+                </div>
+
+                <!-- Employee Comments -->
+                <div class="form-subsection">
+                  <div class="subsection-title">
+                    <i class="fas fa-comments"></i> ความเห็นพนักงาน
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">เคยนำเสนอผลิตภัณฑ์แล้วหรือไม่</label>
+                    <select id="emp_presented_before" class="form-select">
+                      <option value="">เลือก</option>
+                      <option>ยังไม่เคยนำเสนอ</option>
+                      <option>เคยนำเสนอแล้ว</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">ลูกค้าเคยโต้แย้งหรือมีความคิดเห็นอย่างไร</label>
+                    <textarea id="emp_customer_feedback" class="form-control" placeholder="ความคิดเห็นหรือการโต้แย้งของลูกค้า"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">รอบนี้คาดหวังนำเสนอผลิตภัณฑ์ใด</label>
+                    <input type="text" id="emp_proposed_product" class="form-control" placeholder="ผลิตภัณฑ์ที่คาดหวังจะนำเสนอ">
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">เบี้ยประกันที่คาดหวัง (บาท)</label>
+                      <input type="number" id="emp_proposed_premium" class="form-control" placeholder="เบี้ยประกัน">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">ทุนประกันที่คาดหวัง (บาท)</label>
+                      <input type="number" id="emp_proposed_capital" class="form-control" placeholder="ทุนประกัน">
+                    </div>
                   </div>
                 </div>
 
@@ -944,6 +1272,8 @@
                       <th><input type="checkbox" id="selectAll"></th>
                       <th>Customer ID</th>
                       <th>Name</th>
+                      <th>อายุ</th>
+                      <th>อาชีพ</th>
                       <th>Branch</th>
                       <th>RH</th>
                       <th>Created By</th>
@@ -1084,146 +1414,142 @@
               </div>
 
               <div id="adminPanel" style="display:none;">
-                <p class="small-muted mb-3">Audit log (view only) — บันทึกการสร้าง แก้ไข และ export</p>
-                
-                <div class="d-flex gap-2 mb-3">
-                  <button class="btn btn-sm btn-outline-primary" id="btnRefreshAudit">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                  </button>
-                  <button class="btn btn-sm btn-outline-secondary" id="btnExportAudit">
-                    <i class="fas fa-download"></i> Export Log
-                  </button>
+                <ul class="nav nav-tabs admin-tabs" id="adminTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="audit-tab" data-bs-toggle="tab" data-bs-target="#audit-tab-pane" type="button" role="tab" aria-controls="audit-tab-pane" aria-selected="true">Audit Log</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings-tab-pane" type="button" role="tab" aria-controls="settings-tab-pane" aria-selected="false">Settings</button>
+                  </li>
+                </ul>
+                <div class="tab-content admin-tab-content" id="adminTabContent">
+                  <div class="tab-pane fade show active" id="audit-tab-pane" role="tabpanel" aria-labelledby="audit-tab" tabindex="0">
+                    <p class="small-muted mb-3">Audit log (view only) — บันทึกการสร้าง แก้ไข และ export</p>
+                    
+                    <div class="d-flex gap-2 mb-3">
+                      <button class="btn btn-sm btn-outline-primary" id="btnRefreshAudit">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary" id="btnExportAudit">
+                        <i class="fas fa-download"></i> Export Log
+                      </button>
+                    </div>
+                    
+                    <div id="auditList" class="small-muted"></div>
+                  </div>
+                  <div class="tab-pane fade" id="settings-tab-pane" role="tabpanel" aria-labelledby="settings-tab" tabindex="0">
+                    <div class="settings-grid">
+                      <!-- Security Settings -->
+                      <div class="setting-card">
+                        <div class="setting-title">
+                          <i class="fas fa-shield-alt"></i> การรักษาความปลอดภัย
+                        </div>
+                        <div class="setting-description">
+                          ตั้งค่ารหัสผ่านสำหรับการเข้าถึงฟังก์ชันต่างๆ
+                        </div>
+                        
+                        <div class="form-group">
+                          <label class="form-label">รหัสผ่านรายงาน</label>
+                          <div class="input-with-button">
+                            <input type="password" id="reportPassInput" class="form-control" placeholder="รหัสผ่านรายงาน">
+                            <button class="btn btn-outline-primary btn-sm" id="btnChangeReportPass">เปลี่ยน</button>
+                          </div>
+                          <div class="small-muted mt-1">รหัสผ่านสำหรับเข้าถึงเมนูรายงาน</div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="form-label">รหัสผ่าน Admin</label>
+                          <div class="input-with-button">
+                            <input type="password" id="adminPassInput" class="form-control" placeholder="รหัสผ่าน Admin">
+                            <button class="btn btn-outline-primary btn-sm" id="btnChangeAdminPass">เปลี่ยน</button>
+                          </div>
+                          <div class="small-muted mt-1">รหัสผ่านสำหรับเข้าถึงเมนู Admin</div>
+                        </div>
+                      </div>
+
+                      <!-- Data Management -->
+                      <div class="setting-card">
+                        <div class="setting-title">
+                          <i class="fas fa-database"></i> การจัดการข้อมูล
+                        </div>
+                        <div class="setting-description">
+                          การสำรองข้อมูลและการจัดการข้อมูลในระบบ
+                        </div>
+                        
+                        <div class="form-group">
+                          <button class="btn btn-outline-primary w-100 mb-2" id="btnExportAllData">
+                            <i class="fas fa-download"></i> ส่งออกข้อมูลทั้งหมด
+                          </button>
+                          <div class="small-muted mb-3">ดาวน์โหลดข้อมูลทั้งหมดในรูปแบบ JSON</div>
+                          
+                          <button class="btn btn-outline-secondary w-100 mb-2" id="btnImportData">
+                            <i class="fas fa-upload"></i> นำเข้าข้อมูล
+                          </button>
+                          <div class="small-muted">นำเข้าข้อมูลจากไฟล์ JSON</div>
+                        </div>
+                      </div>
+
+                      <!-- System Configuration -->
+                      <div class="setting-card">
+                        <div class="setting-title">
+                          <i class="fas fa-cogs"></i> การตั้งค่าระบบ
+                        </div>
+                        <div class="setting-description">
+                          การกำหนดค่าพื้นฐานของระบบ
+                        </div>
+                        
+                        <div class="form-group">
+                          <label class="form-label">จำนวนแถวต่อหน้า</label>
+                          <select id="pageSizeSelect" class="form-select">
+                            <option value="10">10 แถว</option>
+                            <option value="25">25 แถว</option>
+                            <option value="50">50 แถว</option>
+                            <option value="100">100 แถว</option>
+                          </select>
+                        </div>
+                        
+                        <div class="form-group">
+                          <label class="form-label">รูปแบบวันที่</label>
+                          <select id="dateFormatSelect" class="form-select">
+                            <option value="th-TH">ไทย (DD/MM/YYYY)</option>
+                            <option value="en-US">อเมริกัน (MM/DD/YYYY)</option>
+                            <option value="en-GB">ยุโรป (DD/MM/YYYY)</option>
+                          </select>
+                        </div>
+                        
+                        <div class="form-group">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="autoSaveCheck">
+                            <label class="form-check-label">บันทึกอัตโนมัติ</label>
+                          </div>
+                          <div class="small-muted">บันทึกข้อมูลอัตโนมัติทุก 5 นาที</div>
+                        </div>
+                      </div>
+
+                      <!-- Danger Zone -->
+                      <div class="setting-card danger-zone">
+                        <div class="setting-title text-danger">
+                          <i class="fas fa-exclamation-triangle"></i> โซนอันตราย
+                        </div>
+                        <div class="setting-description">
+                          การดำเนินการที่ไม่อาจย้อนกลับได้
+                        </div>
+                        
+                        <div class="form-group">
+                          <button class="btn btn-outline-danger w-100 mb-2" id="btnClearAllData">
+                            <i class="fas fa-eraser"></i> ล้างข้อมูลทั้งหมด
+                          </button>
+                          <div class="small-muted text-danger mb-3">ลบข้อมูลลูกค้าและประวัติทั้งหมด</div>
+                          
+                          <button class="btn btn-danger w-100" id="btnResetSystem">
+                            <i class="fas fa-trash-alt"></i> รีเซ็ตระบบทั้งหมด
+                          </button>
+                          <div class="small-muted text-danger">ล้างการตั้งค่าและข้อมูลทั้งหมด</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                
-                <div id="auditList" class="small-muted"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- SETTINGS PANEL -->
-        <div id="panel-settings" class="content-panel">
-          <div class="page-header">
-            <div class="page-title">
-              <i class="fas fa-sliders-h"></i> ตั้งค่าระบบ
-            </div>
-            <div class="page-actions">
-              <button class="btn btn-sm btn-secondary" id="btn-back-settings">
-                <i class="fas fa-arrow-left"></i> ย้อนกลับ
-              </button>
-              <button class="btn btn-sm btn-primary" id="btn-home-settings">
-                <i class="fas fa-home"></i> หน้าแรก
-              </button>
-            </div>
-          </div>
-
-          <div class="settings-grid">
-            <!-- Security Settings -->
-            <div class="setting-card">
-              <div class="setting-title">
-                <i class="fas fa-shield-alt"></i> การรักษาความปลอดภัย
-              </div>
-              <div class="setting-description">
-                ตั้งค่ารหัสผ่านสำหรับการเข้าถึงฟังก์ชันต่างๆ
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">รหัสผ่านรายงาน</label>
-                <div class="input-with-button">
-                  <input type="password" id="reportPassInput" class="form-control" placeholder="รหัสผ่านรายงาน">
-                  <button class="btn btn-outline-primary btn-sm" id="btnChangeReportPass">เปลี่ยน</button>
-                </div>
-                <div class="small-muted mt-1">รหัสผ่านสำหรับเข้าถึงเมนูรายงาน</div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">รหัสผ่าน Admin</label>
-                <div class="input-with-button">
-                  <input type="password" id="adminPassInput" class="form-control" placeholder="รหัสผ่าน Admin">
-                  <button class="btn btn-outline-primary btn-sm" id="btnChangeAdminPass">เปลี่ยน</button>
-                </div>
-                <div class="small-muted mt-1">รหัสผ่านสำหรับเข้าถึงเมนู Admin</div>
-              </div>
-            </div>
-
-            <!-- Data Management -->
-            <div class="setting-card">
-              <div class="setting-title">
-                <i class="fas fa-database"></i> การจัดการข้อมูล
-              </div>
-              <div class="setting-description">
-                การสำรองข้อมูลและการจัดการข้อมูลในระบบ
-              </div>
-              
-              <div class="form-group">
-                <button class="btn btn-outline-primary w-100 mb-2" id="btnExportAllData">
-                  <i class="fas fa-download"></i> ส่งออกข้อมูลทั้งหมด
-                </button>
-                <div class="small-muted mb-3">ดาวน์โหลดข้อมูลทั้งหมดในรูปแบบ JSON</div>
-                
-                <button class="btn btn-outline-secondary w-100 mb-2" id="btnImportData">
-                  <i class="fas fa-upload"></i> นำเข้าข้อมูล
-                </button>
-                <div class="small-muted">นำเข้าข้อมูลจากไฟล์ JSON</div>
-              </div>
-            </div>
-
-            <!-- System Configuration -->
-            <div class="setting-card">
-              <div class="setting-title">
-                <i class="fas fa-cogs"></i> การตั้งค่าระบบ
-              </div>
-              <div class="setting-description">
-                การกำหนดค่าพื้นฐานของระบบ
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">จำนวนแถวต่อหน้า</label>
-                <select id="pageSizeSelect" class="form-select">
-                  <option value="10">10 แถว</option>
-                  <option value="25">25 แถว</option>
-                  <option value="50">50 แถว</option>
-                  <option value="100">100 แถว</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">รูปแบบวันที่</label>
-                <select id="dateFormatSelect" class="form-select">
-                  <option value="th-TH">ไทย (DD/MM/YYYY)</option>
-                  <option value="en-US">อเมริกัน (MM/DD/YYYY)</option>
-                  <option value="en-GB">ยุโรป (DD/MM/YYYY)</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="autoSaveCheck">
-                  <label class="form-check-label">บันทึกอัตโนมัติ</label>
-                </div>
-                <div class="small-muted">บันทึกข้อมูลอัตโนมัติทุก 5 นาที</div>
-              </div>
-            </div>
-
-            <!-- Danger Zone -->
-            <div class="setting-card danger-zone">
-              <div class="setting-title text-danger">
-                <i class="fas fa-exclamation-triangle"></i> โซนอันตราย
-              </div>
-              <div class="setting-description">
-                การดำเนินการที่ไม่อาจย้อนกลับได้
-              </div>
-              
-              <div class="form-group">
-                <button class="btn btn-outline-danger w-100 mb-2" id="btnClearAllData">
-                  <i class="fas fa-eraser"></i> ล้างข้อมูลทั้งหมด
-                </button>
-                <div class="small-muted text-danger mb-3">ลบข้อมูลลูกค้าและประวัติทั้งหมด</div>
-                
-                <button class="btn btn-danger w-100" id="btnResetSystem">
-                  <i class="fas fa-trash-alt"></i> รีเซ็ตระบบทั้งหมด
-                </button>
-                <div class="small-muted text-danger">ล้างการตั้งค่าและข้อมูลทั้งหมด</div>
               </div>
             </div>
           </div>
@@ -1231,8 +1557,11 @@
       </div>
     </div>
 
-    <div class="watermark">Account Planning System</div>
+    <div class="watermark">PLT-ttb Training</div>
   </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     /**************************************************************************
@@ -1253,12 +1582,12 @@
     const $ = (id) => document.getElementById(id);
 
     // System State
-    let currentPanel = 'form';
+    let currentPanel = 'start';
     let reportUnlocked = false;
     let adminUnlocked = false;
     let systemSettings = {};
-    let tmpProducts = [];
-    let tmpAttachments = [];
+    let currentCustomerId = '';
+    let insurancePolicyCount = 0;
 
     // Date and Time Utilities
     function nowISO() {
@@ -1396,11 +1725,7 @@
         initDemoData();
         refreshList();
         renderAuditList();
-        showPanel('form');
-        
-        // Initial render of product and attachment lists
-        renderProdList();
-        renderAttachList();
+        showPanel('start');
       }, 500);
     }
 
@@ -1447,14 +1772,22 @@
       if (panelName === 'list') {
         refreshList();
       }
+      
+      // Special handling for form panel
+      if (panelName === 'form') {
+        if (!currentCustomerId) {
+          currentCustomerId = genCustomerCode();
+          $('customerIdDisplay').textContent = `Customer ID: ${currentCustomerId}`;
+        }
+      }
     }
 
     function goHome() {
-      showPanel('form');
+      showPanel('start');
     }
 
     function goBack() {
-      showPanel('form');
+      showPanel('start');
     }
 
     function logout() {
@@ -1470,44 +1803,18 @@
       }
     }
 
-    // ---------- Products Management ----------
-    function renderProdList() {
-      const container = $('prodList');
-      container.innerHTML = tmpProducts.map((p, idx) => `
-        <div class="d-flex align-items-center mb-2 p-2 border rounded" data-idx="${idx}">
-          <div class="me-auto">
-            <strong>${p.product_name || ''}</strong>
-            <div class="small-muted">Sum: ${p.sum_assured || 0} | Premium: ${p.premium || 0}</div>
-          </div>
-          <button class="btn btn-sm btn-outline-danger" onclick="removeProd(${idx})">
-            <i class="fas fa-trash"></i> ลบ
-          </button>
-        </div>
-      `).join('') || '<div class="text-muted p-2 border rounded">ยังไม่มีผลิตภัณฑ์</div>';
-    }
-
-    function renderAttachList() {
-      const container = $('attachList');
-      container.innerHTML = tmpAttachments.map((f, idx) => `
-        <div class="d-flex align-items-center mb-2 p-2 border rounded">
-          <div class="me-auto small-muted">
-            <i class="fas fa-file"></i> ${f.name} (${f.type})
-          </div>
-          <button class="btn btn-sm btn-outline-danger" onclick="removeAttach(${idx})">
-            <i class="fas fa-trash"></i> ลบ
-          </button>
-        </div>
-      `).join('') || '<div class="text-muted p-2 border rounded">ยังไม่มีไฟล์แนบ</div>';
-    }
-
     // ---------- Form Management ----------
     function clearForm() {
       document.getElementById('customerForm').reset();
-      tmpProducts = []; 
-      tmpAttachments = [];
-      renderProdList(); 
-      renderAttachList();
+      currentCustomerId = '';
+      insurancePolicyCount = 0;
+      $('insurance-policies').innerHTML = '';
+      $('customerIdDisplay').textContent = 'Customer ID: กำลังสร้าง...';
       $('formStatus').textContent = '';
+      $('business-section').style.display = 'none';
+      $('children-section').style.display = 'none';
+      $('dependents-section').style.display = 'none';
+      calculateYearlyIncome();
     }
 
     function validateForm() {
@@ -1515,8 +1822,11 @@
         ['employee_name', 'กรอกชื่อผู้กรอก'],
         ['employee_id', 'กรอก Employee ID'],
         ['branch', 'กรอก Branch'],
-        ['cust_first', 'กรอกชื่อ'],
-        ['cust_last', 'กรอกนามสกุล'],
+        ['cust_name', 'กรอกชื่อนามสมมุติ'],
+        ['cust_age', 'กรอกอายุ'],
+        ['cust_gender', 'เลือกเพศ'],
+        ['cust_occupation', 'เลือกอาชีพ'],
+        ['cust_monthly_income', 'กรอกรายได้ต่อเดือน'],
         ['rh', 'เลือก RH']
       ];
 
@@ -1532,6 +1842,85 @@
       return true;
     }
 
+    function calculateYearlyIncome() {
+      const monthlyIncome = parseFloat($('cust_monthly_income').value) || 0;
+      const yearlyIncome = monthlyIncome * 12;
+      $('cust_yearly_income').value = yearlyIncome.toLocaleString();
+    }
+
+    function addInsurancePolicy() {
+      insurancePolicyCount++;
+      const policyHtml = `
+        <div class="insurance-policy form-row border-bottom pb-2 mb-2" id="insurance-policy-${insurancePolicyCount}">
+          <div class="form-group">
+            <label class="form-label">ประเภทกรมธรรม์</label>
+            <select class="form-select insurance-type">
+              <option value="">เลือกประเภท</option>
+              <option>สะสมทรัพย์</option>
+              <option>สุขภาพ</option>
+              <option>ตลอดชีพ</option>
+              <option>บำนาญ</option>
+              <option>UL</option>
+              <option>อื่นๆ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ทุน (บาท)</label>
+            <input type="number" class="form-control insurance-capital" placeholder="ทุน">
+          </div>
+          <div class="form-group">
+            <label class="form-label">เบี้ย (บาท)</label>
+            <input type="number" class="form-control insurance-premium" placeholder="เบี้ย">
+          </div>
+          <div class="form-group">
+            <label class="form-label">สถานะการชำระเบี้ย</label>
+            <select class="form-select insurance-status">
+              <option value="">เลือกสถานะ</option>
+              <option>ชำระปกติ</option>
+              <option>ค้างชำระ</option>
+              <option>สิ้นสุดสัญญา</option>
+            </select>
+          </div>
+          <div class="form-group d-flex align-items-end">
+            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInsurancePolicy(${insurancePolicyCount})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `;
+      $('insurance-policies').insertAdjacentHTML('beforeend', policyHtml);
+    }
+
+    function removeInsurancePolicy(id) {
+      const policyElement = $(`insurance-policy-${id}`);
+      if (policyElement) {
+        policyElement.remove();
+      }
+    }
+
+    function getInsurancePolicies() {
+      const policies = [];
+      for (let i = 1; i <= insurancePolicyCount; i++) {
+        const policyElement = $(`insurance-policy-${i}`);
+        if (policyElement) {
+          const type = policyElement.querySelector('.insurance-type').value;
+          const capital = policyElement.querySelector('.insurance-capital').value;
+          const premium = policyElement.querySelector('.insurance-premium').value;
+          const status = policyElement.querySelector('.insurance-status').value;
+          
+          if (type || capital || premium || status) {
+            policies.push({
+              type,
+              capital: parseFloat(capital) || 0,
+              premium: parseFloat(premium) || 0,
+              status
+            });
+          }
+        }
+      }
+      return policies;
+    }
+
     function saveCustomer() {
       if (!validateForm()) return;
 
@@ -1542,16 +1931,51 @@
       const rh = $('rh').value.trim();
 
       const customer = {
-        customer_id: genCustomerCode(),
-        first_name: $('cust_first').value.trim(),
-        last_name: $('cust_last').value.trim(),
-        phone: $('cust_phone').value.trim(),
-        email: $('cust_email').value.trim(),
-        address: $('cust_address').value.trim(),
+        customer_id: currentCustomerId,
+        name: $('cust_name').value.trim(),
+        age: parseInt($('cust_age').value) || 0,
+        gender: $('cust_gender').value,
+        occupation: $('cust_occupation').value,
+        monthly_income: parseFloat($('cust_monthly_income').value) || 0,
+        yearly_income: parseFloat($('cust_monthly_income').value) * 12 || 0,
+        welfare: $('cust_welfare').value,
+        insurance_capital: parseFloat($('cust_insurance_capital').value) || 0,
+        marital_status: $('cust_marital_status').value,
+        spouse_age: parseInt($('cust_spouse_age').value) || 0,
+        spouse_occupation: $('cust_spouse_occupation').value,
+        has_children: $('cust_has_children').value,
+        children_count: parseInt($('cust_children_count').value) || 0,
+        children_ages: $('cust_children_ages').value,
+        children_occupation: $('cust_children_occupation').value,
+        has_dependents: $('cust_has_dependents').value,
+        dependents_details: $('cust_dependents_details').value,
+        business_type: $('cust_business_type').value,
+        business_capital: parseFloat($('cust_business_capital').value) || 0,
+        business_income: parseFloat($('cust_business_income').value) || 0,
+        business_profit: parseFloat($('cust_business_profit').value) || 0,
+        business_tax: parseFloat($('cust_business_tax').value) || 0,
+        business_share: parseFloat($('cust_business_share').value) || 0,
+        financial_products: {
+          savings: parseFloat($('prod_savings').value) || 0,
+          fixed: parseFloat($('prod_fixed').value) || 0,
+          fund: parseFloat($('prod_fund').value) || 0,
+          credit_card: parseFloat($('prod_credit_card').value) || 0,
+          home_loan: parseFloat($('prod_home_loan').value) || 0,
+          car_loan: parseFloat($('prod_car_loan').value) || 0,
+          personal_loan: parseFloat($('prod_personal_loan').value) || 0
+        },
+        insurance_policies: getInsurancePolicies(),
+        employee_comments: {
+          presented_before: $('emp_presented_before').value,
+          customer_feedback: $('emp_customer_feedback').value,
+          proposed_product: $('emp_proposed_product').value,
+          proposed_premium: parseFloat($('emp_proposed_premium').value) || 0,
+          proposed_capital: parseFloat($('emp_proposed_capital').value) || 0
+        },
+        additional_comments: [],
         branch, 
         zone, 
         rh,
-        products: [...tmpProducts],
         created_by: createdBy,
         created_by_name: empName,
         created_at: nowISO(),
@@ -1563,7 +1987,7 @@
       saveData(all);
       
       appendAudit('create', customer.customer_id, createdBy, { 
-        first_name: customer.first_name, 
+        name: customer.name, 
         branch 
       });
       
@@ -1586,7 +2010,9 @@
         <tr>
           <td><input type="checkbox" class="rowSelect" data-id="${c.customer_id}"></td>
           <td><strong>${c.customer_id}</strong></td>
-          <td>${c.first_name} ${c.last_name}</td>
+          <td>${c.name}</td>
+          <td>${c.age || '-'}</td>
+          <td>${c.occupation || '-'}</td>
           <td>${c.branch || '-'}</td>
           <td><span class="badge bg-primary">${c.rh || '-'}</span></td>
           <td>${c.created_by || '-'}</td>
@@ -1604,7 +2030,7 @@
             </div>
           </td>
         </tr>
-      `).join('') || '<tr><td colspan="7" class="text-center text-muted py-3">ไม่มีข้อมูลลูกค้า</td></tr>';
+      `).join('') || '<tr><td colspan="9" class="text-center text-muted py-3">ไม่มีข้อมูลลูกค้า</td></tr>';
     }
 
     function refreshList() {
@@ -1622,7 +2048,7 @@
       if (q) {
         all = all.filter(c => 
           c.customer_id.toLowerCase().includes(q) || 
-          (c.first_name + ' ' + c.last_name).toLowerCase().includes(q)
+          (c.name || '').toLowerCase().includes(q)
         );
       }
       
@@ -1685,35 +2111,57 @@
             
             <div style="background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:20px;">
               <h4 style="margin:0 0 10px 0;color:#333;">Basic Information</h4>
-              <div><strong>Name:</strong> ${c.first_name} ${c.last_name}</div>
-              <div><strong>Phone / Email:</strong> ${c.phone || '-'} / ${c.email || '-'}</div>
+              <div><strong>Name:</strong> ${c.name}</div>
+              <div><strong>Age / Gender:</strong> ${c.age || '-'} / ${c.gender || '-'}</div>
+              <div><strong>Occupation:</strong> ${c.occupation || '-'}</div>
+              <div><strong>Monthly Income / Yearly Income:</strong> ${c.monthly_income || 0} / ${c.yearly_income || 0}</div>
               <div><strong>Branch / Zone / RH:</strong> ${c.branch || '-'} / ${c.zone || '-'} / ${c.rh || '-'}</div>
             </div>
             
             <div style="background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:20px;">
-              <h4 style="margin:0 0 10px 0;color:#333;">Products</h4>
+              <h4 style="margin:0 0 10px 0;color:#333;">Financial Products</h4>
               <table style="width:100%; border-collapse:collapse;">
                 <thead>
                   <tr style="background:#e9ecef;">
-                    <th style="text-align:left;padding:8px;">Name</th>
-                    <th style="text-align:right;padding:8px;">Sum</th>
-                    <th style="text-align:right;padding:8px;">Premium</th>
+                    <th style="text-align:left;padding:8px;">Product</th>
+                    <th style="text-align:right;padding:8px;">Amount</th>
                   </tr>
                 </thead>
                 <tbody>
-                  ${(c.products || []).map(p => `
-                    <tr>
-                      <td style="padding:8px;border-bottom:1px solid #dee2e6;">${p.product_name}</td>
-                      <td style="text-align:right;padding:8px;border-bottom:1px solid #dee2e6;">${p.sum_assured || 0}</td>
-                      <td style="text-align:right;padding:8px;border-bottom:1px solid #dee2e6;">${p.premium || 0}</td>
-                    </tr>
-                  `).join('') || '<tr><td colspan="3" style="padding:8px;text-align:center;">-</td></tr>'}
+                  <tr>
+                    <td style="padding:8px;border-bottom:1px solid #dee2e6;">Savings</td>
+                    <td style="text-align:right;padding:8px;border-bottom:1px solid #dee2e6;">${c.financial_products?.savings || 0}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:8px;border-bottom:1px solid #dee2e6;">Fixed Deposit</td>
+                    <td style="text-align:right;padding:8px;border-bottom:1px solid #dee2e6;">${c.financial_products?.fixed || 0}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:8px;border-bottom:1px solid #dee2e6;">Fund</td>
+                    <td style="text-align:right;padding:8px;border-bottom:1px solid #dee2e6;">${c.financial_products?.fund || 0}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:8px;border-bottom:1px solid #dee2e6;">Credit Card</td>
+                    <td style="text-align:right;padding:8px;border-bottom:1px solid #dee2e6;">${c.financial_products?.credit_card || 0}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:8px;border-bottom:1px solid #dee2e6;">Home Loan</td>
+                    <td style="text-align:right;padding:8px;border-bottom:1px solid #dee2e6;">${c.financial_products?.home_loan || 0}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:8px;border-bottom:1px solid #dee2e6;">Car Loan</td>
+                    <td style="text-align:right;padding:8px;border-bottom:1px solid #dee2e6;">${c.financial_products?.car_loan || 0}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:8px;border-bottom:1px solid #dee2e6;">Personal Loan</td>
+                    <td style="text-align:right;padding:8px;border-bottom:1px solid #dee2e6;">${c.financial_products?.personal_loan || 0}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
             
             <div style="font-size:11px;color:#999;text-align:center;margin-top:30px;">
-              Confidential — For internal use only. Exported by enhanced account planning system.
+              PLT-ttb Training — Confidential — For internal use only.
             </div>
           </div>
         `;
@@ -1964,33 +2412,52 @@
         const demo = [
           { 
             customer_id: genCustomerCode(), 
-            first_name: 'สมชาย', 
-            last_name: 'ใจดี', 
-            phone: '0811111111', 
-            email: 's@example.com', 
+            name: 'สมชาย ใจดี', 
+            age: 35,
+            gender: 'ชาย',
+            occupation: 'พนักงานบริษัท',
+            monthly_income: 50000,
+            yearly_income: 600000,
+            welfare: 'มี - วงเงินสูง',
+            insurance_capital: 1000000,
+            marital_status: 'สมรส',
+            spouse_age: 32,
+            spouse_occupation: 'ครู',
+            has_children: 'มี',
+            children_count: 2,
+            children_ages: '8,5',
+            children_occupation: 'นักเรียน',
+            has_dependents: 'ไม่มี',
+            financial_products: {
+              savings: 50000,
+              fixed: 200000,
+              fund: 150000,
+              credit_card: 50000,
+              home_loan: 2000000,
+              car_loan: 500000,
+              personal_loan: 0
+            },
+            insurance_policies: [
+              {
+                type: 'สะสมทรัพย์',
+                capital: 1000000,
+                premium: 50000,
+                status: 'ชำระปกติ'
+              }
+            ],
+            employee_comments: {
+              presented_before: 'ยังไม่เคยนำเสนอ',
+              customer_feedback: '',
+              proposed_product: 'ประกันสุขภาพ',
+              proposed_premium: 30000,
+              proposed_capital: 1000000
+            },
+            additional_comments: [],
             branch: 'Bangkok Central', 
             zone: 'Zone A', 
-            rh: 'RH1', 
-            products: [
-              { product_name: 'ABC Life 20Y', sum_assured: 1000000, premium: 50000 }
-            ], 
+            rh: 'RH1',
             created_by: 'BR1001', 
             created_by_name: 'Somchai', 
-            created_at: nowISO(), 
-            updated_at: nowISO()
-          },
-          { 
-            customer_id: genCustomerCode(), 
-            first_name: 'มาลี', 
-            last_name: 'สมหวัง', 
-            phone: '0822222222', 
-            email: 'm@example.com', 
-            branch: 'North Branch', 
-            zone: 'Zone B', 
-            rh: 'RH3', 
-            products: [], 
-            created_by: 'BR2002', 
-            created_by_name: 'Malee', 
             created_at: nowISO(), 
             updated_at: nowISO()
           }
@@ -2006,6 +2473,11 @@
       
       // Enter button click
       $('enterBtn').addEventListener('click', showMainApp);
+      
+      // Start button click
+      $('btn-start').addEventListener('click', function() {
+        showPanel('form');
+      });
       
       // Navigation event listeners
       document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -2028,44 +2500,36 @@
       $('btn-logout').addEventListener('click', logout);
       
       // Form event listeners
-      $('btnAddProd').addEventListener('click', () => {
-        const name = $('prod_name').value.trim();
-        const sum = Number($('prod_sum').value || 0);
-        const prem = Number($('prod_premium').value || 0);
-        
-        if (!name) {
-          alert('กรุณาใส่ชื่อผลิตภัณฑ์');
-          return;
+      $('btnAddInsurance').addEventListener('click', addInsurancePolicy);
+      
+      // Calculate yearly income when monthly income changes
+      $('cust_monthly_income').addEventListener('input', calculateYearlyIncome);
+      
+      // Show/hide business section based on occupation
+      $('cust_occupation').addEventListener('change', function() {
+        if (this.value === 'เจ้าของกิจการ/ธุรกิจส่วนตัว') {
+          $('business-section').style.display = 'block';
+        } else {
+          $('business-section').style.display = 'none';
         }
-        
-        tmpProducts.push({ product_name: name, sum_assured: sum, premium: prem });
-        $('prod_name').value = '';
-        $('prod_sum').value = '';
-        $('prod_premium').value = '';
-        renderProdList();
       });
       
-      $('file_attach').addEventListener('change', async (ev) => {
-        const f = ev.target.files[0];
-        if (!f) return;
-        
-        // Limit file size to 2MB for demo
-        if (f.size > 2 * 1024 * 1024) {
-          alert('ไฟล์ใหญ่เกิน 2MB (demo limit)');
-          return;
+      // Show/hide children section
+      $('cust_has_children').addEventListener('change', function() {
+        if (this.value === 'มี') {
+          $('children-section').style.display = 'block';
+        } else {
+          $('children-section').style.display = 'none';
         }
-        
-        const reader = new FileReader();
-        reader.onload = () => {
-          tmpAttachments.push({ 
-            name: f.name, 
-            type: f.type, 
-            dataUrl: reader.result 
-          });
-          renderAttachList();
-        };
-        reader.readAsDataURL(f);
-        ev.target.value = '';
+      });
+      
+      // Show/hide dependents section
+      $('cust_has_dependents').addEventListener('change', function() {
+        if (this.value === 'มี') {
+          $('dependents-section').style.display = 'block';
+        } else {
+          $('dependents-section').style.display = 'none';
+        }
       });
       
       $('btnClear').addEventListener('click', clearForm);
@@ -2120,7 +2584,9 @@
         const all = loadData();
         const rows = all.map(c => ({
           customer_id: c.customer_id,
-          name: `${c.first_name} ${c.last_name}`,
+          name: c.name,
+          age: c.age,
+          occupation: c.occupation,
           branch: c.branch,
           rh: c.rh,
           created_by: c.created_by,
@@ -2198,15 +2664,7 @@
     });
 
     // ---------- Global Functions for HTML onclick ----------
-    window.removeProd = function(i) { 
-      tmpProducts.splice(i, 1); 
-      renderProdList(); 
-    };
-    
-    window.removeAttach = function(i) { 
-      tmpAttachments.splice(i, 1); 
-      renderAttachList(); 
-    };
+    window.removeInsurancePolicy = removeInsurancePolicy;
     
     window.viewDetail = function(customerId) {
       const all = loadData();
@@ -2216,71 +2674,202 @@
         return;
       }
       
-      const html = `
-        <div class="container-fluid py-4">
-          <h3>${c.first_name} ${c.last_name} (${c.customer_id})</h3>
-          
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                  <i class="fas fa-info-circle"></i> ข้อมูลพื้นฐาน
-                </div>
-                <div class="card-body">
-                  <p><strong>ชื่อ-นามสกุล:</strong> ${c.first_name} ${c.last_name}</p>
-                  <p><strong>เบอร์โทร:</strong> ${c.phone || '-'}</p>
-                  <p><strong>อีเมล:</strong> ${c.email || '-'}</p>
-                  <p><strong>ที่อยู่:</strong> ${c.address || '-'}</p>
-                  <p><strong>Branch/Zone/RH:</strong> ${c.branch || '-'} / ${c.zone || '-'} / ${c.rh || '-'}</p>
-                </div>
+      // Create modal for customer details
+      const modalHtml = `
+        <div class="modal fade" id="customerDetailModal" tabindex="-1" aria-labelledby="customerDetailModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="customerDetailModalLabel">รายละเอียดลูกค้า - ${c.customer_id}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-            </div>
-            
-            <div class="col-md-6">
-              <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                  <i class="fas fa-boxes"></i> ผลิตภัณฑ์ที่มีอยู่
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card mb-4">
+                      <div class="card-header bg-primary text-white">
+                        <i class="fas fa-info-circle"></i> ข้อมูลพื้นฐาน
+                      </div>
+                      <div class="card-body">
+                        <p><strong>ชื่อนามสมมุติ:</strong> ${c.name}</p>
+                        <p><strong>อายุ/เพศ:</strong> ${c.age || '-'} / ${c.gender || '-'}</p>
+                        <p><strong>อาชีพ:</strong> ${c.occupation || '-'}</p>
+                        <p><strong>รายได้ต่อเดือน/ปี:</strong> ${c.monthly_income || 0} / ${c.yearly_income || 0}</p>
+                        <p><strong>สวัสดิการ:</strong> ${c.welfare || '-'}</p>
+                        <p><strong>ทุนประกันต่อปี:</strong> ${c.insurance_capital || 0}</p>
+                        <p><strong>Branch/Zone/RH:</strong> ${c.branch || '-'} / ${c.zone || '-'} / ${c.rh || '-'}</p>
+                      </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                      <div class="card-header bg-success text-white">
+                        <i class="fas fa-users"></i> ข้อมูลครอบครัว
+                      </div>
+                      <div class="card-body">
+                        <p><strong>สถานภาพ:</strong> ${c.marital_status || '-'}</p>
+                        <p><strong>อายุคู่สมรส:</strong> ${c.spouse_age || '-'}</p>
+                        <p><strong>อาชีพคู่สมรส:</strong> ${c.spouse_occupation || '-'}</p>
+                        <p><strong>มีบุตร:</strong> ${c.has_children || '-'}</p>
+                        ${c.has_children === 'มี' ? `
+                          <p><strong>จำนวนบุตร:</strong> ${c.children_count || '-'}</p>
+                          <p><strong>อายุบุตร:</strong> ${c.children_ages || '-'}</p>
+                          <p><strong>อาชีพบุตร:</strong> ${c.children_occupation || '-'}</p>
+                        ` : ''}
+                        <p><strong>มีบุคคลอื่นที่ต้องดูแล:</strong> ${c.has_dependents || '-'}</p>
+                        ${c.has_dependents === 'มี' ? `
+                          <p><strong>รายละเอียด:</strong> ${c.dependents_details || '-'}</p>
+                        ` : ''}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <div class="card mb-4">
+                      <div class="card-header bg-info text-white">
+                        <i class="fas fa-piggy-bank"></i> ผลิตภัณฑ์ทางการเงิน
+                      </div>
+                      <div class="card-body">
+                        <p><strong>เงินฝากออมทรัพย์:</strong> ${c.financial_products?.savings || 0}</p>
+                        <p><strong>เงินฝากประจำ:</strong> ${c.financial_products?.fixed || 0}</p>
+                        <p><strong>กองทุน:</strong> ${c.financial_products?.fund || 0}</p>
+                        <p><strong>บัตรเครดิต:</strong> ${c.financial_products?.credit_card || 0}</p>
+                        <p><strong>เงินกู้บ้าน:</strong> ${c.financial_products?.home_loan || 0}</p>
+                        <p><strong>เงินกู้รถ:</strong> ${c.financial_products?.car_loan || 0}</p>
+                        <p><strong>เงินกู้ส่วนบุคคล:</strong> ${c.financial_products?.personal_loan || 0}</p>
+                      </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                      <div class="card-header bg-warning text-dark">
+                        <i class="fas fa-shield-alt"></i> กรมธรรม์ประกัน
+                      </div>
+                      <div class="card-body">
+                        ${c.insurance_policies && c.insurance_policies.length > 0 ? 
+                          c.insurance_policies.map(policy => `
+                            <div class="border-bottom pb-2 mb-2">
+                              <p><strong>ประเภท:</strong> ${policy.type || '-'}</p>
+                              <p><strong>ทุน:</strong> ${policy.capital || 0}</p>
+                              <p><strong>เบี้ย:</strong> ${policy.premium || 0}</p>
+                              <p><strong>สถานะ:</strong> ${policy.status || '-'}</p>
+                            </div>
+                          `).join('') : 
+                          '<p class="text-muted">ไม่มีข้อมูลกรมธรรม์</p>'
+                        }
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="card-body">
-                  ${(c.products || []).length > 0 
-                    ? c.products.map(p => `
-                        <div class="border-bottom pb-2 mb-2">
-                          <strong>${p.product_name}</strong><br>
-                          <small class="text-muted">Sum: ${p.sum_assured || 0} | Premium: ${p.premium || 0}</small>
+                
+                <div class="card mb-4">
+                  <div class="card-header bg-secondary text-white">
+                    <i class="fas fa-comments"></i> ความเห็นพนักงาน
+                  </div>
+                  <div class="card-body">
+                    <p><strong>เคยนำเสนอแล้วหรือไม่:</strong> ${c.employee_comments?.presented_before || '-'}</p>
+                    <p><strong>ความคิดเห็นลูกค้า:</strong> ${c.employee_comments?.customer_feedback || '-'}</p>
+                    <p><strong>ผลิตภัณฑ์ที่คาดหวัง:</strong> ${c.employee_comments?.proposed_product || '-'}</p>
+                    <p><strong>เบี้ย/ทุนที่คาดหวัง:</strong> ${c.employee_comments?.proposed_premium || 0} / ${c.employee_comments?.proposed_capital || 0}</p>
+                  </div>
+                </div>
+                
+                <div class="comment-section">
+                  <h6>ความคิดเห็นเพิ่มเติม</h6>
+                  <div id="customerComments">
+                    ${c.additional_comments && c.additional_comments.length > 0 ? 
+                      c.additional_comments.map(comment => `
+                        <div class="comment-item">
+                          <div class="comment-meta">${comment.date} โดย ${comment.by}</div>
+                          <div>${comment.text}</div>
                         </div>
-                      `).join('')
-                    : '<p class="text-muted">ไม่มีข้อมูลผลิตภัณฑ์</p>'
-                  }
+                      `).join('') : 
+                      '<p class="text-muted">ยังไม่มีความคิดเห็น</p>'
+                    }
+                  </div>
+                  <div class="mt-3">
+                    <textarea class="form-control mb-2" id="newComment" placeholder="เพิ่มความคิดเห็นใหม่"></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="addComment('${c.customer_id}')">
+                      <i class="fas fa-plus"></i> เพิ่มความคิดเห็น
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="mt-4 p-3 bg-light rounded">
+                  <small class="text-muted">
+                    สร้างโดย: ${c.created_by_name || c.created_by} | 
+                    วันที่สร้าง: ${formatDateISOToLocalShort(c.created_at)} | 
+                    อัปเดตล่าสุด: ${formatDateISOToLocalShort(c.updated_at)}
+                  </small>
                 </div>
               </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+              </div>
             </div>
-          </div>
-          
-          <div class="mt-4 p-3 bg-light rounded">
-            <small class="text-muted">
-              สร้างโดย: ${c.created_by_name || c.created_by} | 
-              วันที่สร้าง: ${formatDateISOToLocalShort(c.created_at)} | 
-              อัปเดตล่าสุด: ${formatDateISOToLocalShort(c.updated_at)}
-            </small>
           </div>
         </div>
       `;
       
-      const w = window.open('', '_blank', 'width=1000,height=700');
-      w.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Customer Detail - ${c.customer_id}</title>
-          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        </head>
-        <body>
-          ${html}
-        </body>
-        </html>
-      `);
-      w.document.close();
+      // Remove existing modal if any
+      const existingModal = document.getElementById('customerDetailModal');
+      if (existingModal) {
+        existingModal.remove();
+      }
+      
+      // Add modal to document
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      
+      // Show modal
+      const modal = new bootstrap.Modal(document.getElementById('customerDetailModal'));
+      modal.show();
+    };
+    
+    window.addComment = function(customerId) {
+      const all = loadData();
+      const c = all.find(x => x.customer_id === customerId);
+      if (!c) {
+        alert('ไม่พบข้อมูลลูกค้า');
+        return;
+      }
+      
+      const newComment = document.getElementById('newComment').value.trim();
+      if (!newComment) {
+        alert('กรุณากรอกความคิดเห็น');
+        return;
+      }
+      
+      // Initialize comments array if it doesn't exist
+      if (!c.additional_comments) {
+        c.additional_comments = [];
+      }
+      
+      // Add new comment
+      c.additional_comments.push({
+        text: newComment,
+        by: systemSettings.currentUser || 'Unknown',
+        date: formatDateISOToLocalShort(nowISO())
+      });
+      
+      // Update customer data
+      const index = all.findIndex(x => x.customer_id === customerId);
+      if (index !== -1) {
+        all[index] = c;
+        saveData(all);
+        
+        // Clear input
+        document.getElementById('newComment').value = '';
+        
+        // Refresh comments display
+        const commentsHtml = c.additional_comments.map(comment => `
+          <div class="comment-item">
+            <div class="comment-meta">${comment.date} โดย ${comment.by}</div>
+            <div>${comment.text}</div>
+          </div>
+        `).join('');
+        
+        document.getElementById('customerComments').innerHTML = commentsHtml;
+        
+        alert('เพิ่มความคิดเห็นเรียบร้อยแล้ว');
+      }
     };
     
     window.exportSinglePDF = exportSinglePDF;
@@ -2294,7 +2883,7 @@
       saveData(all);
       
       appendAudit('delete', customerId, 'local-user', {
-        customer_name: customer ? `${customer.first_name} ${customer.last_name}` : 'Unknown'
+        customer_name: customer ? customer.name : 'Unknown'
       });
       
       refreshList();
