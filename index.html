@@ -18,6 +18,9 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root {
       --primary-color: #007AFF;
@@ -1565,10 +1568,18 @@
 
   <script>
     /**************************************************************************
-     * Enhanced Account Planning System with Security Features
+     * Enhanced Account Planning System with Supabase Backend
      * Features: Loading screen, Passcode protection for Reports and Admin
      * Passcodes: Reports (2568), Admin (2025)
      **************************************************************************/
+
+    // ---------- Supabase Configuration ----------
+    // เปลี่ยนค่าเหล่านี้เป็นค่าจาก Supabase project ของคุณ
+    const SUPABASE_URL = 'https://tzatkemyixpkmxykufse.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6YXRrZW15aXhwa214eWt1ZnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNTM5MjcsImV4cCI6MjA3ODYyOTkyN30.bCWuUcSe1BMSrLHzbBhP_sPOgmrEY1BEAOQ8YfNu5H0';
+    
+    // สร้าง Supabase client
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ---------- Constants and Utilities ----------
     const STORAGE_KEY = 'aps_customers';
@@ -1643,44 +1654,151 @@
       if ($('autoSaveCheck')) $('autoSaveCheck').checked = systemSettings.autoSave !== false;
     }
 
-    // ---------- Data Management ----------
-    function loadData() {
+    // ---------- Data Management with Supabase ----------
+    async function loadData() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : [];
+        const { data, error } = await supabase
+          .from('customers')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Supabase error:', error);
+          // Fallback to localStorage if Supabase fails
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : [];
+        }
+        
+        return data || [];
       } catch(e) { 
         console.error('Error loading data:', e);
-        return []; 
+        // Fallback to localStorage
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
       }
     }
 
-    function saveData(arr) { 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); 
+    async function saveData(arr) { 
+      try {
+        // Save to Supabase
+        const { error } = await supabase
+          .from('customers')
+          .upsert(arr, { onConflict: 'customer_id' });
+        
+        if (error) {
+          console.error('Supabase error:', error);
+          // Fallback to localStorage
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+        } else {
+          // Also save to localStorage as backup
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+        }
+      } catch(e) {
+        console.error('Error saving data:', e);
+        // Fallback to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+      }
     }
 
-    function loadAudit() {
+    async function saveCustomerToSupabase(customer) {
+      try {
+        const { data, error } = await supabase
+          .from('customers')
+          .insert([customer])
+          .select();
+        
+        if (error) throw error;
+        return data;
+      } catch(e) {
+        console.error('Error saving customer to Supabase:', e);
+        throw e;
+      }
+    }
+
+    async function updateCustomerInSupabase(customerId, updates) {
+      try {
+        const { data, error } = await supabase
+          .from('customers')
+          .update(updates)
+          .eq('customer_id', customerId)
+          .select();
+        
+        if (error) throw error;
+        return data;
+      } catch(e) {
+        console.error('Error updating customer in Supabase:', e);
+        throw e;
+      }
+    }
+
+    async function deleteCustomerFromSupabase(customerId) {
+      try {
+        const { error } = await supabase
+          .from('customers')
+          .delete()
+          .eq('customer_id', customerId);
+        
+        if (error) throw error;
+        return true;
+      } catch(e) {
+        console.error('Error deleting customer from Supabase:', e);
+        throw e;
+      }
+    }
+
+    async function loadAudit() {
       try { 
-        return JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]'); 
+        const { data, error } = await supabase
+          .from('audit_logs')
+          .select('*')
+          .order('time', { ascending: false });
+        
+        if (error) {
+          console.error('Supabase error:', error);
+          // Fallback to localStorage
+          return JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]');
+        }
+        
+        return data || [];
       } catch(e) { 
         console.error('Error loading audit:', e);
-        return []; 
+        return JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]'); 
       }
     }
 
-    function saveAudit(a) { 
-      localStorage.setItem(AUDIT_KEY, JSON.stringify(a)); 
+    async function saveAudit(a) { 
+      try {
+        // Save to Supabase
+        const { error } = await supabase
+          .from('audit_logs')
+          .insert(a);
+        
+        if (error) {
+          console.error('Supabase error:', error);
+          // Fallback to localStorage
+          localStorage.setItem(AUDIT_KEY, JSON.stringify(a));
+        } else {
+          // Also save to localStorage as backup
+          localStorage.setItem(AUDIT_KEY, JSON.stringify(a));
+        }
+      } catch(e) {
+        console.error('Error saving audit:', e);
+        localStorage.setItem(AUDIT_KEY, JSON.stringify(a));
+      }
     }
 
-    function appendAudit(action, entityId, performedBy, data = null) {
-      const a = loadAudit();
-      a.unshift({ 
+    async function appendAudit(action, entityId, performedBy, data = null) {
+      const auditEntry = {
         action, 
         entity: entityId, 
         performed_by: performedBy, 
         time: nowISO(), 
-        data 
-      });
-      saveAudit(a);
+        data
+      };
+      
+      const a = await loadAudit();
+      a.unshift(auditEntry);
+      await saveAudit(a);
       renderAuditList();
     }
 
@@ -1921,7 +2039,7 @@
       return policies;
     }
 
-    function saveCustomer() {
+    async function saveCustomer() {
       if (!validateForm()) return;
 
       const createdBy = $('employee_id').value.trim();
@@ -1982,25 +2100,35 @@
         updated_at: nowISO()
       };
 
-      const all = loadData();
-      all.unshift(customer);
-      saveData(all);
-      
-      appendAudit('create', customer.customer_id, createdBy, { 
-        name: customer.name, 
-        branch 
-      });
-      
-      clearForm();
-      $('formStatus').textContent = `บันทึกเรียบร้อย: ${customer.customer_id}`;
-      alert(`บันทึกข้อมูลลูกค้า ${customer.customer_id} เรียบร้อยแล้ว`);
-      
-      refreshList();
-      if (reportUnlocked) renderReport();
+      try {
+        // Try to save to Supabase first
+        await saveCustomerToSupabase(customer);
+        
+        // Also save to localStorage as backup
+        const all = await loadData();
+        all.unshift(customer);
+        await saveData(all);
+        
+        await appendAudit('create', customer.customer_id, createdBy, { 
+          name: customer.name, 
+          branch 
+        });
+        
+        clearForm();
+        $('formStatus').textContent = `บันทึกเรียบร้อย: ${customer.customer_id}`;
+        alert(`บันทึกข้อมูลลูกค้า ${customer.customer_id} เรียบร้อยแล้ว`);
+        
+        await refreshList();
+        if (reportUnlocked) await renderReport();
+        
+      } catch(error) {
+        console.error('Error saving customer:', error);
+        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + error.message);
+      }
     }
 
     // ---------- List and Search Functionality ----------
-    function renderTableRows(list) {
+    async function renderTableRows(list) {
       const tbody = $('customerTbody');
       const countElement = $('searchResultsCount');
       
@@ -2033,17 +2161,17 @@
       `).join('') || '<tr><td colspan="9" class="text-center text-muted py-3">ไม่มีข้อมูลลูกค้า</td></tr>';
     }
 
-    function refreshList() {
-      const all = loadData();
+    async function refreshList() {
+      const all = await loadData();
       renderTableRows(all);
     }
 
-    function searchCustomers() {
+    async function searchCustomers() {
       const q = $('search_customer').value.trim().toLowerCase();
       const by = $('search_by_creator').value.trim().toLowerCase();
       const rh = $('filter_rh').value.trim();
       
-      let all = loadData();
+      let all = await loadData();
       
       if (q) {
         all = all.filter(c => 
@@ -2068,7 +2196,7 @@
 
     // ---------- PDF Export Functions ----------
     async function exportSinglePDF(customerId) {
-      const all = loadData();
+      const all = await loadData();
       const c = all.find(x => x.customer_id === customerId);
       if (!c) {
         alert('ไม่พบข้อมูลลูกค้า');
@@ -2083,7 +2211,7 @@
       }
       
       await exportMultiplePDF([c]);
-      appendAudit('export_pdf', customerId, 'local-user', null);
+      await appendAudit('export_pdf', customerId, 'local-user', null);
       alert(`Export PDF สำหรับ ${customerId} เรียบร้อยแล้ว`);
     }
 
@@ -2232,14 +2360,14 @@
              d.getDate() <= now.getDate();
     }
 
-    function renderReport() {
+    async function renderReport() {
       if (!reportUnlocked) return;
       
       const region = $('filter_report_region').value;
       const startDate = $('filter_start_date').value;
       const endDate = $('filter_end_date').value;
       
-      let all = loadData();
+      let all = await loadData();
       
       // Apply filters
       if (region && region !== 'all') {
@@ -2270,8 +2398,8 @@
     }
 
     // ---------- Admin and Audit Functions ----------
-    function renderAuditList() {
-      const a = loadAudit();
+    async function renderAuditList() {
+      const a = await loadAudit();
       const container = $('auditList');
       
       container.innerHTML = a.map(x => `
@@ -2311,10 +2439,10 @@
       alert('เปลี่ยนรหัสผ่าน Admin เรียบร้อยแล้ว');
     }
 
-    function exportAllData() {
+    async function exportAllData() {
       const data = {
-        customers: loadData(),
-        audit: loadAudit(),
+        customers: await loadData(),
+        audit: await loadAudit(),
         settings: systemSettings,
         exportDate: nowISO()
       };
@@ -2327,37 +2455,37 @@
       a.click();
       URL.revokeObjectURL(url);
       
-      appendAudit('export_all_data', 'system', 'admin', null);
+      await appendAudit('export_all_data', 'system', 'admin', null);
       alert('ส่งออกข้อมูลทั้งหมดเรียบร้อยแล้ว');
     }
 
-    function importData() {
+    async function importData() {
       const input = document.createElement('input');
       input.type = 'file';
       input.accept = '.json';
       
-      input.onchange = e => {
+      input.onchange = async e => {
         const file = e.target.files[0];
         const reader = new FileReader();
         
-        reader.onload = event => {
+        reader.onload = async event => {
           try {
             const data = JSON.parse(event.target.result);
             
             if (data.customers) {
-              saveData(data.customers);
+              await saveData(data.customers);
             }
             if (data.audit) {
-              saveAudit(data.audit);
+              await saveAudit(data.audit);
             }
             if (data.settings) {
               saveSettings(data.settings);
             }
             
-            refreshList();
-            renderAuditList();
+            await refreshList();
+            await renderAuditList();
             alert('นำเข้าข้อมูลเรียบร้อยแล้ว');
-            appendAudit('import_data', 'system', 'admin', null);
+            await appendAudit('import_data', 'system', 'admin', null);
           } catch (error) {
             alert('ไฟล์ไม่ถูกต้องหรือเสียหาย');
           }
@@ -2369,20 +2497,33 @@
       input.click();
     }
 
-    function clearAllData() {
+    async function clearAllData() {
       if (!confirm('คุณแน่ใจหรือไม่ที่จะล้างข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้!')) {
         return;
       }
       
+      try {
+        // Delete from Supabase
+        const { error } = await supabase
+          .from('customers')
+          .delete()
+          .neq('customer_id', 'dummy'); // Delete all records
+        
+        if (error) throw error;
+      } catch (e) {
+        console.error('Error clearing data from Supabase:', e);
+      }
+      
+      // Clear localStorage
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(AUDIT_KEY);
       localStorage.removeItem(COUNTER_KEY);
       
-      refreshList();
-      renderAuditList();
-      if (reportUnlocked) renderReport();
+      await refreshList();
+      await renderAuditList();
+      if (reportUnlocked) await renderReport();
       
-      appendAudit('clear_all_data', 'system', 'admin', null);
+      await appendAudit('clear_all_data', 'system', 'admin', null);
       alert('ล้างข้อมูลทั้งหมดเรียบร้อยแล้ว');
     }
 
@@ -2407,8 +2548,9 @@
     }
 
     // ---------- Demo Data Initialization ----------
-    function initDemoData() {
-      if (loadData().length === 0) {
+    async function initDemoData() {
+      const data = await loadData();
+      if (data.length === 0) {
         const demo = [
           { 
             customer_id: genCustomerCode(), 
@@ -2462,7 +2604,7 @@
             updated_at: nowISO()
           }
         ];
-        saveData(demo);
+        await saveData(demo);
       }
     }
 
@@ -2546,11 +2688,11 @@
         }
         
         const ids = checks.map(ch => ch.dataset.id);
-        const all = loadData();
+        const all = await loadData();
         const items = all.filter(c => ids.includes(c.customer_id));
         
         await exportMultiplePDF(items);
-        appendAudit('export_bulk_pdf', `bulk:${ids.join(',')}`, 'local-user', { 
+        await appendAudit('export_bulk_pdf', `bulk:${ids.join(',')}`, 'local-user', { 
           count: items.length 
         });
         
@@ -2566,22 +2708,22 @@
       // Report event listeners
       $('btnUnlock').addEventListener('click', unlockReports);
       $('btnExportAll').addEventListener('click', async () => {
-        const all = loadData();
+        const all = await loadData();
         if (!all.length) {
           alert('ไม่มีข้อมูลสำหรับ export');
           return;
         }
         
         await exportMultiplePDF(all);
-        appendAudit('export_all_pdf', 'all', 'local-user', { 
+        await appendAudit('export_all_pdf', 'all', 'local-user', { 
           count: all.length 
         });
         
         alert(`Export PDF ทั้งหมด ${all.length} รายการเรียบร้อยแล้ว`);
       });
       
-      $('btnExportCSV').addEventListener('click', () => {
-        const all = loadData();
+      $('btnExportCSV').addEventListener('click', async () => {
+        const all = await loadData();
         const rows = all.map(c => ({
           customer_id: c.customer_id,
           name: c.name,
@@ -2608,7 +2750,7 @@
         a.click();
         URL.revokeObjectURL(url);
         
-        appendAudit('export_csv', 'all', 'local-user', { 
+        await appendAudit('export_csv', 'all', 'local-user', { 
           count: rows.length 
         });
         
@@ -2620,8 +2762,8 @@
       // Admin event listeners
       $('btnUnlockAdmin').addEventListener('click', unlockAdmin);
       $('btnRefreshAudit').addEventListener('click', renderAuditList);
-      $('btnExportAudit').addEventListener('click', () => {
-        const audit = loadAudit();
+      $('btnExportAudit').addEventListener('click', async () => {
+        const audit = await loadAudit();
         const csv = [['Action', 'Entity', 'Performed By', 'Time', 'Data'].join(',')]
           .concat(audit.map(a => 
             [a.action, a.entity, a.performed_by, a.time, JSON.stringify(a.data || '')]
@@ -2666,8 +2808,8 @@
     // ---------- Global Functions for HTML onclick ----------
     window.removeInsurancePolicy = removeInsurancePolicy;
     
-    window.viewDetail = function(customerId) {
-      const all = loadData();
+    window.viewDetail = async function(customerId) {
+      const all = await loadData();
       const c = all.find(x => x.customer_id === customerId);
       if (!c) {
         alert('ไม่พบข้อมูลลูกค้า');
@@ -2823,8 +2965,8 @@
       modal.show();
     };
     
-    window.addComment = function(customerId) {
-      const all = loadData();
+    window.addComment = async function(customerId) {
+      const all = await loadData();
       const c = all.find(x => x.customer_id === customerId);
       if (!c) {
         alert('ไม่พบข้อมูลลูกค้า');
@@ -2853,7 +2995,17 @@
       const index = all.findIndex(x => x.customer_id === customerId);
       if (index !== -1) {
         all[index] = c;
-        saveData(all);
+        await saveData(all);
+        
+        // Try to update in Supabase
+        try {
+          await updateCustomerInSupabase(customerId, {
+            additional_comments: c.additional_comments,
+            updated_at: nowISO()
+          });
+        } catch (e) {
+          console.error('Error updating customer in Supabase:', e);
+        }
         
         // Clear input
         document.getElementById('newComment').value = '';
@@ -2874,20 +3026,28 @@
     
     window.exportSinglePDF = exportSinglePDF;
     
-    window.deleteRecord = function(customerId) {
+    window.deleteRecord = async function(customerId) {
       if (!confirm('ลบรายการนี้จริงหรือไม่?')) return;
       
-      let all = loadData();
+      try {
+        // Delete from Supabase
+        await deleteCustomerFromSupabase(customerId);
+      } catch (e) {
+        console.error('Error deleting from Supabase:', e);
+      }
+      
+      // Delete from localStorage
+      let all = await loadData();
       const customer = all.find(c => c.customer_id === customerId);
       all = all.filter(x => x.customer_id !== customerId);
-      saveData(all);
+      await saveData(all);
       
-      appendAudit('delete', customerId, 'local-user', {
+      await appendAudit('delete', customerId, 'local-user', {
         customer_name: customer ? customer.name : 'Unknown'
       });
       
-      refreshList();
-      if (reportUnlocked) renderReport();
+      await refreshList();
+      if (reportUnlocked) await renderReport();
       
       alert('ลบข้อมูลลูกค้าเรียบร้อยแล้ว');
     };
