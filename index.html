@@ -21,15 +21,14 @@
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    :root {
+:root {
       --primary-color: #007AFF;
       --primary-dark: #0056CC;
-      --secondary-color: #5856D6;
+      --secondary-color: #87CEEB; /* เปลี่ยนจาก #5856D6 (ม่วง) เป็น Sky Blue */
       --success-color: #34C759;
       --warning-color: #FF9500;
       --error-color: #FF3B30;
-      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --bg-gradient: linear-gradient(135deg, #b3e0ff 0%, #e6f7ff 100%); /* เปลี่ยนจากม่วงเป็นฟ้าอ่อน */
       --glass-bg: rgba(255, 255, 255, 0.25);
       --glass-border: rgba(255, 255, 255, 0.18);
       --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -111,10 +110,10 @@
 
     .loading-progress-bar {
       height: 100%;
-      background: linear-gradient(90deg, #00ffcc, #007AFF);
+      background: linear-gradient(90deg, #87CEEB, #007AFF); /* เปลี่ยนจาก #00ffcc เป็นฟ้าอ่อน */
       width: 0%;
       transition: width 0.3s ease;
-      box-shadow: 0 0 10px #00ffcc;
+      box-shadow: 0 0 10px #87CEEB; /* เปลี่ยนจาก #00ffcc เป็นฟ้าอ่อน */
     }
 
     .enter-btn {
@@ -218,12 +217,12 @@
 
     .nav-btn:hover {
       transform: translateY(-1px);
-      border-color: var(--primary-color);
-      box-shadow: 0 2px 6px rgba(0, 122, 255, 0.15);
+      border-color: var(--secondary-color); /* ใช้สีฟ้าอ่อนแทน */
+      box-shadow: 0 2px 6px rgba(135, 206, 235, 0.15); /* ใช้สีฟ้าอ่อน */
     }
 
     .nav-btn.active {
-      background: var(--primary-color);
+      background: var(--secondary-color); /* ใช้สีฟ้าอ่อนแทน */
       color: white;
     }
 
@@ -439,7 +438,7 @@
     .stat-number {
       font-size: 1.75rem;
       font-weight: 700;
-      color: var(--primary-color);
+      color: var(--secondary-color); /* เปลี่ยนจาก primary เป็น secondary (ฟ้าอ่อน) */
       margin-bottom: 0.25rem;
     }
 
@@ -513,11 +512,11 @@
     }
 
     .form-subsection {
-      background: #f8f9fa;
+      background: #f8fbff; /* ฟ้าอ่อนมาก */
       border-radius: 8px;
       padding: 1rem;
       margin-bottom: 1rem;
-      border-left: 4px solid var(--primary-color);
+      border-left: 4px solid var(--secondary-color); /* ใช้สีฟ้าอ่อน */
     }
     
     .subsection-title {
@@ -755,7 +754,7 @@
     }
 
     .customer-id-display {
-      background: var(--primary-color);
+      background: var(--secondary-color); /* ใช้สีฟ้าอ่อน */
       color: white;
       padding: 0.5rem 1rem;
       border-radius: 8px;
@@ -835,6 +834,15 @@
       font-size: 3rem;
       color: white;
       margin-bottom: var(--spacing-lg);
+    }
+
+    /* เพิ่ม CSS สำหรับ badge และส่วนอื่นๆ */
+    .badge.bg-primary {
+      background-color: var(--secondary-color) !important; /* ใช้สีฟ้าอ่อนแทน */
+    }
+
+    .card-header.bg-primary {
+      background-color: var(--secondary-color) !important; /* ใช้สีฟ้าอ่อน */
     }
   </style>
 </head>
